@@ -62,13 +62,13 @@ jobs:
     - name: Checkout xchange dependency
       uses: actions/checkout@v6
       with:
-        repository: Smithsonian/xchange
+        repository: Sigmyne/xchange
         path: xchange
 
     - name: Checkout RedisX dependency
       uses: actions/checkout@v6
       with:
-        repository: Smithsonian/redisx
+        repository: Sigmyne/redisx
         path: redisx
 
     # Initializes the CodeQL tools for scanning.

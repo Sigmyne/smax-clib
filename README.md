@@ -1,19 +1,12 @@
-![Build Status](https://github.com/Smithsonian/smax-clib/actions/workflows/build.yml/badge.svg)
-![Test Status](https://github.com/Smithsonian/redisx/actions/workflows/test.yml/badge.svg)
-![Static Analysis](https://github.com/Smithsonian/smax-clib/actions/workflows/analyze.yml/badge.svg)
-<a href="https://smithsonian.github.io/smax-clib/apidoc/html/files.html">
- ![API documentation](https://github.com/Smithsonian/smax-clib/actions/workflows/dox.yml/badge.svg)
+![Build Status](https://github.com/Sigmyne/smax-clib/actions/workflows/build.yml/badge.svg)
+![Test Status](https://github.com/Sigmyne/redisx/actions/workflows/test.yml/badge.svg)
+![Static Analysis](https://github.com/Sigmyne/smax-clib/actions/workflows/analyze.yml/badge.svg)
+<a href="https://sigmyne.github.io/smax-clib/apidoc/html/files.html">
+ ![API documentation](https://github.com/Sigmyne/smax-clib/actions/workflows/dox.yml/badge.svg)
 </a>
-<a href="https://smithsonian.github.io/smax-clib/index.html">
- ![Project page](https://github.com/Smithsonian/smax-clib/actions/workflows/pages/pages-build-deployment/badge.svg)
+<a href="https://sigmyne.github.io/smax-clib/index.html">
+ ![Project page](https://github.com/Sigmyne/smax-clib/actions/workflows/pages/pages-build-deployment/badge.svg)
 </a>
-
-<picture>
-  <source srcset="resources/CfA-logo-dark.png" alt="CfA logo" media="(prefers-color-scheme: dark)"/>
-  <source srcset="resources/CfA-logo.png" alt="CfA logo" media="(prefers-color-scheme: light)"/>
-  <img src="resources/CfA-logo.png" alt="CfA logo" width="400" height="67" align="right"/>
-</picture>
-<br clear="all">
 
 # smax-clib
 
@@ -21,8 +14,8 @@ A free C/C++ client library and toolkit for the
 [SMA Exchange (SMA-X)](https://docs.google.com/document/d/1eYbWDClKkV7JnJxv4MxuNBNV47dFXuUWu7C4Ve_YTf0/edit?usp=sharing) 
 structured real-time database
 
- - [API documentation](https://smithsonian.github.io/smax-clib/apidoc/html/files.html)
- - [Project pages](https://smithsonian.github.io/smax-clib) on github.io
+ - [API documentation](https://sigmyne.github.io/smax-clib/apidoc/html/files.html)
+ - [Project pages](https://sigmyne.github.io/smax-clib) on github.io
 
 Author: Attila Kovacs
 
@@ -80,8 +73,8 @@ Before then the API may undergo slight changes and tweaks. Use the repository as
 ### Related links
 
  - [SMA-X specification](https://docs.google.com/document/d/1eYbWDClKkV7JnJxv4MxuNBNV47dFXuUWu7C4Ve_YTf0/edit?usp=sharing)
- - [Smithsonian/smax-python](https://github.com/Smithsonian/smax-python) an alternative library for Python 3.
- - [Smithsonian/smax-postgres](https://github.com/Smithsonian/smax-postgres) for creating a time-series history of 
+ - [Sigmyne/smax-python](https://github.com/Sigmyne/smax-python) an alternative library for Python 3.
+ - [Sigmyne/smax-postgres](https://github.com/Sigmyne/smax-postgres) for creating a time-series history of 
    SMA-X in a __PostgreSQL__ database.
 
 
@@ -91,10 +84,10 @@ Before then the API may undergo slight changes and tweaks. Use the repository as
 ## Prerequisites
 
 The SMA-X C/C++ library has a build and runtime dependency on the __xchange__ and __RedisX__ libraries also available
-at the Smithsonian Github repositories:
+at the Sigmyne Github repositories:
 
- - [Smithsonian/xchange](https://github.com/Smithsonian/xchange)
- - [Smithsonian/redisx](https://github.com/Smithsonian/redisx)
+ - [Sigmyne/xchange](https://github.com/Sigmyne/xchange)
+ - [Sigmyne/redisx](https://github.com/Sigmyne/redisx)
 
 Additionally, to configure your Redis (or Valkey / Dragonfly) servers for SMA-X, you will need the 
 [Smithsonian/smax-server](https://github.com/Smithsonian/smax-server) repo also.
@@ -135,12 +128,12 @@ prior to invoking `make`. The following build variables can be configured:
    use `doxygen` in your `PATH` (if any). You can also set it to `none` to disable document generation and the
    checking for a usable `doxygen` version entirely.
 
- - `XCHANGE`: If the [Smithsonian/xchange](https://github.com/Smithsonian/xchange) library is not installed on your
+ - `XCHANGE`: If the [Sigmyne/xchange](https://github.com/Sigmyne/xchange) library is not installed on your
    system (e.g. under `/usr`) set `XCHANGE` to where the distribution can be found. The build will expect to find 
    `xchange.h` under `$(XCHANGE)/include` and `libxchange.so` / `libxchange.a` under `$(XCHANGE)/lib` or else in the 
    default `LD_LIBRARY_PATH`.
    
- - `REDISX`: If the [Smithsonian/redisx](https://github.com/Smithsonian/redisx) library is not installed on your
+ - `REDISX`: If the [Sigmyne/redisx](https://github.com/Sigmyne/redisx) library is not installed on your
    system (e.g. under `/usr`) set `REDISX` to where the distribution can be found. The build will expect to find 
    `redisx.h` under `$(REDISX)/include` and `libredisx.so` / `libredisx.a` under `$(REDISX)/lib` or else in the 
    default `LD_LIBRARY_PATH`.
@@ -211,7 +204,7 @@ usage. E.g.:
 
 These command-line tools provide a simple means to interact with SMA-X from the shell or a scripting language, such
 as `bash`, or `perl` (also `python` though we recommend to use the native 
-[Smithsonian/smax-python](https://github.com/Smithsonian/smax-python) library instead).
+[Sigmyne/smax-python](https://github.com/Sigmyne/smax-python) library instead).
 
 ------------------------------------------------------------------------------
 
@@ -1321,7 +1314,7 @@ rolled out in bug-fix releases as long as they do not affect the existing API --
 bug-fix releases fully backwards compatible with their parent versions.
 
 In the weeks and month(s) preceding releases one or more _release candidates_ (e.g. `1.0.1-rc3`) will be published 
-temporarily on GitHub, under [Releases](https://github.com/Smithsonian/smax-clib/releases), so that changes can be 
+temporarily on GitHub, under [Releases](https://github.com/Sigmyne/smax-clib/releases), so that changes can be 
 tested by adopters before the releases are finalized. Please use due diligence to test such release candidates with 
 your code when they become available to avoid unexpected surprises when the finalized release is published. Release 
 candidates are typically available for one week only before they are superseded either by another, or by the finalized 

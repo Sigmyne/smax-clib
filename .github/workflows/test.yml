@@ -42,13 +42,13 @@ jobs:
     - name: Check out RedisX
       uses: actions/checkout@v6
       with:
-        repository: Smithsonian/redisx
+        repository: Sigmyne/redisx
         path: redisx
 
     - name: Check out xchange
       uses: actions/checkout@v6
       with:
-        repository: Smithsonian/xchange
+        repository: Sigmyne/xchange
         path: xchange
 
     - name: Check out smax-server
@@ -124,13 +124,13 @@ jobs:
       - name: Check out RedisX
         uses: actions/checkout@v6
         with:
-          repository: Smithsonian/redisx
+          repository: Sigmyne/redisx
           path: redisx
 
       - name: Check out xchange
         uses: actions/checkout@v6
         with:
-          repository: Smithsonian/xchange
+          repository: Sigmyne/xchange
           path: xchange
 
       - name: Check out smax-server

@@ -39,13 +39,13 @@ jobs:
     - name: Check out xchange dependency
       uses: actions/checkout@v6
       with:
-        repository: Smithsonian/xchange
+        repository: Sigmyne/xchange
         path: xchange
 
     - name: Check out RedisX dependency
       uses: actions/checkout@v6
       with:
-        repository: Smithsonian/redisx
+        repository: Sigmyne/redisx
         path: redisx
 
     - name: install package dependencies
