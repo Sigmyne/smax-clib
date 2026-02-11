@@ -43,6 +43,6 @@ __Dependencies__
 
  - [Sigmyne/xchange](https://github.com/Sigmyne/xchange) -- structured data exchange framework
  - [Sigmyne/redisx](https://github.com/Sigmyne/redisx) -- A C/C++ Redis client library
- - [Sigmyne/smax-server](https://github.com/Sigmyne/smax-server) -- SMA-X server configuration kit
+ - [Smithsonian/smax-server](https://github.com/Smithsonian/smax-server) -- SMA-X server configuration kit
  
  
