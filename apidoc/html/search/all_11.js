@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['reconfiguration_0',['Reconfiguration',['../index.html#autotoc_md18',1,'']]],
+  ['reconfiguration_0',['Reconfiguration',['../index.html#autotoc_md19',1,'']]],
   ['redis_1',['Redis',['../../../redisx/apidoc/html/structRedis.html',1,'']]],
   ['redisclient_2',['RedisClient',['../../../redisx/apidoc/html/structRedisClient.html',1,'']]],
   ['rediscluster_3',['RedisCluster',['../../../redisx/apidoc/html/structRedisCluster.html',1,'']]],
@@ -20,12 +20,12 @@ var searchData=
   ['redisx_2eh_17',['redisx.h',['../../../redisx/apidoc/html/redisx_8h.html',1,'']]],
   ['refindex_18',['refIndex',['../structXCoordinateAxis.html#ad191af99a874bc633c0834d247427ea8',1,'XCoordinateAxis']]],
   ['refvalue_19',['refValue',['../structXCoordinateAxis.html#ad56f22fc3fbf9639a29ed9f174c67ec2',1,'XCoordinateAxis']]],
-  ['related_20links_20',['Related links',['../index.html#autotoc_md6',1,'']]],
-  ['release_20schedule_21',['Release schedule',['../index.html#autotoc_md63',1,'']]],
+  ['related_20links_20',['Related links',['../index.html#autotoc_md7',1,'']]],
+  ['release_20schedule_21',['Release schedule',['../index.html#autotoc_md64',1,'']]],
   ['releaseid_22',['RELEASEID',['../smax-private_8h.html#acb5965a4e56d8d90d76002bef3207ef9',1,'smax-private.h']]],
-  ['remote_20control_20calls_20and_20return_20values_23',['Complex remote control calls and return values',['../index.html#autotoc_md46',1,'']]],
-  ['remote_20program_20control_20via_20sma_20x_24',['Remote program control via SMA-X',['../index.html#autotoc_md43',1,'']]],
+  ['remote_20control_20calls_20and_20return_20values_23',['Complex remote control calls and return values',['../index.html#autotoc_md47',1,'']]],
+  ['remote_20program_20control_20via_20sma_20x_24',['Remote program control via SMA-X',['../index.html#autotoc_md44',1,'']]],
   ['resp_25',['RESP',['../../../redisx/apidoc/html/structRESP.html',1,'']]],
   ['resp_2ec_26',['resp.c',['../../../redisx/apidoc/html/resp_8c.html',1,'']]],
-  ['return_20values_27',['Complex remote control calls and return values',['../index.html#autotoc_md46',1,'']]]
+  ['return_20values_27',['Complex remote control calls and return values',['../index.html#autotoc_md47',1,'']]]
 ];
