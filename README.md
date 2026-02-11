@@ -73,7 +73,7 @@ Before then the API may undergo slight changes and tweaks. Use the repository as
 ### Related links
 
  - [SMA-X specification](https://docs.google.com/document/d/1eYbWDClKkV7JnJxv4MxuNBNV47dFXuUWu7C4Ve_YTf0/edit?usp=sharing)
- - [Sigmyne/smax-python](https://github.com/Sigmyne/smax-python) an alternative library for Python 3.
+ - [Smithsonian/smax-python](https://github.com/Sigmyne/smax-python) an alternative library for Python 3.
  - [Sigmyne/smax-postgres](https://github.com/Sigmyne/smax-postgres) for creating a time-series history of 
    SMA-X in a __PostgreSQL__ database.
 
