@@ -5,7 +5,7 @@ title: smax-clib
 description: C/C++ client library for SMA-X structured data exchange
 show_downloads: false
 google_analytics: G-EMRD1TX0PD
-url: "https://smithsonian.github.io"
+url: "https://sigmyne.github.io"
 read_time: true
 titles_from_headings:
   strip_title: true
