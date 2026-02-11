@@ -4,8 +4,10 @@ excerpt: C/C++ client library for SMA-X structured data exchange.
 
 <img src="/smax-clib/resources/Sigmyne-logo-200x44.png" alt="Sigmyne logo" width="200" height="44" align="right"><br clear="all">
 
+<!--
 <img src="https://img.shields.io/github/v/release/Sigmyne/smax-clib?label=github" class="badge" alt="GitHub release version" align="left">
 <br clear="all">
+-->
 
 The SMA information eXchange (SMA-X) is a high performance and versatile data sharing platform for distributed software
 systems. It is built around a central Redis database, and provides atomic access to structured data, including 
