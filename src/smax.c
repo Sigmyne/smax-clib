@@ -340,10 +340,10 @@ void smaxSetHostName(const char *name) {
  */
 char *smaxGetProgramID() {
 #if (__Lynx__ && __powerpc__)
-  char procName[40];
+  char procName[40] = DEFAULT_PROCESS_NAME;
 #else
-  const char *procName = DEFAULT_PROCESS_NAME;
   extern char *__progname;
+  const char *procName;
 #endif
 
   const char *host;
