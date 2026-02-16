@@ -53,7 +53,7 @@
     <topic label="Release schedule" href="index.html#autotoc_md64"/>
   </topic>
   <topic label="Changelog" href="md_CHANGELOG.html">
-    <topic label="[Unreleased]" href="md_CHANGELOG.html#autotoc_md1"/>
+    <topic label="[1.0.0] - 2026-02-16" href="md_CHANGELOG.html#autotoc_md1"/>
   </topic>
   <topic label="Contributing to smax-clib" href="md_CONTRIBUTING.html"/>
   <topic label="Data Structures" href="annotated.html">

@@ -1,11 +1,22 @@
 var searchData=
 [
-  ['finishing_20up_0',['Finishing up',['../index.html#autotoc_md37',1,'']]],
-  ['firstfield_1',['firstField',['../../../xchange/apidoc/html/structXStructure.html#a501ae8af2201d9cfaa60e3af21ff58fc',1,'XStructure']]],
-  ['flexible_20types_20and_20sizes_2',['Flexible types and sizes',['../index.html#autotoc_md27',1,'']]],
-  ['for_20updates_3',['Waiting for updates',['../index.html#autotoc_md41',1,'']]],
-  ['frequency_20queries_4',['Lazy pulling (high-frequency queries)',['../index.html#autotoc_md32',1,'']]],
-  ['from_20an_20application_5',['Broadcasting status messages from an application',['../index.html#autotoc_md50',1,'']]],
-  ['from_20sma_20x_6',['Connecting to / disconnecting from SMA-X',['../index.html#autotoc_md21',1,'']]],
-  ['future_20plans_7',['Future plans',['../index.html#autotoc_md62',1,'']]]
+  ['c_20library_0',['Building the SMA-X C library',['../index.html#autotoc_md11',1,'']]],
+  ['callbacks_1',['callbacks',['../index.html#autotoc_md36',1,'Callbacks'],['../index.html#autotoc_md42',1,'Update callbacks']]],
+  ['calls_20and_20return_20values_2',['Complex remote control calls and return values',['../index.html#autotoc_md47',1,'']]],
+  ['changelog_3',['Changelog',['../../../redisx/apidoc/html/md_CHANGELOG.html',1,'']]],
+  ['citation_4',['Citation',['../index.html#autotoc_md3',1,'']]],
+  ['clib_5',['clib',['../../../redisx/apidoc/html/md_CONTRIBUTING.html',1,'Contributing to smax-clib'],['../index.html',1,'smax-clib']]],
+  ['clib_20tt_6',['Linking your application against &lt;tt&gt;smax-clib&lt;/tt&gt;',['../index.html#autotoc_md13',1,'']]],
+  ['client_20side_7',['Client side',['../index.html#autotoc_md46',1,'']]],
+  ['command_20line_20tools_8',['Command-line tools',['../index.html#autotoc_md15',1,'']]],
+  ['complex_20remote_20control_20calls_20and_20return_20values_9',['Complex remote control calls and return values',['../index.html#autotoc_md47',1,'']]],
+  ['configuration_10',['configuration',['../index.html#autotoc_md17',1,'Initial configuration'],['../index.html#autotoc_md18',1,'TLS configuration']]],
+  ['connecting_20to_20disconnecting_20from_20sma_20x_11',['Connecting to / disconnecting from SMA-X',['../index.html#autotoc_md21',1,'']]],
+  ['connection_20disconnection_20hooks_12',['Connection / disconnection hooks',['../index.html#autotoc_md22',1,'']]],
+  ['contents_13',['Table of Contents',['../index.html#autotoc_md4',1,'']]],
+  ['contributing_20to_20smax_20clib_14',['Contributing to smax-clib',['../../../redisx/apidoc/html/md_CONTRIBUTING.html',1,'']]],
+  ['control_20calls_20and_20return_20values_15',['Complex remote control calls and return values',['../index.html#autotoc_md47',1,'']]],
+  ['control_20via_20sma_20x_16',['Remote program control via SMA-X',['../index.html#autotoc_md44',1,'']]],
+  ['coordinate_20systems_17',['Coordinate Systems',['../index.html#autotoc_md55',1,'']]],
+  ['custom_20update_20handling_18',['Custom update handling',['../index.html#autotoc_md39',1,'']]]
 ];
