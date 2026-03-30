@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
-<tagfile doxygen_version="1.9.8">
+<tagfile doxygen_version="1.16.1">
   <compound kind="file">
     <name>smax-private.h</name>
     <path>include/</path>
@@ -2985,6 +2985,16 @@
       <anchor>a6e27f49150e9a14580fb313cc2777e00</anchor>
       <arglist></arglist>
     </member>
+  </compound>
+  <compound kind="page">
+    <name>md_CHANGELOG</name>
+    <title>Changelog</title>
+    <filename>md_CHANGELOG.html</filename>
+  </compound>
+  <compound kind="page">
+    <name>md_CONTRIBUTING</name>
+    <title>Contributing to smax-clib</title>
+    <filename>md_CONTRIBUTING.html</filename>
   </compound>
   <compound kind="page">
     <name>index</name>

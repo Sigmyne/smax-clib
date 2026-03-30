@@ -8,7 +8,7 @@ var searchData=
   ['points_20and_20waiting_5',['Synchronization points and waiting',['../index.html#autotoc_md35',1,'']]],
   ['port_6',['port',['../../../redisx/apidoc/html/structRedisServer.html#a63c89c04d1feae07ca35558055155ffb',1,'RedisServer']]],
   ['prerequisites_7',['Prerequisites',['../index.html#autotoc_md9',1,'']]],
-  ['priv_8',['priv',['../../../redisx/apidoc/html/structRedisCluster.html#a8b6505c37d4ff95854b8b00527e4d9fa',1,'RedisCluster::priv'],['../../../xchange/apidoc/html/structXLookupTable.html#a8b6505c37d4ff95854b8b00527e4d9fa',1,'XLookupTable::priv']]],
+  ['priv_8',['priv',['../../../xchange/apidoc/html/structXLookupTable.html#a8b6505c37d4ff95854b8b00527e4d9fa',1,'XLookupTable::priv'],['../../../redisx/apidoc/html/structRedisCluster.html#a8b6505c37d4ff95854b8b00527e4d9fa',1,'RedisCluster::priv']]],
   ['processing_20program_20messages_9',['Processing program messages',['../index.html#autotoc_md51',1,'']]],
   ['prog_10',['prog',['../structXMessage.html#acc6113e98e7cd24d9dcfa520749a5d3f',1,'XMessage']]],
   ['program_20control_20via_20sma_20x_11',['Remote program control via SMA-X',['../index.html#autotoc_md44',1,'']]],

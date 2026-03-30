@@ -25,7 +25,7 @@
 var NAVTREE =
 [
   [ "smax-clib", "index.html", [
-    [ "Changelog", "../../redisx/apidoc/html/md_CHANGELOG.html", [
+    [ "Changelog", "md_CHANGELOG.html", [
       [ "Citation", "index.html#autotoc_md3", null ],
       [ "Table of Contents", "index.html#autotoc_md4", null ],
       [ "Introduction", "index.html#autotoc_md6", [
@@ -33,7 +33,7 @@ var NAVTREE =
       ] ],
       [ "Prerequisites", "index.html#autotoc_md9", null ],
       [ "Building the SMA-X C library", "index.html#autotoc_md11", null ],
-      [ "Linking your application against <tt>smax-clib</tt>", "index.html#autotoc_md13", null ],
+      [ "Linking your application against <span class=\"tt\">smax-clib</span>", "index.html#autotoc_md13", null ],
       [ "Command-line tools", "index.html#autotoc_md15", null ],
       [ "Initial configuration", "index.html#autotoc_md17", [
         [ "TLS configuration", "index.html#autotoc_md18", null ],
@@ -79,9 +79,9 @@ var NAVTREE =
       [ "Debug support", "index.html#autotoc_md60", null ],
       [ "Future plans", "index.html#autotoc_md62", null ],
       [ "Release schedule", "index.html#autotoc_md64", null ],
-      [ "[1.0.0] - 2026-02-16", "../../redisx/apidoc/html/md_CHANGELOG.html#autotoc_md1", null ]
+      [ "[1.0.0] - 2026-02-16", "md_CHANGELOG.html#autotoc_md1", null ]
     ] ],
-    [ "Contributing to smax-clib", "../../redisx/apidoc/html/md_CONTRIBUTING.html", null ],
+    [ "Contributing to smax-clib", "md_CONTRIBUTING.html", null ],
     [ "Data Structures", "annotated.html", [
       [ "Data Structures", "annotated.html", "annotated_dup" ],
       [ "Data Structure Index", "classes.html", null ],
@@ -109,5 +109,6 @@ var NAVTREEINDEX =
 "smax_8c.html#a95cbb68e3eb751219ab3363c93a4840b"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
+var SYNCONMSG = 'click to disable panel synchronization';
+var SYNCOFFMSG = 'click to enable panel synchronization';
+var LISTOFALLMEMBERS = 'List of all members';

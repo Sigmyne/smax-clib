@@ -5,7 +5,7 @@
       <topic label="Related links" href="index.html#autotoc_md7"/>
     <topic label="Prerequisites" href="index.html#autotoc_md9"/>
     <topic label="Building the SMA-X C library" href="index.html#autotoc_md11"/>
-    <topic label="Linking your application against &lt;tt&gt;smax-clib&lt;/tt&gt;" href="index.html#autotoc_md13"/>
+    <topic label="Linking your application against smax-clib" href="index.html#autotoc_md13"/>
     <topic label="Command-line tools" href="index.html#autotoc_md15"/>
     <topic label="Initial configuration" href="index.html#autotoc_md17">
       <topic label="TLS configuration" href="index.html#autotoc_md18"/>

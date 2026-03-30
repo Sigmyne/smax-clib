@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['changelog_0',['Changelog',['../../../redisx/apidoc/html/md_CHANGELOG.html',1,'']]],
-  ['clib_1',['clib',['../../../redisx/apidoc/html/md_CONTRIBUTING.html',1,'Contributing to smax-clib'],['../index.html',1,'smax-clib']]],
-  ['contributing_20to_20smax_20clib_2',['Contributing to smax-clib',['../../../redisx/apidoc/html/md_CONTRIBUTING.html',1,'']]]
+  ['0_200_202026_2002_2016_0',['[1.0.0] - 2026-02-16',['../md_CHANGELOG.html#autotoc_md1',1,'']]],
+  ['0_202026_2002_2016_1',['[1.0.0] - 2026-02-16',['../md_CHANGELOG.html#autotoc_md1',1,'']]],
+  ['02_2016_2',['[1.0.0] - 2026-02-16',['../md_CHANGELOG.html#autotoc_md1',1,'']]]
 ];

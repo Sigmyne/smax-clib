@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['to_20smax_20clib_0',['Contributing to smax-clib',['../../../redisx/apidoc/html/md_CONTRIBUTING.html',1,'']]]
+  ['2026_2002_2016_0',['[1.0.0] - 2026-02-16',['../md_CHANGELOG.html#autotoc_md1',1,'']]]
 ];
