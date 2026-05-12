@@ -225,6 +225,7 @@ static int QueueUpdateAsync(LazyMonitor *m) {
     m->users++;
     smaxQueueCallback(ApplyUpdate, staging);
   }
+  else DestroyMonitorAsync(staging);
 
   return X_SUCCESS;
 }
@@ -1043,6 +1044,7 @@ static LazyMonitor *GetExistingMonitorAsync(const char *table, const char *key) 
     if(m->key == NULL) {
       if(key != NULL) continue;
     }
+    else if(key == NULL) continue;
     else if(strcmp(m->key, key)) continue;
 
     m->users++;

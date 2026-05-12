@@ -428,6 +428,7 @@ int smaxSetControlFunction(const char *table, const char *key, SMAXControlFuncti
       // Start processing control calls...
       status = smaxAddSubscriber(NULL, ProcessControls);
       if(status) {
+        if(id) free(id);
         pthread_mutex_unlock(&mutex);
         return x_trace(fn, NULL, status);
       }

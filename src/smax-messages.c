@@ -466,7 +466,7 @@ static void ProcessMessage(const char *pattern, const char *channel, const char 
 
   //if(xNextIDToken(m.type)) return;    // The channel has additional (unexpected) ID tokens...
 
-  ts = strrchr(msg, '@');
+  ts = strrchr((char *) msg, '@');
   if(ts) {
     m.timestamp = smaxGetTime(&ts[1]);
     if(m.timestamp && !isnan(m.timestamp)) *ts = '\0';

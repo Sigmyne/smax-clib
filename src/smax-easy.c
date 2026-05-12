@@ -796,7 +796,10 @@ int smaxShareStrings(const char *table, const char *key, const char **sValues, i
 
   if(L == 0) L = 1;
   buf = (char *) malloc(L);
-  if(!buf) return x_error(X_NULL, errno, fn, "malloc() error (%d bytes)", L);
+  if(!buf) {
+    free(l);
+    return x_error(X_NULL, errno, fn, "malloc() error (%d bytes)", L);
+  }
 
   L = 0;
   for(i=0; i<n; i++) {
