@@ -106,13 +106,13 @@ static int SendMessage(const char *type, const char *text, va_list varg) {
 }
 
 /**
- * Sets the sender ID for outgoing program messages. By default the sender ID is &lt;host&gt;:&lt;program&gt;
+ * Sets the sender ID for outgoing program messages. By default the sender ID is `<host>:<program>`
  * for the program that calls this function, but it can be modified to use some other
  * SMA-X style hierarchical ID also.
  *
  *
  * @param id        The new sender ID for outgoing program messages, or NULL to reinstate the
- *                  default &lt;host&gt;:&lt;program&gt; style ID. The argument is not referenced and
+ *                  default `<host>:<program>` style ID. The argument is not referenced and
  *                  can be deallocated as desired after the call without affecting the newly
  *                  defined message ID.
  */
@@ -131,7 +131,7 @@ void smaxSetMessageSenderID(const char *id) {
  * @param msg       Message text (may include format specifications for additional vararg parameters)
  * @return          X_SUCCESS (0), or else an X error.
  *
- * @sa sendInfo()
+ * @sa smaxSendInfo()
  */
 
 int smaxSendStatus(const char *msg, ...) {
@@ -154,8 +154,8 @@ int smaxSendStatus(const char *msg, ...) {
  * @param msg       Message text (may include format specifications for additional vararg parameters)
  * @return          X_SUCCESS (0), or else an X error.
  *
- * @sa sendDetail()
- * @sa sendStatus()
+ * @sa smaxSendDetail()
+ * @sa smaxSendStatus()
  */
 int smaxSendInfo(const char *msg, ...) {
   va_list varg;
@@ -275,8 +275,8 @@ int smaxSendProgress(double fraction, const char *msg, ...) {
   needed = snprintf(NULL, 0, "%.1f %s", (100.0 * fraction), msg);
   if(needed < 0) return x_error(X_NULL, errno, fn, "snprintf() size calculation error");
 
-  progress = malloc((size_t)needed + 1);
-  if(!progress) return x_error(X_NULL, errno, fn, "malloc() error (%ld bytes)", 10 + (long) strlen(msg));
+  progress = malloc((size_t) needed + 1);
+  if(!progress) return x_error(X_NULL, errno, fn, "malloc() error (%ld bytes)", (long) needed + 1L);
 
   sprintf(progress, "%.1f %s", (100.0 * fraction), msg);
 
@@ -351,7 +351,7 @@ int smaxAddMessageProcessor(const char *host, const char *prog, const char *type
 
   pthread_mutex_unlock(&listMutex);
 
-  // If so far-so good, subscribe to notifications/
+  // If so far so good, subscribe to notifications.
   if(result == X_SUCCESS) result = redisxSubscribe(r, p->pattern);
 
   if(result != X_SUCCESS) {
@@ -375,11 +375,11 @@ static void DefaultProcessor(XMessage *m) {
   else if(!strcmp(m->type, SMAX_MSG_DETAIL)) printf(" ... %s(%s): %s.\n", m->prog, m->host, m->text);
   else if(!strcmp(m->type, SMAX_MSG_DEBUG)) printf("DEBUG> %s(%s): %s.\n", m->prog, m->host, m->text);
   else if(!strcmp(m->type, SMAX_MSG_PROGRESS)) {
-    char *tail;
+    char *tail = NULL;
     double d;
     errno = 0;
     d = strtod(m->text, &tail);
-    if(errno) printf(" %s(%s): %s\r", m->prog, m->host, m->text);
+    if(errno || tail == m->text) printf(" %s(%s): %s\r", m->prog, m->host, m->text);
     else printf(" %s(%s) [%5.1f] %s\r", m->prog, m->host, d, m->text);
   }
 }
@@ -423,6 +423,7 @@ int smaxRemoveMessageProcessor(int id) {
   for(p = firstProc; p; p = p->next) if(p->id == id) {
     if(p->prior) p->prior->next = p->next;
     else firstProc = p->next;
+    if(p->next) p->next->prior = p->prior;
     break;
   }
 
@@ -477,9 +478,12 @@ static void ProcessMessage(const char *pattern, const char *channel, const char 
   ts = strrchr((char *) msg, '@');
   if(ts) {
     m.timestamp = smaxGetTime(&ts[1]);
+    // terminate msg at start of timestamp if the timestamp is reasonable (finite and non-zero)
+    // so we can parse the main part of the message below without the timestamp component.
     if(m.timestamp && !isnan(m.timestamp)) *ts = '\0';
   }
 
+  // The message body without the timestamp
   m.text = xStringCopyOf(msg);
 
   pthread_mutex_lock(&listMutex);
@@ -508,6 +512,7 @@ static void ProcessMessage(const char *pattern, const char *channel, const char 
   if(m.host) free(m.host);
   if(m.prog) free(m.prog);
   if(m.type) free(m.type);
+  if(m.text) free(m.text);
 }
 
 
