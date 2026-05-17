@@ -48,12 +48,15 @@ static int SendMessage(const char *type, const char *text, va_list varg) {
   static const char *fn = "SendMessage";
 
   Redis *r = smaxGetRedis();
-  const char stdmsg[1024];  // standard message buffer, unless we need something larger.
+  char stdmsg[1024];        // standard message buffer, unless we need something larger.
   char *msg;                // Message buffer (standard or allocated)
 
   const char *id = senderID ? senderID : smaxGetProgramID();
   char *channel;
   int n;
+#if !(__Lynx__ && __powerpc__)
+  va_list cvarg;
+#endif
 
   if(!type) return x_error(X_NULL, EINVAL, fn, "type parameter is NULL");
   if(!text) return x_error(X_NULL, EINVAL, fn, "text parameter is NULL");
@@ -71,20 +74,22 @@ static int SendMessage(const char *type, const char *text, va_list varg) {
   n = vsprintf(msg, text, varg);
 #else
   // Figure out how big of a storage we need.
-   n = vsnprintf(NULL, 0, text, varg);
+  va_copy(cvarg, varg);
+  n = vsnprintf(NULL, 0, text, cvarg);
+  va_end(cvarg);
 
-   // Assign message buffer to standard, or else allocate
-   if(n + X_TIMESTAMP_LENGTH < (int) sizeof(stdmsg)) msg = (char *) stdmsg;
-   else {
-     msg = (char *) malloc(n + X_TIMESTAMP_LENGTH + 1);
-     if(!msg) {
-       free(channel);
-       return x_error(X_NULL, errno, fn, "malloc() error (msg: %d bytes)", n);
-     }
-   }
+  // Assign message buffer to standard, or else allocate
+  if(n + X_TIMESTAMP_LENGTH < (int) sizeof(stdmsg)) msg = (char *) stdmsg;
+  else {
+    msg = (char *) malloc(n + X_TIMESTAMP_LENGTH + 1);
+    if(!msg) {
+      free(channel);
+      return x_error(X_NULL, errno, fn, "malloc() error (msg: %d bytes)", n);
+    }
+  }
 
   // Print message, followed immediately by timestamp.
-  n = vsnprintf(msg, n, text, varg);
+  n = vsnprintf(msg, n + 1, text, varg);
 #endif
 
   smaxTimestamp(&msg[n]);
@@ -137,7 +142,7 @@ int smaxSendStatus(const char *msg, ...) {
   status = SendMessage(SMAX_MSG_STATUS, msg, varg);
   va_end(varg);
 
-  prop_error("smaxSendDetail", status);
+  prop_error("smaxSendStatus", status);
   return X_SUCCESS;
 }
 
@@ -160,7 +165,7 @@ int smaxSendInfo(const char *msg, ...) {
   status = SendMessage(SMAX_MSG_INFO, msg, varg);
   va_end(varg);
 
-  prop_error("smaxSendDetail", status);
+  prop_error("smaxSendInfo", status);
   return X_SUCCESS;
 }
 
@@ -196,7 +201,7 @@ int smaxSendDebug(const char *msg, ...) {
   status = SendMessage(SMAX_MSG_DEBUG, msg, varg);
   va_end(varg);
 
-  prop_error("smaxSendDetail", status);
+  prop_error("smaxSendDebug", status);
   return X_SUCCESS;
 }
 
@@ -220,12 +225,12 @@ int smaxSendWarning(const char *msg, ...) {
   status = SendMessage(SMAX_MSG_WARNING, msg, varg);
   va_end(varg);
 
-  prop_error("smaxSendDetail", status);
+  prop_error("smaxSendWarning", status);
   return X_SUCCESS;
 }
 
 /**
- * Broadcast an error message via SMA-X. Errors should be used for an issues
+ * Broadcast an error message via SMA-X. Errors should be used for any issues
  * that impair program functionality. Works just like `printf()`.
  *
  * @param msg       Message text (may include format specifications for additional vararg parameters)
@@ -243,7 +248,7 @@ int smaxSendError(const char *msg, ...) {
   status = SendMessage(SMAX_MSG_ERROR, msg, varg);
   va_end(varg);
 
-  prop_error("smaxSendDetail", status);
+  prop_error("smaxSendError", status);
   return X_SUCCESS;
 }
 
@@ -260,20 +265,23 @@ int smaxSendProgress(double fraction, const char *msg, ...) {
 
   va_list varg;
   char *progress;
-  int result;
+  int needed, result;
 
   if(!msg) {
     x_error(0, EINVAL, fn, "'msg' is NULL");
     return X_NULL;
   }
 
-  progress = malloc(10 + strlen(msg));
+  needed = snprintf(NULL, 0, "%.1f %s", (100.0 * fraction), msg);
+  if(needed < 0) return x_error(X_NULL, errno, fn, "snprintf() size calculation error");
+
+  progress = malloc((size_t)needed + 1);
   if(!progress) return x_error(X_NULL, errno, fn, "malloc() error (%ld bytes)", 10 + (long) strlen(msg));
 
   sprintf(progress, "%.1f %s", (100.0 * fraction), msg);
 
   va_start(varg, msg);
-  result = SendMessage(SMAX_MSG_DETAIL, progress, varg);
+  result = SendMessage(SMAX_MSG_PROGRESS, progress, varg);
   va_end(varg);
 
   free(progress);
@@ -403,7 +411,7 @@ int smaxRemoveMessageProcessor(int id) {
   Redis *r = smaxGetRedis();
   MessageProcessor *p;
 
-  if(!r) smaxError("smaxRemoveMessageProcessor", X_NO_INIT);
+  if(!r) return smaxError("smaxRemoveMessageProcessor", X_NO_INIT);
 
   pthread_mutex_lock(&listMutex);
 
