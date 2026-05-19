@@ -38,7 +38,7 @@ int smaxLockNotify();
 int smaxUnlockNotify();
 
 int smaxConfigTLSAsync(Redis *redis);
-long smaxGetHash(const char *buf, int size);
+unsigned long smaxGetHash(const char *buf, int size);
 
 int smaxRead(PullRequest *req, int channel);
 int smaxWrite(const char *group, const XField *f);

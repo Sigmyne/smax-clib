@@ -306,7 +306,7 @@ unsigned char smaxGetHashLookupIndex(const char *table, int lTab, const char *ke
   if(key)
     hash += smaxGetHash(key, lKey);
 
-  return (char) (hash & 0xff);
+  return (unsigned char) (hash & 0xff);
 }
 /// \endcond
 
@@ -430,7 +430,8 @@ static void *SMAXReconnectThread(void *arg) {
 /// \endcond
 
 /**
- * Prints the given UNIX time into the supplied buffer with subsecond precision.
+ * Prints the given UNIX time into the supplied buffer with subsecond precision. (Nanoseconds are
+ * truncated to microseconds.)
  *
  * \param[in]   time    Pointer to time value.
  * \param[out]  buf     Pointer to string buffer, must be at least X_TIMESTAMP_LENGTH in size.
@@ -445,7 +446,8 @@ __inline__ int smaxTimeToString(const struct timespec *time, char *buf) {
 }
 
 /**
- * Prints the current time into the supplied buffer with subsecond precision.
+ * Prints the current time into the supplied buffer with subsecond precision. (Nanoseconds are
+ * truncated to microseconds.)
  *
  * \param[out]  buf     Pointer to string buffer, must be at least X_TIMESTAMP_LENGTH in size.
  *
