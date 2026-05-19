@@ -33,7 +33,7 @@ static void *SMAXReconnectThread(void *arg);
 
 // Local variables ------------------------------------>
 
-/// A lock for ensuring exlusive access for pipeline configuraton changes...
+/// A lock for ensuring exclusive access for pipeline configuration changes...
 /// and the variables that it controls, e.g. via lockConfig()
 static pthread_mutex_t configLock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -129,11 +129,11 @@ void smaxSetOrigin(XMeta *m, const char *origin) {
  *
  * @param redis     The Redis instance in which the error occurred. In case of SMA-X this will always
  *                  be the Redis instance used by SMA-X.
- * @param channel   The Redis channel index on which the error occured, such as REDIS_INTERAVTIVE_CHANNEL
+ * @param channel   The Redis channel index on which the error occured, such as REDIS_INTERACTIVE_CHANNEL
  * @param op        The operation during which the error occurred, e.g. 'send' or 'read'.
  *
  * @sa smaxSetResilient()
- * @sa redisxSetTrasmitErrorHandler()
+ * @sa redisxSetTransmitErrorHandler()
  */
 // cppcheck-suppress constParameterPointer
 // cppcheck-suppress constParameter
@@ -175,7 +175,7 @@ void smaxSocketErrorHandler(Redis *redis, enum redisx_channel channel, const cha
  * Same as smaxScriptError(), but can be used after smaxConfigLock().
  *
  * @param name          The name of the calling function or name of script (whichever is more informative).
- * @param status        An approprioate error code from xchange.h to indicate the type of error.
+ * @param status        An appropriate error code from xchange.h to indicate the type of error.
  *
  * @sa smaxScriptError()
  * @sa smaxSetResilient()
@@ -219,7 +219,7 @@ int smaxScriptErrorAsync(const char *name, int status) {
  * smaxConfigLock()). Instead use the async version of this function after smaxConfigLock().
  *
  * @param name          The name of the calling function or name of script (whichever is more informative).
- * @param status        An approprioate error code from xchange.h to indicate the type of error.
+ * @param status        An appropriate error code from xchange.h to indicate the type of error.
  *
  * @sa smaxScriptErrorAsync()
  * @sa smaxSetResilient()
