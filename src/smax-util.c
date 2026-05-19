@@ -313,8 +313,7 @@ unsigned char smaxGetHashLookupIndex(const char *table, int lTab, const char *ke
 /**
  * \cond PROTECTED
  *
- * A quick 32-bit integer hashing algorithm. It uses a combination of 32-bit XOR products and summing to
- * obtain something reasonably robust at detecting changes.
+ * A quick 32-bit integer hashing algorithm (FNV-1a).
  *
  * \param buf       Pointer to the byte buffer to calculate a hash on
  * \param size      (bytes) Number of bytes from buf to calculate sum on, or &lt;=0 to

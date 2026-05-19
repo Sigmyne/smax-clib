@@ -16,6 +16,7 @@
 
 #include <time.h>
 #include <math.h>
+#include <pthread.h>
 #include <semaphore.h>
 
 #include <redisx.h>
