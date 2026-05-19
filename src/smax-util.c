@@ -191,7 +191,7 @@ int smaxScriptErrorAsync(const char *name, int status) {
   switch(status) {
     case X_NULL: desc = "No such script, or script SHA not loaded."; break;
     case X_NO_SERVICE: desc = "Not in Redis."; break;
-    default: desc = (char *) smaxErrorDescription(status);
+    default: desc = smaxErrorDescription(status);
   }
 
   fprintf(stderr, "WARNING! SMA-X LUA script error for %s: %s\n", name, desc);
@@ -321,7 +321,7 @@ unsigned char smaxGetHashLookupIndex(const char *table, int lTab, const char *ke
  *
  * \return          An integer hash value.
  */
-long smaxGetHash(const char *buf, int size) {
+unsigned long smaxGetHash(const char *buf, int size) {
   int i;
   unsigned long long hash = 1469598103934665603ULL;  /* FNV-1a 64-bit offset basis */
 
@@ -333,7 +333,7 @@ long smaxGetHash(const char *buf, int size) {
     hash *= 1099511628211ULL;                        /* FNV-1a 64-bit prime */
   }
 
-  return (long) hash;
+  return (unsigned long) hash;
 }
 /// \endcond
 
@@ -393,7 +393,7 @@ char *smaxGetScriptSHA1(const char *scriptName, int *status) {
 
 /**
  *
- * \return <code>TRUE</code> (non-zero) if SMA-X is currently diabled (e.g. to reconnect), or else
+ * \return <code>TRUE</code> (non-zero) if SMA-X is currently disabled (e.g. to reconnect), or else
  *         <code>FALSE</code> (zero).
  */
 boolean smaxIsDisabled() {
@@ -468,7 +468,7 @@ int smaxTimestamp(char *buf) {
  *
  * \param[in]   timestamp     Timestamp string as returned in redis queries;
  * \param[out]  secs          Pointer to the returned UNIX time (seconds).
- * \param[out]  nanosecs      Pointer to the returned sub-second remainder as nanoseconds, or NULL if nor requested.
+ * \param[out]  nanosecs      Pointer to the returned sub-second remainder as nanoseconds, or NULL if not requested.
  *
  * \return              X_SUCCESS(0)    if the timestamp was successfully parsed.
  *                      X_NULL          if there was no timestamp (empty or invalid string), or the `secs` argument is NULL.
@@ -486,8 +486,8 @@ int smaxParseTime(const char *timestamp, time_t *secs, long *nanosecs) {
 
   errno = 0;
   *secs = (time_t) strtoll(timestamp, &next, 10);
-  if(errno) {
-    *nanosecs = 0;
+  if(errno || next == timestamp) {
+    if(nanosecs) *nanosecs = 0;
     return x_error(X_PARSE_ERROR, ENOMSG, fn, "cannot parse seconds: '%s'", timestamp);
   }
 
@@ -498,12 +498,12 @@ int smaxParseTime(const char *timestamp, time_t *secs, long *nanosecs) {
     errno = 0;
     d = strtod(next, &end);
     if(errno) {
-      *nanosecs = 0;
+      if(nanosecs) *nanosecs = 0;
       return 1;
     }
-    *nanosecs = (int) (1e9 * d);
+    if(nanosecs) *nanosecs = (int) (1e9 * d);
   }
-  else *nanosecs = 0;
+  else if(nanosecs) *nanosecs = 0;
 
   return X_SUCCESS;
 }
@@ -540,7 +540,7 @@ double smaxGetTime(const char *timestamp) {
  *
  * \param name      Field name
  * \param type      Storage type, e.g. X_INT.
- * \param ndim      Number of dimensionas (1:20). If ndim < 1, it will be reinterpreted as ndim=1, size[0]=1;
+ * \param ndim      Number of dimensions (1:20). If ndim < 1, it will be reinterpreted as ndim=1, size[0]=1;
  * \param sizes     Array of sizes along each dimensions, with at least ndim elements, or NULL with ndim<1.
  * \param value     Pointer to the native data location in memory. Unless it is of type X_STRUCT,
  *                  the data stored in the field is a copy (for type X_RAW) or serialized string (otherwise).
