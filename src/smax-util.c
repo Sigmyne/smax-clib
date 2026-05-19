@@ -324,15 +324,17 @@ unsigned char smaxGetHashLookupIndex(const char *table, int lTab, const char *ke
  */
 long smaxGetHash(const char *buf, int size) {
   int i;
-  long sum = 0;
+  unsigned long long hash = 1469598103934665603ULL;  /* FNV-1a 64-bit offset basis */
 
   if(!buf) return SMAX_DEFAULT_HASH;
   if(size <= 0) size = strlen(buf);
 
-  for(i = 0; i < size; i++)
-    sum += buf[i] ^ i;  // Calculate a simple sum of all relevant bytes
+  for(i = 0; i < size; i++) {
+    hash ^= (unsigned char) buf[i];
+    hash *= 1099511628211ULL;                        /* FNV-1a 64-bit prime */
+  }
 
-  return sum;
+  return (long) hash;
 }
 /// \endcond
 
