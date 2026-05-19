@@ -276,7 +276,7 @@ const char *smaxErrorDescription(int code) {
  * Destroys a pending pull request, freeing up its private resources. The caller should usually set the
  * referencing pointer to NULL after destruction to avoid problems later...
  *
- * \pram p      Pointer to the pull request structure.
+ * \param p      Pointer to the pull request structure.
  */
 void smaxDestroyPullRequest(PullRequest *p) {
   if(p->group != NULL) free(p->group);
@@ -469,13 +469,13 @@ int smaxTimestamp(char *buf) {
  *
  * \param[in]   timestamp     Timestamp string as returned in redis queries;
  * \param[out]  secs          Pointer to the returned UNIX time (seconds).
- * \param[out]  nanosecs      Pointer to the retuned sub-second remainder as nanoseconds, or NULL if nor requested.
+ * \param[out]  nanosecs      Pointer to the returned sub-second remainder as nanoseconds, or NULL if nor requested.
  *
  * \return              X_SUCCESS(0)    if the timestamp was successfully parsed.
  *                      X_NULL          if there was no timestamp (empty or invalid string), or the `secs` argument is NULL.
  *                      X_PARSE_ERROR   if the seconds could not be parsed.
  *                      1               if there was an error parsing the nanosec part.
- *                      X_NULL          if the secs arhument is NULL
+ *                      X_NULL          if the secs argument is NULL
  */
 int smaxParseTime(const char *timestamp, time_t *secs, long *nanosecs) {
   static const char *fn = "smaxParseTime";
@@ -796,7 +796,7 @@ int smaxGetServerTime(struct timespec *t) {
  *                      use.
  */
 char *smaxValuesToString(const void *value, XType type, int eCount, char *trybuf, int trylength) {
-  static const char *fn = "smaxValuedToString";
+  static const char *fn = "smaxValuesToString";
 
   int eSize = 1, k, stringSize;
   char *sValue, *next;
@@ -1082,7 +1082,7 @@ int smaxStringToValues(const char *str, void *value, XType type, int eCount, int
           long long *ll = (long long *) value;
           for(k=0; k<eCount && *next; k++) {
             errno = 0;
-            ll[k] = (int) strtoll(next, &next, 0);
+            ll[k] = strtoll(next, &next, 0);
             CheckParseError(&next, &status);
           }
         }
