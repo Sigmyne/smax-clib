@@ -1261,7 +1261,7 @@ int smaxDeletePattern(const char *pattern) {
 
   l = strlen(pattern) + 20;
   metaPattern = (char *) malloc(l);
-  if(!metaPattern) return x_error(X_NULL, errno, fn, "malloc() error (%zu bytes)", l);
+  if(!metaPattern) return x_error(X_NULL, errno, fn, "malloc() error (%lu bytes)", (unsigned long) l);
 
   x_snprintf(metaPattern, l, "<*>" X_SEP "%s", pattern);
   redisxDeleteEntries(r, metaPattern);
