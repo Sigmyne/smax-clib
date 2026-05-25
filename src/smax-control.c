@@ -383,6 +383,7 @@ static void ProcessControls(const char *pattern, const char *channel, const char
 int smaxSetControlFunction(const char *table, const char *key, SMAXControlFunction func, void *parg) {
   static const char *fn = "smaxSetControlFunction";
 
+  size_t l;
   char *id;
   XField *prior = NULL;
   int status = X_SUCCESS;
@@ -392,10 +393,11 @@ int smaxSetControlFunction(const char *table, const char *key, SMAXControlFuncti
   if(!key) return x_error(X_NAME_INVALID, EINVAL, fn, "Control variable name is NULL");
   if(!key[0]) return x_error(X_NAME_INVALID, EINVAL, fn, "Control variable name is empty");
 
-  id = (char *) malloc(sizeof(SMAX_UPDATES) + strlen(table) + strlen(key) + X_SEP_LENGTH);
+  l = sizeof(SMAX_UPDATES) + strlen(table) + strlen(key) + X_SEP_LENGTH;
+  id = (char *) malloc(l);
   x_check_alloc(id);
 
-  sprintf(id, SMAX_UPDATES "%s" X_SEP "%s", table, key);
+  x_snprintf(id, l, SMAX_UPDATES "%s" X_SEP "%s", table, key);
 
   pthread_mutex_lock(&mutex);
 

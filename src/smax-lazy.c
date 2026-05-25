@@ -895,6 +895,7 @@ static LazyMonitor *CreateMonitorAsync(const char *table, const char *key, XType
   static const char *fn = "CreateMonitorAsync";
 
   LazyMonitor *m;
+  size_t l;
   char *id;
   int i;
 
@@ -921,7 +922,8 @@ static LazyMonitor *CreateMonitorAsync(const char *table, const char *key, XType
   }
 
   id = xGetAggregateID(table, key);
-  m->channel = calloc(1, sizeof(SMAX_UPDATES) + strlen(id));
+  l = sizeof(SMAX_UPDATES) + strlen(id);
+  m->channel = calloc(1, l);
   if(!m->channel) {
     free(m);
     x_error(0, errno, fn, "calloc() error (%d bytes)", sizeof(SMAX_UPDATES) + strlen(id));
@@ -929,7 +931,7 @@ static LazyMonitor *CreateMonitorAsync(const char *table, const char *key, XType
     return NULL;
   }
 
-  sprintf(m->channel, SMAX_UPDATES "%s", id);
+  x_snprintf(m->channel, l, SMAX_UPDATES "%s", id);
   free(id);
 
   i = GetTableIndex(m);

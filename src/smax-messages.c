@@ -48,7 +48,7 @@ static int SendMessage(const char *type, const char *text, va_list varg) {
   static const char *fn = "SendMessage";
 
   Redis *r = smaxGetRedis();
-  char stdmsg[1024];        // standard message buffer, unless we need something larger.
+  char stdmsg[4096];        // standard message buffer, unless we need something larger.
   char *msg;                // Message buffer (standard or allocated)
 
   const char *id = senderID ? senderID : smaxGetProgramID();
@@ -67,21 +67,27 @@ static int SendMessage(const char *type, const char *text, va_list varg) {
   channel = malloc(n);
   if(!channel) return x_error(X_NULL, errno, fn, "malloc() error (channel: %d bytes)", n);
 
-  sprintf(channel, MESSAGES_PREFIX "%s" X_SEP "%s", id, type);
+  x_snprintf(channel, n, MESSAGES_PREFIX "%s" X_SEP "%s", id, type);
 
-#if (__Lynx__ && __powerpc__)
+#ifdef X_NO_SNPRINTF
+  // We don't seem to have snprint() / vsnprintf() here, so use the older version without length check
   msg = (char *) stdmsg;
   n = vsprintf(msg, text, varg);
+  if(n > sizeof(stdmsg)) {
+    fprintf(stderr, "ERROR! SendMessage: message too large for this platform. Memory corruption.");
+    exit(X_FAILURE);
+  }
+
 #else
   // Figure out how big of a storage we need.
   va_copy(cvarg, varg);
-  n = vsnprintf(NULL, 0, text, cvarg);
+  n = vsnprintf(NULL, 0, text, cvarg) + 1;
   va_end(cvarg);
 
   // Assign message buffer to standard, or else allocate
   if(n + X_TIMESTAMP_LENGTH < (int) sizeof(stdmsg)) msg = (char *) stdmsg;
   else {
-    msg = (char *) malloc(n + X_TIMESTAMP_LENGTH + 1);
+    msg = (char *) malloc(n + X_TIMESTAMP_LENGTH);
     if(!msg) {
       free(channel);
       return x_error(X_NULL, errno, fn, "malloc() error (msg: %d bytes)", n);
@@ -89,7 +95,7 @@ static int SendMessage(const char *type, const char *text, va_list varg) {
   }
 
   // Print message, followed immediately by timestamp.
-  n = vsnprintf(msg, n + 1, text, varg);
+  n = vsnprintf(msg, n, text, varg);
 #endif
 
   smaxTimestamp(&msg[n]);
@@ -272,13 +278,13 @@ int smaxSendProgress(double fraction, const char *msg, ...) {
     return X_NULL;
   }
 
-  needed = snprintf(NULL, 0, "%.1f %s", (100.0 * fraction), msg);
+  needed = snprintf(NULL, 0, "%.1f %s", (100.0 * fraction), msg) + 1;
   if(needed < 0) return x_error(X_NULL, errno, fn, "snprintf() size calculation error");
 
-  progress = malloc((size_t) needed + 1);
-  if(!progress) return x_error(X_NULL, errno, fn, "malloc() error (%ld bytes)", (long) needed + 1L);
+  progress = malloc((size_t) needed);
+  if(!progress) return x_error(X_NULL, errno, fn, "malloc() error (%ld bytes)", (long) needed);
 
-  sprintf(progress, "%.1f %s", (100.0 * fraction), msg);
+  x_snprintf(progress, needed, "%.1f %s", (100.0 * fraction), msg);
 
   va_start(varg, msg);
   result = SendMessage(SMAX_MSG_PROGRESS, progress, varg);
@@ -337,7 +343,7 @@ int smaxAddMessageProcessor(const char *host, const char *prog, const char *type
     return x_error(X_NULL, errno, fn, "malloc() error (%d bytes)", L);
   }
 
-  sprintf(p->pattern, MESSAGES_PREFIX "%s" X_SEP "%s" X_SEP "%s", host, prog, type);
+  x_snprintf(p->pattern, L, MESSAGES_PREFIX "%s" X_SEP "%s" X_SEP "%s", host, prog, type);
 
   pthread_mutex_lock(&listMutex);
 

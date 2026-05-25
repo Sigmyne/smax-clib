@@ -264,17 +264,20 @@ int smaxRemoveSubscribers(RedisSubscriberCall f) {
  *
  */
 char *smaxGetUpdateChannelPattern(const char *table, const char *key) {
+  size_t l;
   char *p;
   if(table == NULL) table = "*";
   if(key == NULL) {
-    p = (char *) malloc(sizeof(SMAX_UPDATES) + strlen(table));
+    l = sizeof(SMAX_UPDATES) + strlen(table);
+    p = (char *) malloc(l);
     x_check_alloc(p);
-    sprintf(p, SMAX_UPDATES "%s", table);
+    x_snprintf(p, l, SMAX_UPDATES "%s", table);
   }
   else {
-    p = (char *) malloc(sizeof(SMAX_UPDATES) + strlen(table) + X_SEP_LENGTH + strlen(key));
+    l = sizeof(SMAX_UPDATES) + strlen(table) + X_SEP_LENGTH + strlen(key);
+    p = (char *) malloc(l);
     x_check_alloc(p);
-    sprintf(p, SMAX_UPDATES "%s" X_SEP "%s", table, key);
+    x_snprintf(p, l, SMAX_UPDATES "%s" X_SEP "%s", table, key);
   }
   return p;
 }

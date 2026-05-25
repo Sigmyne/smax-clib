@@ -280,13 +280,13 @@ int smaxSetCoordinateAxis(const char *id, int n, const XCoordinateAxis *axis) {
   char cidx[30], ridx[30], rval[30], step[30];
   int status;
 
-  sprintf(cidx, "%d", n+1);
+  x_snprintf(cidx, sizeof(cidx), "%d", n+1);
   id = xGetAggregateID(id, cidx);
   if(!id) return x_trace(fn, NULL, X_FAILURE);
 
-  sprintf(ridx, "%g", axis->refIndex);
-  sprintf(rval, "%g", axis->refValue);
-  sprintf(step, "%g", axis->step);
+  x_snprintf(ridx, sizeof(ridx), "%g", axis->refIndex);
+  x_snprintf(rval, sizeof(rval), "%g", axis->refValue);
+  x_snprintf(step, sizeof(step), "%g", axis->step);
 
   fields[0].key = "name";
   fields[0].value = axis->name ? axis->name : "";
@@ -341,7 +341,7 @@ XCoordinateAxis *smaxGetCoordinateAxis(const char *id, int n) {
     return NULL;
   }
 
-  sprintf(idx, "%d", (n+1));
+  x_snprintf(idx, sizeof(idx), "%d", (n+1));
   axisName = xGetAggregateID(id, idx);
   if(!axisName) return x_trace_null(fn, NULL);
 

@@ -442,7 +442,7 @@ static void *SMAXReconnectThread(void *arg) {
  */
 __inline__ int smaxTimeToString(const struct timespec *time, char *buf) {
   if(!buf) return x_error(X_NULL, EINVAL, "smaxTimeToString", "output buffer is NULL");
-  return sprintf(buf, "%lld.%06ld", (long long) time->tv_sec, (time->tv_nsec / 1000));
+  return x_snprintf(buf, X_TIMESTAMP_LENGTH, "%lld.%06ld", (long long) time->tv_sec, (time->tv_nsec / 1000));
 }
 
 /**
@@ -615,7 +615,7 @@ int x2smaxField(XField *f) {
       *e = array[i];    // shallow copy the array field
       prop_error(fn, x2smaxField(e));   // then convert the copy to smax
 
-      sprintf(fname, ".%d", (i + 1)); // Label each field with the array index
+      x_snprintf(fname, sizeof(fname), ".%d", (i + 1)); // Label each field with the array index
       e->name = xStringCopyOf(fname);
       x_check_alloc(e->name);
 
@@ -799,8 +799,8 @@ int smaxGetServerTime(struct timespec *t) {
 char *smaxValuesToString(const void *value, XType type, int eCount, char *trybuf, int trylength) {
   static const char *fn = "smaxValuesToString";
 
-  int eSize = 1, k, stringSize;
-  char *sValue, *next;
+  int eSize = 1, k, n = 0, stringSize;
+  char *sValue;
 
   if(value == NULL) type = X_UNKNOWN;                   // Print zero(es) for null value.
   if(type == X_STRUCT) {
@@ -837,11 +837,13 @@ char *smaxValuesToString(const void *value, XType type, int eCount, char *trybuf
     return sValue;
   }
 
-  next = sValue;
-
   if(!value) {
-    if(type == X_STRING || xIsCharSequence(type)) for(k=0; k<eCount; k++) *(next++) = '\r';
-    else for(k=0; k<eCount; k++) next += sprintf(next, "0 ");
+    if(type == X_STRING || xIsCharSequence(type)) {
+      for(k=0; k<eCount; k++) if(n < stringSize) sValue[n++] = '\r';
+    }
+    else {
+      for(k=0; k<eCount; k++) n += x_snprintf(&sValue[n], stringSize - n, "0 ");
+    }
   }
 
   else if(xIsCharSequence(type)) {
@@ -855,9 +857,9 @@ char *smaxValuesToString(const void *value, XType type, int eCount, char *trybuf
       // Copy at most eSize characters from c[] to next[]...
       for(L = 0; L < eSize; L++) {
         if(c[L] == '\0') break;
-        *(next++) = c[L];
+        if(n < stringSize) sValue[n++] = c[L];
       }
-      *(next++) = '\r';     // Add a separator...
+      if(n < stringSize) sValue[n++] = '\r';     // Add a separator...
       c = c + eSize;        // point to the next element.
     }
   }
@@ -866,21 +868,21 @@ char *smaxValuesToString(const void *value, XType type, int eCount, char *trybuf
   else switch(type) {
     case X_BOOLEAN: {
       const boolean *b = (boolean *) value;
-      for(k=0; k<eCount; k++) next += sprintf(next, "%c ", (b[k] != 0 ? '1' : '0'));
+      for(k=0; k<eCount; k++) n += x_snprintf(&sValue[n], stringSize - n, "%c ", (b[k] != 0 ? '1' : '0'));
       break;
     }
 
     case X_BYTE: {
       const char *c = (const char *) value;
-      for(k=0; k<eCount; k++) next += sprintf(next, "%hhd ", c[k]);
+      for(k=0; k<eCount; k++) n += x_snprintf(&sValue[n], stringSize - n, "%hhd ", c[k]);
       break;
     }
 
     case X_FLOAT: {
       const float *f = (const float *) value;
       for(k=0; k<eCount; k++) {
-        next += xPrintFloat(next, f[k]);
-        *(next++) = ' ';
+        n += xPrintFloatN(&sValue[n], f[k], stringSize - n);
+        if(n < stringSize) sValue[n++] = ' ';
       }
       break;
     }
@@ -888,15 +890,15 @@ char *smaxValuesToString(const void *value, XType type, int eCount, char *trybuf
     case X_DOUBLE: {
       const double *d = (const double *) value;
       for(k=0; k<eCount; k++) {
-        next += xPrintDouble(next, d[k]);
-        *(next++) = ' ';
+        n += xPrintDoubleN(&sValue[n], d[k], stringSize - n);
+        if(n < stringSize) sValue[n++] = ' ';
       }
       break;
     }
 
     case X_STRING: {
       char **S = (char **) value;
-      for(k=0; k<eCount; k++) next += sprintf(next, "%s\r", S[k] ? S[k] : "");
+      for(k=0; k<eCount; k++) n += x_snprintf(&sValue[n], stringSize - n, "%s\r", S[k] ? S[k] : "");
       break;
     }
 
@@ -904,26 +906,26 @@ char *smaxValuesToString(const void *value, XType type, int eCount, char *trybuf
       // Check for possibly overlapping types
       if(type == X_SHORT) {
         const short *s = (const short *) value;
-        for(k=0; k<eCount; k++) next += sprintf(next, "%hd ", s[k]);
+        for(k=0; k<eCount; k++) n += x_snprintf(&sValue[n], stringSize - n, "%hd ", s[k]);
       }
       else if(type == X_INT) {
         const int *i = (const int *) value;
-        for(k=0; k<eCount; k++) next += sprintf(next, "%d ", i[k]);
+        for(k=0; k<eCount; k++) n += x_snprintf(&sValue[n], stringSize - n, "%d ", i[k]);
       }
       else if(type == X_LONG) {
         const long *l = (const long *) value;
-        for(k=0; k<eCount; k++) next += sprintf(next, "%ld ", l[k]);
+        for(k=0; k<eCount; k++) n += x_snprintf(&sValue[n], stringSize - n, "%ld ", l[k]);
       }
       else if(type == X_LLONG) {
         const long long *ll = (const long long *) value;
-        for(k=0; k<eCount; k++) next += sprintf(next, "%lld ", ll[k]);
+        for(k=0; k<eCount; k++) n += x_snprintf(&sValue[n], stringSize - n, "%lld ", ll[k]);
       }
       else
-        for(k=0; k<eCount; k++) next += sprintf(next, "0 ");
+        for(k=0; k<eCount; k++) n += x_snprintf(&sValue[n], stringSize - n, "0 ");
   }
 
   // Replace trailing item separator with string termination.
-  if(next > sValue) *(next-1) = '\0';
+  sValue[n - 1] = '\0';
 
   return sValue;
 }
@@ -1247,6 +1249,7 @@ int smaxDeletePattern(const char *pattern) {
   static const char *fn = "smaxDeletePattern";
 
   Redis *r = smaxGetRedis();
+  size_t l;
   char *metaPattern;
   int n;
 
@@ -1256,10 +1259,11 @@ int smaxDeletePattern(const char *pattern) {
   n = redisxDeleteEntries(r, pattern);
   prop_error(fn, n);
 
-  metaPattern = (char *) malloc(strlen(pattern) + 20);
-  if(!metaPattern) return x_error(X_NULL, errno, fn, "malloc() error (%ld bytes)", (long) strlen(pattern) + 20);
+  l = strlen(pattern) + 20;
+  metaPattern = (char *) malloc(l);
+  if(!metaPattern) return x_error(X_NULL, errno, fn, "malloc() error (%zu bytes)", l);
 
-  sprintf(metaPattern, "<*>" X_SEP "%s", pattern);
+  x_snprintf(metaPattern, l, "<*>" X_SEP "%s", pattern);
   redisxDeleteEntries(r, metaPattern);
   free(metaPattern);
 

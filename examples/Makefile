@@ -1,5 +1,18 @@
-# Load the common Makefile definitions...
-include $(GLOBALINC)/setup.mk
+# Part of smax-clib
+#
+# Build exammple programs
+#
+# Author: Attila Kovacs
+
+ifdef XCHANGE
+  CPPFLAGS += -I$(XCHANGE)/include
+  LDFLAGS += -L$(XCHANGE)/lib
+endif
+
+ifdef REDISX
+  CPPFLAGS += -I$(REDISX)/include
+  LDFLAGS += -L$(REDISX)/lib
+endif
 
 LDFLAGS += $(THREADS) $(NETFLAGS)
 
