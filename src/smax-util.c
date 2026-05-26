@@ -172,7 +172,8 @@ void smaxSocketErrorHandler(Redis *redis, enum redisx_channel channel, const cha
 }
 
 /**
- * Same as smaxScriptError(), but can be used after smaxConfigLock().
+ * Same as smaxScriptError(), but it assumed the aller already has esclusive access to the configuration
+ * state, by having called smaxConfigLock() before.
  *
  * @param name          The name of the calling function or name of script (whichever is more informative).
  * @param status        An appropriate error code from xchange.h to indicate the type of error.
@@ -474,7 +475,7 @@ int smaxTimestamp(char *buf) {
  * \param[out]  nanosecs      Pointer to the returned sub-second remainder as nanoseconds, or NULL if not requested.
  *
  * \return              X_SUCCESS(0)    if the timestamp was successfully parsed.
- *                      X_NULL          if there was no timestamp (empty or invalid string), or the `secs` argument is NULL.
+ *                      X_NULL          if there was no timestamp (NULL or empty string), or the `secs` argument is NULL.
  *                      X_PARSE_ERROR   if the seconds could not be parsed.
  *                      1               if there was an error parsing the nanosec part.
  *                      X_NULL          if the secs argument is NULL
@@ -485,6 +486,7 @@ int smaxParseTime(const char *timestamp, time_t *secs, long *nanosecs) {
   char *next;
 
   if(!timestamp) return x_error(X_NULL, EINVAL, fn, "input timestamp is NULL");
+  if(!timestamp[0]) return x_error(X_NULL, EINVAL, fn, "input timestamp is empty");
   if(!secs) return x_error(X_NULL, EINVAL, fn, "output seconds is NULL");
 
   errno = 0;
@@ -963,7 +965,7 @@ static __inline__ void CheckParseError(char **next, int *status) {
  * \param[in]   type          Share type, e.g. X_INT. The types X_RAW, X_STRUCT are not supported
  *                            by this function.
  *
- * \param[in]   eCount        Number of elements to retrieve. Ignored for X_STRUCT.
+ * \param[in]   eCount        Number of elements to retrieve.
  *
  * \param[out]  pos           Parse position, i.e. the number of characters parsed from the input string...
  *
@@ -992,13 +994,13 @@ int smaxStringToValues(const char *str, void *value, XType type, int eCount, int
     return n;
   }
 
-  eSize = xElementSizeOf(type);
-  if(eSize <= 0) return x_trace(fn, NULL, X_SIZE_INVALID);
-
   if(str == NULL) {
     xZero(value, type, eCount);
     return x_error(X_NULL, EINVAL, fn, "input string is NULL");
   }
+
+  eSize = xElementSizeOf(type);
+  if(eSize <= 0) return x_trace(fn, NULL, X_SIZE_INVALID);
 
   next = (char *) str;
 
