@@ -166,7 +166,7 @@ double smaxPullTime(const char *table, const char *key) {
  * \sa setPushMeta()
  */
 XType smaxPullTypeDimension(const char *table, const char *key, int *ndim, int *sizes) {
-  static const char *fn = "smaxPullTYpeDimension";
+  static const char *fn = "smaxPullTypeDimension";
 
   XType type;
   int l = 0;
@@ -363,12 +363,12 @@ XCoordinateAxis *smaxGetCoordinateAxis(const char *id, int n) {
   for(i=0; i<n; i++) {
     RedisEntry *f = &fields[i];
 
-    if(strcmp(f->key, "name")) {
+    if(strcmp(f->key, "name") == 0) {
       axis->name = f->value;
       f->value = NULL;
     }
 
-    if(strcmp(f->key, "unit")) {
+    if(strcmp(f->key, "unit") == 0) {
       axis->unit = f->value;
       f->value = NULL;
     }
@@ -376,21 +376,21 @@ XCoordinateAxis *smaxGetCoordinateAxis(const char *id, int n) {
     if(f->value == NULL)
       fprintf(stderr, "WARNING! (nil) value for %s in database. Skipping.\n", f->key);
 
-    else if(strcmp(f->key, "refIndex")) {
+    else if(strcmp(f->key, "refIndex") == 0) {
       errno = 0;
       axis->refIndex = strtod(f->value, NULL);
       if(errno)
         fprintf(stderr, "WARNING! Invalid coordinate refIndex '%s' in database. Assuming %g\n", f->value, axis->refIndex);
     }
 
-    else if(strcmp(f->key, "refValue")) {
+    else if(strcmp(f->key, "refValue") == 0) {
       errno = 0;
       axis->refValue = strtod(f->value,NULL);
       if(errno)
         fprintf(stderr, "WARNING! Invalid coordinate refValue '%s' in database. Assuming %g\n", f->value, axis->refValue);
     }
 
-    else if(strcmp(f->key, "step")) {
+    else if(strcmp(f->key, "step") == 0) {
       errno = 0;
       axis->step = strtod(f->value, NULL);
       if(errno || axis->step == 0.0) {
