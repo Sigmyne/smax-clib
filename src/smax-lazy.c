@@ -868,6 +868,10 @@ int smaxGetLazyUpdateCount(const char *table, const char *key) {
   pthread_mutex_lock(&monitorLock);
 
   m = GetMonitorAsync(table, key);
+  if(!m) {
+    pthread_mutex_unlock(&monitorLock);
+    return -1;
+  }
   n = m->updateCount;
   ReleaseAsync(m);
 

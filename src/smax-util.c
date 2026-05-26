@@ -129,7 +129,7 @@ void smaxSetOrigin(XMeta *m, const char *origin) {
  *
  * @param redis     The Redis instance in which the error occurred. In case of SMA-X this will always
  *                  be the Redis instance used by SMA-X.
- * @param channel   The Redis channel index on which the error occured, such as REDIS_INTERACTIVE_CHANNEL
+ * @param channel   The Redis channel index on which the error occurred, such as REDIS_INTERACTIVE_CHANNEL
  * @param op        The operation during which the error occurred, e.g. 'send' or 'read'.
  *
  * @sa smaxSetResilient()
@@ -203,6 +203,7 @@ int smaxScriptErrorAsync(const char *name, int status) {
 
   if(!isDisabled) {
     isDisabled = TRUE;
+
     if (pthread_create(&tid, NULL, SMAXReconnectThread, NULL) == -1) {
       perror("ERROR! SMA-X : pthread_create SMAXReconnectThread. Exiting.");
       exit(X_FAILURE);
@@ -511,7 +512,7 @@ int smaxParseTime(const char *timestamp, time_t *secs, long *nanosecs) {
 }
 
 /**
- * Returns the a sub-second precision UNIX time value for the given SMA-X timestamp
+ * Returns the sub-second precision UNIX time value for the given SMA-X timestamp
  *
  * \param timestamp     The string timestamp returned by SMA-X
  *
@@ -925,7 +926,8 @@ char *smaxValuesToString(const void *value, XType type, int eCount, char *trybuf
   }
 
   // Replace trailing item separator with string termination.
-  sValue[n - 1] = '\0';
+  if(n > 0) sValue[n - 1] = '\0';
+  else sValue[0] = '\0';
 
   return sValue;
 }

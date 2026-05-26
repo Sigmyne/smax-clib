@@ -541,7 +541,7 @@ int smaxWaitOnSubscribed(const char *table, const char *key, int timeout, sem_t 
  * @sa smaxReleaseWaits()
  */
 int smaxWaitOnSubscribedGroup(const char *matchTable, char **changedKey, int timeout, sem_t *gating) {
-  static const char *fn = "smaxWaitOnSubscrivedGroup";
+  static const char *fn = "smaxWaitOnSubscribedGroup";
 
   if(matchTable == NULL) return x_error(X_GROUP_INVALID, EINVAL, fn, "matchTable parameter is NULL");
   if(!matchTable[0]) return x_error(X_GROUP_INVALID, EINVAL, fn, "matchTable parameter is empty");
@@ -666,7 +666,7 @@ void smaxProcessPipedWritesAsync(RESP *reply) {
     //if(reply->n > 0) xvprintf("SMA-X : new variable was added...\n");
   }
   else if(reply->type == RESP_ERROR) {
-    if(strstr("NOSCRIPT", (char *) reply->value)) smaxScriptError("smaxProcessPipedWritesAsync()", X_NULL);
+    if(strstr((char *) reply->value, "NOSCRIPT")) smaxScriptError("smaxProcessPipedWritesAsync()", X_NULL);
     else fprintf(stderr, "WARNING! SMA-X: error reply: %s\n", (char *) reply->value);
   }
   else {
