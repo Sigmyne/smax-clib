@@ -39,7 +39,7 @@ endif
 
 # Build everything...
 .PHONY: all
-all: distro check
+all: warn static shared tools $(DOC_TARGETS) check
 
 # Shared libraries (versioned and unversioned)
 .PHONY: shared
