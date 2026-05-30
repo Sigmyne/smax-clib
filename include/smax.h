@@ -93,9 +93,12 @@
  * \hideinitializer
  */
 
+#ifndef SMAX_LOOKUP_SIZE
+#  define SMAX_LOOKUP_SIZE    1024          ///< Hash lookup table size (for lazy pulls and resilient shares). I should be in the signed `int` range.
+#endif
+
 /// \cond PROTECTED
 #define SMAX_DEFAULT_HASH   (0xdeadbeef)    ///< \hideinitializer (should be quite uncommon with bytes outside the ASCII range -- unlike 0)
-#define SMAX_LOOKUP_SIZE    256             ///< Hash lookup size (DON'T change!)
 /// \endcond
 
 
@@ -306,7 +309,7 @@ char *smaxGetCachedString(const char *table, const char *key);
 int smaxGetCachedStruct(const char *id, XStructure *s);
 int smaxLazyEnd(const char *table, const char *key);
 int smaxLazyFlush();
-int smaxGetLazyUpdateCount(const char *table, const char *key);
+unsigned long smaxGetLazyUpdateCount(const char *table, const char *key);
 
 
 // Some convenience methods for simpler shares ----------->

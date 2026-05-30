@@ -39,8 +39,8 @@ typedef struct LazyMonitor {
   boolean isCurrent;        ///< If the locally stored data is current.
   boolean isPending;        ///< Whether already queued for an update.
   time_t updateTime;        ///< Time of last update.
-  int updateCount;          ///< Number of times the variable was updated.
-  int unpulledCount;        ///< Number of updates since last pull...
+  unsigned long updateCount;    ///< Number of times the variable was updated.
+  unsigned long unpulledCount;  ///< Number of updates since last pull...
   struct LazyMonitor *prev;
   struct LazyMonitor *next;
 } LazyMonitor;
@@ -55,7 +55,7 @@ static pthread_mutex_t dataLock = PTHREAD_MUTEX_INITIALIZER;    ///< mutex for a
 
 static LazyMonitor *CreateMonitorAsync(const char *table, const char *key, XType type, boolean withMeta);
 static boolean DestroyMonitorAsync(LazyMonitor *m);
-static int GetChannelLookupIndex(const char *channel);
+static size_t GetChannelLookupIndex(const char *channel);
 static __inline__ int GetTableIndex(const LazyMonitor *m);
 static LazyMonitor *GetMonitorAsync(const char *table, const char *key);
 static LazyMonitor *GetExistingMonitorAsync(const char *table, const char *key);
@@ -370,7 +370,7 @@ static int FetchDataAsync(LazyMonitor *m, XType type, int count, void *value, XM
     if(meta) if(meta != m->meta) smaxResetMeta(meta);
   }
   else {
-    m->unpulledCount = 0;   // Reset the unread updates counter
+    m->unpulledCount = 0LL;   // Reset the unread updates counter
 
     // Copy/parse the cached data into the requested destination.
     pthread_mutex_lock(&dataLock);
@@ -831,7 +831,7 @@ int smaxLazyFlush() {
 
   pthread_mutex_lock(&monitorLock);
 
-  for(i=SMAX_LOOKUP_SIZE; --i >= 0; ) {
+  for(i = SMAX_LOOKUP_SIZE; --i >= 0; ) {
     LazyMonitor *list;
     list = monitorTable[i];
     monitorTable[i] = NULL;
@@ -858,9 +858,9 @@ int smaxLazyFlush() {
  *                  is not being monitored, or if the arguments are invalid.
  *
  */
-int smaxGetLazyUpdateCount(const char *table, const char *key) {
+unsigned long smaxGetLazyUpdateCount(const char *table, const char *key) {
   LazyMonitor *m;
-  int n;
+  unsigned long n;
 
   if(!table) return -1;
   if(!key) return -1;
@@ -1005,7 +1005,7 @@ static boolean DestroyMonitorAsync(LazyMonitor *m) {
  * \sa xGetHashLookupIndex()
  *
  */
-static int GetChannelLookupIndex(const char *channel) {
+static size_t GetChannelLookupIndex(const char *channel) {
   int lGroup;
   char *key;
 
@@ -1021,7 +1021,7 @@ static int GetChannelLookupIndex(const char *channel) {
   return smaxGetHashLookupIndex(channel, lGroup, key, 0);
 }
 
-static __inline__ int GetLookupIndex(const char *table, const char *key) {
+static __inline__ size_t GetLookupIndex(const char *table, const char *key) {
   return key ? smaxGetHashLookupIndex(table, 0, key, 0) : GetChannelLookupIndex(table);
 }
 

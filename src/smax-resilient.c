@@ -176,7 +176,7 @@ static void SendStoredPushRequests() {
   // Don't push failed writes back to the store...
   resilient = FALSE;
 
-  for(i=SMAX_LOOKUP_SIZE; --i >= 0; ) while(table[i]) {
+  for(i = SMAX_LOOKUP_SIZE; --i >= 0; ) while(table[i]) {
     PushRequest *req = table[i];
 
     int status = smaxWrite(req->group, req->field);
@@ -210,7 +210,7 @@ static void SendStoredPushRequests() {
  */
 static void UpdatePushRequest(const char *group, const XField *field) {
   PushRequest *req;
-  int idx = smaxGetHashLookupIndex(group, 0, field->name, 0);
+  size_t idx = smaxGetHashLookupIndex(group, 0, field->name, 0);
 
   pthread_mutex_lock(&tableLock);
 

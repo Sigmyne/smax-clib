@@ -45,7 +45,7 @@ int smaxWrite(const char *group, const XField *f);
 void smaxDestroyPullRequest(PullRequest *p);
 int smaxProcessReadResponse(RESP *reply, PullRequest *req);
 void smaxProcessPipedWritesAsync(RESP *reply);
-unsigned char smaxGetHashLookupIndex(const char *group, int lGroup, const char *key, int lKey);
+size_t smaxGetHashLookupIndex(const char *group, int lGroup, const char *key, int lKey);
 char *smaxGetUpdateChannelPattern(const char *table, const char *key);
 int smaxStorePush(const char *table, const XField *field);
 void smaxSocketErrorHandler(Redis *r, enum redisx_channel channel, const char *op);

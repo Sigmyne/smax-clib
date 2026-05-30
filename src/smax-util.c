@@ -299,7 +299,7 @@ void smaxDestroyPullRequest(PullRequest *p) {
  * \return          An integer hash value (0-255).
  *
  */
-unsigned char smaxGetHashLookupIndex(const char *table, int lTab, const char *key, int lKey) {
+size_t smaxGetHashLookupIndex(const char *table, int lTab, const char *key, int lKey) {
   unsigned long hash = 0;
 
   if(table)
@@ -308,7 +308,7 @@ unsigned char smaxGetHashLookupIndex(const char *table, int lTab, const char *ke
   if(key)
     hash += smaxGetHash(key, lKey);
 
-  return (unsigned char) (hash & 0xff);
+  return (size_t) (hash % SMAX_LOOKUP_SIZE);
 }
 /// \endcond
 
