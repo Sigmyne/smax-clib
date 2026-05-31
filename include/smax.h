@@ -57,10 +57,10 @@
 #define SMAX_MINOR_VERSION  0
 
 /// Integer sub version of the release
-#define SMAX_PATCHLEVEL     0
+#define SMAX_PATCHLEVEL     1
 
 /// Additional release information in version, e.g. "-1", or "-rc1".
-#define SMAX_RELEASE_STRING ""
+#define SMAX_RELEASE_STRING "-rc1"
 
 /// \cond PRIVATE
 

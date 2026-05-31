@@ -76,10 +76,10 @@ jobs:
         path: redisx
 
     - name: Generate docs
-      run: make -C xchange local-dox 
+      run: make -C xchange dox 
 
     - name: Generate docs
-      run: make -C redisx local-dox  
+      run: make -C redisx dox  
 
     - name: Generate headless README for smax-clib
       run: make -C smax-clib README-smax.md
