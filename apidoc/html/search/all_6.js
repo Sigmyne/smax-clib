@@ -1,22 +1,6 @@
 var searchData=
 [
-  ['c_20library_0',['Building the SMA-X C library',['../index.html#autotoc_md11',1,'']]],
-  ['callbacks_1',['Callbacks',['../index.html#autotoc_md36',1,'']]],
-  ['callbacks_2',['Update callbacks',['../index.html#autotoc_md42',1,'']]],
-  ['calls_20and_20return_20values_3',['Complex remote control calls and return values',['../index.html#autotoc_md47',1,'']]],
-  ['changelog_4',['Changelog',['../md_CHANGELOG.html',1,'']]],
-  ['citation_5',['Citation',['../index.html#autotoc_md3',1,'']]],
-  ['clib_6',['clib',['../md_CONTRIBUTING.html',1,'Contributing to smax-clib'],['../index.html#autotoc_md13',1,'Linking your application against &lt;span class=&quot;tt&quot;&gt;smax-clib&lt;/span&gt;'],['../index.html',1,'smax-clib']]],
-  ['client_20side_7',['Client side',['../index.html#autotoc_md46',1,'']]],
-  ['command_20line_20tools_8',['Command-line tools',['../index.html#autotoc_md15',1,'']]],
-  ['complex_20remote_20control_20calls_20and_20return_20values_9',['Complex remote control calls and return values',['../index.html#autotoc_md47',1,'']]],
-  ['configuration_10',['configuration',['../index.html#autotoc_md17',1,'Initial configuration'],['../index.html#autotoc_md18',1,'TLS configuration']]],
-  ['connecting_20to_20disconnecting_20from_20sma_20x_11',['Connecting to / disconnecting from SMA-X',['../index.html#autotoc_md21',1,'']]],
-  ['connection_20disconnection_20hooks_12',['Connection / disconnection hooks',['../index.html#autotoc_md22',1,'']]],
-  ['contents_13',['Table of Contents',['../index.html#autotoc_md4',1,'']]],
-  ['contributing_20to_20smax_20clib_14',['Contributing to smax-clib',['../md_CONTRIBUTING.html',1,'']]],
-  ['control_20calls_20and_20return_20values_15',['Complex remote control calls and return values',['../index.html#autotoc_md47',1,'']]],
-  ['control_20via_20sma_20x_16',['Remote program control via SMA-X',['../index.html#autotoc_md44',1,'']]],
-  ['coordinate_20systems_17',['Coordinate Systems',['../index.html#autotoc_md55',1,'']]],
-  ['custom_20update_20handling_18',['Custom update handling',['../index.html#autotoc_md39',1,'']]]
+  ['basics_0',['The basics',['../index.html#autotoc_md28',1,'']]],
+  ['broadcasting_20status_20messages_20from_20an_20application_1',['Broadcasting status messages from an application',['../index.html#autotoc_md53',1,'']]],
+  ['building_20the_20sma_20x_20c_20library_2',['Building the SMA-X C library',['../index.html#autotoc_md14',1,'']]]
 ];

@@ -26,60 +26,64 @@ var NAVTREE =
 [
   [ "smax-clib", "index.html", [
     [ "Changelog", "md_CHANGELOG.html", [
-      [ "Citation", "index.html#autotoc_md3", null ],
-      [ "Table of Contents", "index.html#autotoc_md4", null ],
-      [ "Introduction", "index.html#autotoc_md6", [
-        [ "Related links", "index.html#autotoc_md7", null ]
+      [ "Citation", "index.html#autotoc_md6", null ],
+      [ "Table of Contents", "index.html#autotoc_md7", null ],
+      [ "Introduction", "index.html#autotoc_md9", [
+        [ "Related links", "index.html#autotoc_md10", null ]
       ] ],
-      [ "Prerequisites", "index.html#autotoc_md9", null ],
-      [ "Building the SMA-X C library", "index.html#autotoc_md11", null ],
-      [ "Linking your application against <span class=\"tt\">smax-clib</span>", "index.html#autotoc_md13", null ],
-      [ "Command-line tools", "index.html#autotoc_md15", null ],
-      [ "Initial configuration", "index.html#autotoc_md17", [
-        [ "TLS configuration", "index.html#autotoc_md18", null ],
-        [ "Reconfiguration", "index.html#autotoc_md19", null ]
+      [ "Prerequisites", "index.html#autotoc_md12", null ],
+      [ "Building the SMA-X C library", "index.html#autotoc_md14", null ],
+      [ "Linking your application against <span class=\"tt\">smax-clib</span>", "index.html#autotoc_md16", null ],
+      [ "Command-line tools", "index.html#autotoc_md18", null ],
+      [ "Initial configuration", "index.html#autotoc_md20", [
+        [ "TLS configuration", "index.html#autotoc_md21", null ],
+        [ "Reconfiguration", "index.html#autotoc_md22", null ]
       ] ],
-      [ "Connecting to / disconnecting from SMA-X", "index.html#autotoc_md21", [
-        [ "Connection / disconnection hooks", "index.html#autotoc_md22", null ]
+      [ "Connecting to / disconnecting from SMA-X", "index.html#autotoc_md24", [
+        [ "Connection / disconnection hooks", "index.html#autotoc_md25", null ]
       ] ],
-      [ "Sharing and pulling data", "index.html#autotoc_md24", [
-        [ "The basics", "index.html#autotoc_md25", null ],
-        [ "Standard metadata", "index.html#autotoc_md26", null ],
-        [ "Flexible types and sizes", "index.html#autotoc_md27", null ],
-        [ "Scalar quantities", "index.html#autotoc_md28", null ],
-        [ "Arrays", "index.html#autotoc_md29", null ],
-        [ "Structures / substructures...", "index.html#autotoc_md30", null ]
+      [ "Sharing and pulling data", "index.html#autotoc_md27", [
+        [ "The basics", "index.html#autotoc_md28", null ],
+        [ "Standard metadata", "index.html#autotoc_md29", null ],
+        [ "Flexible types and sizes", "index.html#autotoc_md30", null ],
+        [ "Scalar quantities", "index.html#autotoc_md31", null ],
+        [ "Arrays", "index.html#autotoc_md32", null ],
+        [ "Structures / substructures...", "index.html#autotoc_md33", null ]
       ] ],
-      [ "Lazy pulling (high-frequency queries)", "index.html#autotoc_md32", null ],
-      [ "Pipelined pulling (high volume queries)", "index.html#autotoc_md34", [
-        [ "Synchronization points and waiting", "index.html#autotoc_md35", null ],
-        [ "Callbacks", "index.html#autotoc_md36", null ],
-        [ "Finishing up", "index.html#autotoc_md37", null ]
+      [ "Lazy pulling (high-frequency queries)", "index.html#autotoc_md35", null ],
+      [ "Pipelined pulling (high volume queries)", "index.html#autotoc_md37", [
+        [ "Synchronization points and waiting", "index.html#autotoc_md38", null ],
+        [ "Callbacks", "index.html#autotoc_md39", null ],
+        [ "Finishing up", "index.html#autotoc_md40", null ]
       ] ],
-      [ "Custom update handling", "index.html#autotoc_md39", [
-        [ "Monitoring updates", "index.html#autotoc_md40", null ],
-        [ "Waiting for updates", "index.html#autotoc_md41", null ],
-        [ "Update callbacks", "index.html#autotoc_md42", null ]
+      [ "Custom update handling", "index.html#autotoc_md42", [
+        [ "Monitoring updates", "index.html#autotoc_md43", null ],
+        [ "Waiting for updates", "index.html#autotoc_md44", null ],
+        [ "Update callbacks", "index.html#autotoc_md45", null ]
       ] ],
-      [ "Remote program control via SMA-X", "index.html#autotoc_md44", [
-        [ "Server side", "index.html#autotoc_md45", null ],
-        [ "Client side", "index.html#autotoc_md46", null ],
-        [ "Complex remote control calls and return values", "index.html#autotoc_md47", null ]
+      [ "Remote program control via SMA-X", "index.html#autotoc_md47", [
+        [ "Server side", "index.html#autotoc_md48", null ],
+        [ "Client side", "index.html#autotoc_md49", null ],
+        [ "Complex remote control calls and return values", "index.html#autotoc_md50", null ]
       ] ],
-      [ "Program status / error messages via SMA-X", "index.html#autotoc_md49", [
-        [ "Broadcasting status messages from an application", "index.html#autotoc_md50", null ],
-        [ "Processing program messages", "index.html#autotoc_md51", null ]
+      [ "Program status / error messages via SMA-X", "index.html#autotoc_md52", [
+        [ "Broadcasting status messages from an application", "index.html#autotoc_md53", null ],
+        [ "Processing program messages", "index.html#autotoc_md54", null ]
       ] ],
-      [ "Optional metadata", "index.html#autotoc_md53", [
-        [ "Descriptions", "index.html#autotoc_md54", null ],
-        [ "Coordinate Systems", "index.html#autotoc_md55", null ],
-        [ "Physical units", "index.html#autotoc_md56", null ]
+      [ "Optional metadata", "index.html#autotoc_md56", [
+        [ "Descriptions", "index.html#autotoc_md57", null ],
+        [ "Coordinate Systems", "index.html#autotoc_md58", null ],
+        [ "Physical units", "index.html#autotoc_md59", null ]
       ] ],
-      [ "Error handling", "index.html#autotoc_md58", null ],
-      [ "Debug support", "index.html#autotoc_md60", null ],
-      [ "Future plans", "index.html#autotoc_md62", null ],
-      [ "Release schedule", "index.html#autotoc_md64", null ],
-      [ "[1.0.0] - 2026-02-16", "md_CHANGELOG.html#autotoc_md1", null ]
+      [ "Error handling", "index.html#autotoc_md61", null ],
+      [ "Debug support", "index.html#autotoc_md63", null ],
+      [ "Future plans", "index.html#autotoc_md65", null ],
+      [ "Release schedule", "index.html#autotoc_md67", null ],
+      [ "[1.0.1-rc1] - 2026-05-31", "md_CHANGELOG.html#autotoc_md1", [
+        [ "Fixed", "md_CHANGELOG.html#autotoc_md2", null ],
+        [ "Changed", "md_CHANGELOG.html#autotoc_md3", null ]
+      ] ],
+      [ "[1.0.0] - 2026-02-16", "md_CHANGELOG.html#autotoc_md4", null ]
     ] ],
     [ "Contributing to smax-clib", "md_CONTRIBUTING.html", null ],
     [ "Data Structures", "annotated.html", [
@@ -106,9 +110,10 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"smax_8c.html#a95cbb68e3eb751219ab3363c93a4840b"
+"smax_8c.html#a79fba7411b5afa132457a6828ff5ed9f",
+"structXSyncPoint.html"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronization';
-var SYNCOFFMSG = 'click to enable panel synchronization';
-var LISTOFALLMEMBERS = 'List of all members';
+const SYNCONMSG = 'click to disable panel synchronization';
+const SYNCOFFMSG = 'click to enable panel synchronization';
+const LISTOFALLMEMBERS = 'List of all members';

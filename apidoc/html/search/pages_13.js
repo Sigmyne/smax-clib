@@ -1,8 +1,11 @@
 var searchData=
 [
-  ['units_0',['Physical units',['../index.html#autotoc_md56',1,'']]],
-  ['up_1',['Finishing up',['../index.html#autotoc_md37',1,'']]],
-  ['update_20callbacks_2',['Update callbacks',['../index.html#autotoc_md42',1,'']]],
-  ['update_20handling_3',['Custom update handling',['../index.html#autotoc_md39',1,'']]],
-  ['updates_4',['updates',['../index.html#autotoc_md40',1,'Monitoring updates'],['../index.html#autotoc_md41',1,'Waiting for updates']]]
+  ['table_20of_20contents_0',['Table of Contents',['../index.html#autotoc_md7',1,'']]],
+  ['the_20basics_1',['The basics',['../index.html#autotoc_md28',1,'']]],
+  ['the_20sma_20x_20c_20library_2',['Building the SMA-X C library',['../index.html#autotoc_md14',1,'']]],
+  ['tls_20configuration_3',['TLS configuration',['../index.html#autotoc_md21',1,'']]],
+  ['to_20disconnecting_20from_20sma_20x_4',['Connecting to / disconnecting from SMA-X',['../index.html#autotoc_md24',1,'']]],
+  ['to_20smax_20clib_5',['Contributing to smax-clib',['../md_CONTRIBUTING.html',1,'']]],
+  ['tools_6',['Command-line tools',['../index.html#autotoc_md18',1,'']]],
+  ['types_20and_20sizes_7',['Flexible types and sizes',['../index.html#autotoc_md30',1,'']]]
 ];

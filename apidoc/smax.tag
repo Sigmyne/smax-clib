@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
-<tagfile doxygen_version="1.16.1">
+<tagfile doxygen_version="1.17.0">
   <compound kind="file">
     <name>smax-private.h</name>
     <path>include/</path>
@@ -76,6 +76,13 @@
       <name>SMAX_DIMS</name>
       <anchorfile>smax_8h.html</anchorfile>
       <anchor>a59b5959fb0859d4dbe98408f2cc2f1d0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>SMAX_LOOKUP_SIZE</name>
+      <anchorfile>smax_8h.html</anchorfile>
+      <anchor>a541cd436b671f0c991897c8cf62c2c9c</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -604,10 +611,10 @@
       <arglist>(const char *table, int *n)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>unsigned long</type>
       <name>smaxGetLazyUpdateCount</name>
       <anchorfile>smax_8h.html</anchorfile>
-      <anchor>aeca4aa02259278b240e4131f7edea816</anchor>
+      <anchor>acdcd9f8bc1d613ce4296fdbedcef7d68</anchor>
       <arglist>(const char *table, const char *key)</arglist>
     </member>
     <member kind="function">
@@ -1847,10 +1854,10 @@
       <arglist>(const char *id, XStructure *s)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>unsigned long</type>
       <name>smaxGetLazyUpdateCount</name>
       <anchorfile>smax-lazy_8c.html</anchorfile>
-      <anchor>aeca4aa02259278b240e4131f7edea816</anchor>
+      <anchor>acdcd9f8bc1d613ce4296fdbedcef7d68</anchor>
       <arglist>(const char *table, const char *key)</arglist>
     </member>
     <member kind="function">
