@@ -20,7 +20,7 @@ static XField f;
 static char *host;
 static char *delims = ",;";
 static char *sType;
-static boolean printErrors = FALSE, json = FALSE;
+static XBoolean printErrors = FALSE, json = FALSE;
 
 static void printVersion(const char *name) {
   printf("%s %s\n", name, SMAX_VERSION_STRING);

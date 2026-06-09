@@ -69,11 +69,11 @@ void smaxInitNotify();
 static int ProcessStructRead(RESP **component, PullRequest *req);
 static int ParseStructData(XStructure *s, RESP *names, RESP *data, XMeta *meta);
 
-static int SendStructDataAsync(RedisClient *cl, const char *id, const XStructure *s, boolean isTop);
+static int SendStructDataAsync(RedisClient *cl, const char *id, const XStructure *s, XBoolean isTop);
 
 static void InitScriptsAsync();
 
-static boolean usePipeline = TRUE;
+static XBoolean usePipeline = TRUE;
 static int tcpBufSize = REDISX_TCP_BUF_SIZE;
 
 static char *server;
@@ -204,7 +204,7 @@ int smaxSetDB(int idx) {
  * @sa smaxIsVerbose()
  *
  */
-void smaxSetVerbose(boolean value) {
+void smaxSetVerbose(XBoolean value) {
   redisxSetVerbose(value);
 }
 
@@ -215,7 +215,7 @@ void smaxSetVerbose(boolean value) {
  *
  * @sa smaxSetVerbose()
  */
-boolean smaxIsVerbose() {
+XBoolean smaxIsVerbose() {
   return redisxIsVerbose();
 }
 
@@ -240,7 +240,7 @@ boolean smaxIsVerbose() {
  * @sa smaxIsPipelined()
  * @sa smaxSetPipelineConsumer()
  */
-int smaxSetPipelined(boolean isEnabled) {
+int smaxSetPipelined(XBoolean isEnabled) {
   if(usePipeline == isEnabled) return X_SUCCESS;
 
   smaxLockConfig();
@@ -263,7 +263,7 @@ int smaxSetPipelined(boolean isEnabled) {
  *
  * \sa smaxSetPipelined()
  */
-boolean smaxIsPipelined() {
+XBoolean smaxIsPipelined() {
   return usePipeline;
 }
 
@@ -1552,7 +1552,7 @@ int smaxWrite(const char *table, const XField *f) {
  *
  * \return      X_SUCCESS (0), or else an appropriate error code (&lt;0).
  */
-static int SendStructDataAsync(RedisClient *cl, const char *id, const XStructure *s, boolean isTop) {
+static int SendStructDataAsync(RedisClient *cl, const char *id, const XStructure *s, XBoolean isTop) {
   static const char *fn = "xSendStructDataAsync";
 
   int status = X_SUCCESS, nFields = 0, *L, n, next;
@@ -1697,7 +1697,7 @@ static void InitScriptsAsync() {
   static char **pSHA[] = {  & HSET_WITH_META,  & HGET_WITH_META,  & HMSET_WITH_META, & GET_STRUCT, NULL };
 
   int status = X_FAILURE;
-  boolean first;
+  XBoolean first;
 
   for(first = TRUE; status != X_SUCCESS; first = FALSE) {
     int i;

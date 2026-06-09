@@ -18,10 +18,10 @@
 /// \cond PRIVATE
 #if WITH_TLS
 typedef struct {
-  boolean enabled;        ///< Whether TLS is enabled.
+  XBoolean enabled;        ///< Whether TLS is enabled.
   char *ca_path;          ///< Directory in which CA certificates reside
   char *ca_certificate;   ///< CA sertificate
-  boolean skip_verify;    ///< Whether to skip verification of the certificate (insecure)
+  XBoolean skip_verify;    ///< Whether to skip verification of the certificate (insecure)
   char *certificate;      ///< Client certificate (mutual TLS only)
   char *key;              ///< Client private key (mutual TLS only)
   char *dh_params;        ///< (optional) parameter file for DH based ciphers
@@ -133,7 +133,7 @@ int smaxDisableTLS() {
  *
  * @sa smaxSetTLS()
  */
-int smaxSetTLSVerify(boolean value) {
+int smaxSetTLSVerify(XBoolean value) {
 #if WITH_TLS
   smaxLockConfig();
   config.skip_verify = !value;

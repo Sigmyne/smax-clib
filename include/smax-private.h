@@ -51,7 +51,7 @@ int smaxStorePush(const char *table, const XField *field);
 void smaxSocketErrorHandler(Redis *r, enum redisx_channel channel, const char *op);
 int smaxScriptError(const char *name, int status);
 int smaxScriptErrorAsync(const char *name, int status);
-boolean smaxIsDisabled();
+XBoolean smaxIsDisabled();
 
 /// \endcond
 

@@ -37,7 +37,7 @@ static void *SMAXReconnectThread(void *arg);
 /// and the variables that it controls, e.g. via lockConfig()
 static pthread_mutex_t configLock = PTHREAD_MUTEX_INITIALIZER;
 
-static boolean isDisabled = FALSE;
+static XBoolean isDisabled = FALSE;
 
 /// \cond PROTECTED
 /**
@@ -398,7 +398,7 @@ char *smaxGetScriptSHA1(const char *scriptName, int *status) {
  * \return <code>TRUE</code> (non-zero) if SMA-X is currently disabled (e.g. to reconnect), or else
  *         <code>FALSE</code> (zero).
  */
-boolean smaxIsDisabled() {
+XBoolean smaxIsDisabled() {
   return isDisabled;
 }
 
@@ -870,7 +870,7 @@ char *smaxValuesToString(const void *value, XType type, int eCount, char *trybuf
   // For all the types...
   else switch(type) {
     case X_BOOLEAN: {
-      const boolean *b = (boolean *) value;
+      const XBoolean *b = (XBoolean *) value;
       for(k=0; k<eCount; k++) n += x_snprintf(&sValue[n], stringSize - n, "%c ", (b[k] != 0 ? '1' : '0'));
       break;
     }
@@ -1025,7 +1025,7 @@ int smaxStringToValues(const char *str, void *value, XType type, int eCount, int
     // Parse numerical type
     switch(type) {
       case X_BOOLEAN: {
-        boolean *b = (boolean *) value;
+        XBoolean *b = (XBoolean *) value;
         for(k=0; k<eCount && *next; k++) {
           b[k] = xParseBoolean(next, &next);
           CheckParseError(&next, &status);
