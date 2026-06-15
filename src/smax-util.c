@@ -244,7 +244,7 @@ int smaxScriptError(const char *name, int status) {
 int smaxError(const char *func, int errorCode) {
 #if SMAX_LEGACY
   if(errorCode <= X_LEGACY_CODES) {
-    if(xDebug) fprintf(stderr, "DEBUG-X> %4d (%s) in %s.\n", errorCode, smaxErrorDescription(errorCode), func);
+    xdprintf("DEBUG-X> %4d (%s) in %s.\n", errorCode, smaxErrorDescription(errorCode), func);
     return errorCode;
   }
 #endif
