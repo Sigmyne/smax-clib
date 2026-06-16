@@ -94,7 +94,8 @@
  */
 
 #ifndef SMAX_LOOKUP_SIZE
-#  define SMAX_LOOKUP_SIZE    1024          ///< Hash lookup table size (for lazy pulls and resilient shares). I should be in the signed `int` range.
+/// Hash lookup table size (for lazy pulls and resilient shares). It should be in the signed `int` range.
+#  define SMAX_LOOKUP_SIZE    1024
 #endif
 
 /// \cond PROTECTED
@@ -130,7 +131,7 @@
 #define SMAX_MSG_WARNING    "warning"       ///< Program warnings.
 #define SMAX_MSG_ERROR      "error"         ///< Program errors.
 
-#define SMAX_ORIGIN_LENGTH  80              ///< (bytes) Maximum length of 'origin' meatdata, including termination.
+#define SMAX_ORIGIN_LENGTH  80              ///< (bytes) Maximum length of 'origin' metadata, including termination.
 
 /**
  * \brief Synchronization point that can be waited upon when queueing pipelined pulls.
@@ -190,7 +191,7 @@ typedef struct XMeta {
 } XMeta;
 
 /**
- * Default initialized for SMA-X medatadata structure. You should always initialize local metadata with
+ * Default initialized for SMA-X metadata structure. You should always initialize local metadata with
  * this.
  */
 #define X_META_INIT             { 0, X_UNKNOWN, -1, {0}, -1, {'\0'}, {}, 0 }
@@ -210,8 +211,8 @@ typedef struct {
 
 /**
  * A function which is executed when a designated control variable is updated in SMA-X.
- * The function should pull the associated value and act on ot as desired, usually
- * reporting completion (or an error) in an approriate related variable.
+ * The function should pull the associated value and act on it as desired, usually
+ * reporting completion (or an error) in an appropriate related variable.
  *
  * @param table   Hash table in which the control variable resides.
  * @param key     Name of the control variable.

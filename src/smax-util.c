@@ -4,8 +4,7 @@
  * \date Jun 25, 2019
  * \author Attila Kovacs
  *
- * \brief
- *      A collection of commonly used functions for the SMA-X library.
+ *  A collection of commonly used functions for the SMA-X library.
  */
 
 #define _GNU_SOURCE               ///< for strcasecmp()
@@ -52,7 +51,7 @@ int smaxLockConfig() {
 }
 
 /**
- * Release the exclusive lock to SMA-X configuration, so that others may access/update them also.
+ * Release the exclusive lock to SMA-X configuration, so that others may access/update it also.
  *
  * \return      The result of pthread_mutex_unlock().
  */
@@ -172,7 +171,7 @@ void smaxSocketErrorHandler(Redis *redis, enum redisx_channel channel, const cha
 }
 
 /**
- * Same as smaxScriptError(), but it assumed the aller already has esclusive access to the configuration
+ * Same as smaxScriptError(), but it assumed the caller already has exclusive access to the configuration
  * state, by having called smaxConfigLock() before.
  *
  * @param name          The name of the calling function or name of script (whichever is more informative).
@@ -478,7 +477,6 @@ int smaxTimestamp(char *buf) {
  *                      X_NULL          if there was no timestamp (NULL or empty string), or the `secs` argument is NULL.
  *                      X_PARSE_ERROR   if the seconds could not be parsed.
  *                      1               if there was an error parsing the nanosec part.
- *                      X_NULL          if the secs argument is NULL
  */
 int smaxParseTime(const char *timestamp, time_t *secs, long *nanosecs) {
   static const char *fn = "smaxParseTime";
