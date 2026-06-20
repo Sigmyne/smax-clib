@@ -41,7 +41,7 @@ jobs:
       run: sudo apt-get install doxygen
 
     - name: Check out smax-clib
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Generate docs
       run: make local-dox
@@ -58,19 +58,19 @@ jobs:
       run: sudo apt-get install doxygen
 
     - name: Checkout smax-clib
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Sigmyne/smax-clib
         path: smax-clib
 
     - name: Check out xchange dependency
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Sigmyne/xchange
         path: xchange
 
     - name: Check out RedisX dependency
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Sigmyne/redisx
         path: redisx
@@ -94,7 +94,7 @@ jobs:
       run: for file in smax-clib/apidoc/html/*.html ; do sudo sed -i "/<\/head>/e cat resources/analytics.html" $file ; done
 
     - name: Checkout gh-pages
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         ref: 'gh-pages'
         path: site
@@ -127,10 +127,10 @@ jobs:
     steps:
 
     - name: Checkout source
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Checkout gh-pages
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         ref: 'gh-pages'
         path: site

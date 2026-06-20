@@ -34,16 +34,16 @@ jobs:
     steps:
 
     - name: Check out smax-clib
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Check out xchange dependency
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Sigmyne/xchange
         path: xchange
 
     - name: Check out RedisX dependency
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Sigmyne/redisx
         path: redisx
