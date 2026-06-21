@@ -395,7 +395,7 @@ int smaxIsConnected() {
  * the connection is severed (once it was established). If that is not the desired behavior, you should
  * call <code>smaxSetResilient(FALSE)</code> after connecting.
  *
- * \param server    SMA-X Redis server name or IP address, e.g. "127.0.0.1".
+ * \param host    SMA-X Redis server name or IP address, e.g. "127.0.0.1".
  *
  * \return      X_SUCCESS           If the library was successfully initialized
  *              X_NO_SERVICE        If the there was an issue establishing the necessary network connection(s).
@@ -407,10 +407,10 @@ int smaxIsConnected() {
  * @sa smaxSetResilient()
  *
  */
-int smaxConnectTo(const char *server) {
+int smaxConnectTo(const char *host) {
   static const char *fn = "smaxConnectTo";
 
-  prop_error(fn, smaxSetServer(server, -1));
+  prop_error(fn, smaxSetServer(host, -1));
   prop_error(fn, smaxConnect());
 
   return X_SUCCESS;
