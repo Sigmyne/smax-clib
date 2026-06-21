@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['units_0',['Physical units',['../index.html#autotoc_md59',1,'']]],
-  ['up_1',['Finishing up',['../index.html#autotoc_md40',1,'']]],
-  ['update_20callbacks_2',['Update callbacks',['../index.html#autotoc_md45',1,'']]],
-  ['update_20handling_3',['Custom update handling',['../index.html#autotoc_md42',1,'']]],
-  ['updates_4',['updates',['../index.html#autotoc_md43',1,'Monitoring updates'],['../index.html#autotoc_md44',1,'Waiting for updates']]]
+  ['values_0',['Complex remote control calls and return values',['../index.html#autotoc_md50',1,'']]],
+  ['via_20sma_20x_1',['via SMA X',['../index.html#autotoc_md52',1,'Program status / error messages via SMA-X'],['../index.html#autotoc_md47',1,'Remote program control via SMA-X']]],
+  ['volume_20queries_2',['Pipelined pulling (high volume queries)',['../index.html#autotoc_md37',1,'']]]
 ];

@@ -1,13 +1,8 @@
 var searchData=
 [
-  ['messages_0',['Processing program messages',['../index.html#autotoc_md54',1,'']]],
-  ['messages_20from_20an_20application_1',['Broadcasting status messages from an application',['../index.html#autotoc_md53',1,'']]],
-  ['messages_20via_20sma_20x_2',['Program status / error messages via SMA-X',['../index.html#autotoc_md52',1,'']]],
-  ['messages_5fid_3',['MESSAGES_ID',['../smax-messages_8c.html#a7b2e3f4ba6d955bd23ae56f2a2d9a3e3',1,'smax-messages.c']]],
-  ['messages_5fprefix_4',['MESSAGES_PREFIX',['../smax-messages_8c.html#a309d33601440402f7f3fb5175864b62b',1,'smax-messages.c']]],
-  ['meta_5fcoords_5',['META_COORDS',['../smax_8h.html#a6306140d9f65104bc6e0bfd63cbbc2f1',1,'smax.h']]],
-  ['meta_5fdescription_6',['META_DESCRIPTION',['../smax_8h.html#a3cd80ac3dbca64268a52d6bc8b273d82',1,'smax.h']]],
-  ['meta_5funit_7',['META_UNIT',['../smax_8h.html#aa1f2f2081a2949053cf74cd4ad47a8d2',1,'smax.h']]],
-  ['metadata_8',['metadata',['../index.html#autotoc_md56',1,'Optional metadata'],['../index.html#autotoc_md29',1,'Standard metadata']]],
-  ['monitoring_20updates_9',['Monitoring updates',['../index.html#autotoc_md43',1,'']]]
+  ['n_0',['n',['../../redisx/doc/html/structRESP.html#a76f11d9a0a47b94f72c2d0e77fb32240',1,'RESP']]],
+  ['name_1',['name',['../../xchange/doc/html/structXField.html#a5ac083a645d964373f022d03df4849c8',1,'XField::name'],['../structXCoordinateAxis.html#a5ac083a645d964373f022d03df4849c8',1,'XCoordinateAxis::name']]],
+  ['naxis_2',['nAxis',['../structXCoordinateSystem.html#a66b674e84aa11d53a5f0763237b764ba',1,'XCoordinateSystem']]],
+  ['ndim_3',['ndim',['../../xchange/doc/html/structXField.html#a0d9c8cbc461c7cf86cad8e548f195bd1',1,'XField']]],
+  ['next_4',['next',['../../xchange/doc/html/structXField.html#ae1ebaf87eb62e6266b14908eee28e565',1,'XField']]]
 ];

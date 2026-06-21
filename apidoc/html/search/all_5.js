@@ -1,13 +1,6 @@
 var searchData=
 [
-  ['against_20smax_20clib_0',['Linking your application against &lt;span class=&quot;tt&quot;&gt;smax-clib&lt;/span&gt;',['../index.html#autotoc_md16',1,'']]],
-  ['an_20application_1',['Broadcasting status messages from an application',['../index.html#autotoc_md53',1,'']]],
-  ['and_20pulling_20data_2',['Sharing and pulling data',['../index.html#autotoc_md27',1,'']]],
-  ['and_20return_20values_3',['Complex remote control calls and return values',['../index.html#autotoc_md50',1,'']]],
-  ['and_20sizes_4',['Flexible types and sizes',['../index.html#autotoc_md30',1,'']]],
-  ['and_20waiting_5',['Synchronization points and waiting',['../index.html#autotoc_md38',1,'']]],
-  ['application_6',['Broadcasting status messages from an application',['../index.html#autotoc_md53',1,'']]],
-  ['application_20against_20smax_20clib_7',['Linking your application against &lt;span class=&quot;tt&quot;&gt;smax-clib&lt;/span&gt;',['../index.html#autotoc_md16',1,'']]],
-  ['arrays_8',['Arrays',['../index.html#autotoc_md32',1,'']]],
-  ['axis_9',['axis',['../structXCoordinateSystem.html#a5275f744c5bfc9a13b31a19c7ec5346c',1,'XCoordinateSystem']]]
+  ['basics_0',['The basics',['../index.html#autotoc_md28',1,'']]],
+  ['broadcasting_20status_20messages_20from_20an_20application_1',['Broadcasting status messages from an application',['../index.html#autotoc_md53',1,'']]],
+  ['building_20the_20sma_20x_20c_20library_2',['Building the SMA-X C library',['../index.html#autotoc_md14',1,'']]]
 ];

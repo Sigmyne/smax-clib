@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"smax_8c.html#a70cdc3f1bf6b97248b5b8ba6df4dc044":[3,0,1,10,17],
+"smax_8c.html#a78cf94f007034f63b609cbe72b8047b0":[3,0,1,10,25],
 "smax_8c.html#a79fba7411b5afa132457a6828ff5ed9f":[3,0,1,10,20],
 "smax_8c.html#a886e2ed23987201a9808f1c99806b44a":[3,0,1,10,21],
 "smax_8c.html#a8d7a3f57360d8e505baa78e445a53875":[3,0,1,10,23],
@@ -17,7 +19,6 @@ var NAVTREEINDEX1 =
 "smax_8c.html#ad0b27aae9c96f8170fce10909aa694c9":[3,0,1,10,24],
 "smax_8c.html#ad598a39e5e05479546b24da6d2d5506b":[3,0,1,10,18],
 "smax_8c.html#ad63c425cc3affdf8bc803c7ff8dd6e30":[3,0,1,10,1],
-"smax_8c.html#ad960c22b119ff2493a319945a9dd55a5":[3,0,1,10,4],
 "smax_8c.html#aee07f085e12283ad96f42c4d77430880":[3,0,1,10,28],
 "smax_8c.html#af6f57a699b784fc67534cff0abd9573b":[3,0,1,10,11],
 "smax_8c.html#afb7eec789669c3d3f416857d3615ace6":[3,0,1,10,14],
@@ -74,6 +75,7 @@ var NAVTREEINDEX1 =
 "smax_8h.html#a341a9de00cacd431dcd8ac8622b0bf7d":[3,0,0,1,34],
 "smax_8h.html#a349dc6fe14a2031d679e29804d82d570":[3,0,0,1,82],
 "smax_8h.html#a35c72b08b2a64630b391163f4da1f378":[3,0,0,1,202],
+"smax_8h.html#a367f5e80f7d9f1cf3f20f056de18b936":[3,0,0,1,50],
 "smax_8h.html#a382280f18f6f7b534395bed3e8d6f019":[3,0,0,1,53],
 "smax_8h.html#a38d33bcbf9f2f73adbaf040996279859":[3,0,0,1,110],
 "smax_8h.html#a38eb97e64eaf65a5273fa6d6ff765a93":[3,0,0,1,25],
@@ -191,7 +193,6 @@ var NAVTREEINDEX1 =
 "smax_8h.html#ad63c425cc3affdf8bc803c7ff8dd6e30":[3,0,0,1,43],
 "smax_8h.html#ad7ef601ffd5fbcae7b2c05be6f6bc302":[3,0,0,1,84],
 "smax_8h.html#ad8121d1e9b6ee720bc2762aa33340bf1":[3,0,0,1,48],
-"smax_8h.html#ad960c22b119ff2493a319945a9dd55a5":[3,0,0,1,50],
 "smax_8h.html#ada517cdb7737bb38695e2a343123583b":[3,0,0,1,92],
 "smax_8h.html#adcc70ef29ab29f28068ac57e40497b85":[3,0,0,1,151],
 "smax_8h.html#adf1eff3e8451afc97bbc7a45061c0e40":[3,0,0,1,78],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "structXMeta.html#a4f4017ce7a39a4da2ed1cf8c4dc7de3f":[2,0,3,1],
 "structXMeta.html#a6e27f49150e9a14580fb313cc2777e00":[2,0,3,2],
 "structXMeta.html#a766b48fdc93d03992939adfa91766703":[2,0,3,3],
-"structXMeta.html#ace24d22a3441248636253cdb478de9f7":[2,0,3,6],
-"structXMeta.html#adb4556a75a248cce0b72e557c81f8af6":[2,0,3,5]
+"structXMeta.html#ace24d22a3441248636253cdb478de9f7":[2,0,3,6]
 };

@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['handling_0',['handling',['../index.html#autotoc_md42',1,'Custom update handling'],['../index.html#autotoc_md61',1,'Error handling']]],
-  ['high_20frequency_20queries_1',['Lazy pulling (high-frequency queries)',['../index.html#autotoc_md35',1,'']]],
-  ['high_20volume_20queries_2',['Pipelined pulling (high volume queries)',['../index.html#autotoc_md37',1,'']]],
-  ['hooks_3',['Connection / disconnection hooks',['../index.html#autotoc_md25',1,'']]]
+  ['initial_20configuration_0',['Initial configuration',['../index.html#autotoc_md20',1,'']]],
+  ['introduction_1',['Introduction',['../index.html#autotoc_md9',1,'']]]
 ];

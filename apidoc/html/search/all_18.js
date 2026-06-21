@@ -1,9 +1,7 @@
 var searchData=
 [
-  ['unit_0',['unit',['../structXCoordinateAxis.html#a5a80171400807274a7fa9c95a104dc78',1,'XCoordinateAxis']]],
-  ['units_1',['Physical units',['../index.html#autotoc_md59',1,'']]],
-  ['up_2',['Finishing up',['../index.html#autotoc_md40',1,'']]],
-  ['update_20callbacks_3',['Update callbacks',['../index.html#autotoc_md45',1,'']]],
-  ['update_20handling_4',['Custom update handling',['../index.html#autotoc_md42',1,'']]],
-  ['updates_5',['updates',['../index.html#autotoc_md43',1,'Monitoring updates'],['../index.html#autotoc_md44',1,'Waiting for updates']]]
+  ['value_0',['value',['../../xchange/doc/html/structXField.html#a0f61d63b009d0880a89c843bd50d8d76',1,'XField::value'],['../../redisx/doc/html/structRESP.html#a0f61d63b009d0880a89c843bd50d8d76',1,'RESP::value'],['../../redisx/doc/html/structRedisMap.html#a449b0c7dacd31c5e7edf071da3bda96a',1,'RedisMap::value'],['../../redisx/doc/html/structRedisEntry.html#a4e9aec275e566b978a3ccb4e043d8c61',1,'RedisEntry::value']]],
+  ['values_1',['Complex remote control calls and return values',['../index.html#autotoc_md50',1,'']]],
+  ['via_20sma_20x_2',['via SMA X',['../index.html#autotoc_md52',1,'Program status / error messages via SMA-X'],['../index.html#autotoc_md47',1,'Remote program control via SMA-X']]],
+  ['volume_20queries_3',['Pipelined pulling (high volume queries)',['../index.html#autotoc_md37',1,'']]]
 ];

@@ -1,5 +1,15 @@
 var searchData=
 [
-  ['of_20contents_0',['Table of Contents',['../index.html#autotoc_md7',1,'']]],
-  ['optional_20metadata_1',['Optional metadata',['../index.html#autotoc_md56',1,'']]]
+  ['physical_20units_0',['Physical units',['../index.html#autotoc_md59',1,'']]],
+  ['pipelined_20pulling_20high_20volume_20queries_1',['Pipelined pulling (high volume queries)',['../index.html#autotoc_md37',1,'']]],
+  ['plans_2',['Future plans',['../index.html#autotoc_md65',1,'']]],
+  ['points_20and_20waiting_3',['Synchronization points and waiting',['../index.html#autotoc_md38',1,'']]],
+  ['prerequisites_4',['Prerequisites',['../index.html#autotoc_md12',1,'']]],
+  ['processing_20program_20messages_5',['Processing program messages',['../index.html#autotoc_md54',1,'']]],
+  ['program_20control_20via_20sma_20x_6',['Remote program control via SMA-X',['../index.html#autotoc_md47',1,'']]],
+  ['program_20messages_7',['Processing program messages',['../index.html#autotoc_md54',1,'']]],
+  ['program_20status_20error_20messages_20via_20sma_20x_8',['Program status / error messages via SMA-X',['../index.html#autotoc_md52',1,'']]],
+  ['pulling_20data_9',['Sharing and pulling data',['../index.html#autotoc_md27',1,'']]],
+  ['pulling_20high_20frequency_20queries_10',['Lazy pulling (high-frequency queries)',['../index.html#autotoc_md35',1,'']]],
+  ['pulling_20high_20volume_20queries_11',['Pipelined pulling (high volume queries)',['../index.html#autotoc_md37',1,'']]]
 ];

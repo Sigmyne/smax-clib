@@ -50,7 +50,7 @@ var smax_8h =
     [ "smaxAddSubscriber", "smax_8h.html#a1714cac6dfa55917edecd0028e6da64c", null ],
     [ "smaxCache", "smax_8h.html#ad8121d1e9b6ee720bc2762aa33340bf1", null ],
     [ "smaxConnect", "smax_8h.html#a146fb2ed8512919dc91ecad6d08c74d1", null ],
-    [ "smaxConnectTo", "smax_8h.html#ad960c22b119ff2493a319945a9dd55a5", null ],
+    [ "smaxConnectTo", "smax_8h.html#a367f5e80f7d9f1cf3f20f056de18b936", null ],
     [ "smaxControl", "smax_8h.html#a68d38e9d6ff5d3015f1732cb2d47718f", null ],
     [ "smaxControlBoolean", "smax_8h.html#a1f7823d82d7f0df97535ea2034ab27c4", null ],
     [ "smaxControlDouble", "smax_8h.html#a382280f18f6f7b534395bed3e8d6f019", null ],

@@ -348,8 +348,8 @@
       <type>int</type>
       <name>smaxConnectTo</name>
       <anchorfile>smax_8h.html</anchorfile>
-      <anchor>ad960c22b119ff2493a319945a9dd55a5</anchor>
-      <arglist>(const char *server)</arglist>
+      <anchor>a367f5e80f7d9f1cf3f20f056de18b936</anchor>
+      <arglist>(const char *host)</arglist>
     </member>
     <member kind="function">
       <type>char *</type>
@@ -1950,6 +1950,13 @@
       <anchor>a309d33601440402f7f3fb5175864b62b</anchor>
       <arglist></arglist>
     </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>SMAX_DEFAULT_MESSAGE_SIZE</name>
+      <anchorfile>smax-messages_8c.html</anchorfile>
+      <anchor>ad0bb9d4d32a4a9499500815e8315e556</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function">
       <type>int</type>
       <name>smaxAddDefaultMessageProcessor</name>
@@ -2591,8 +2598,8 @@
       <type>int</type>
       <name>smaxConnectTo</name>
       <anchorfile>smax_8c.html</anchorfile>
-      <anchor>ad960c22b119ff2493a319945a9dd55a5</anchor>
-      <arglist>(const char *server)</arglist>
+      <anchor>a367f5e80f7d9f1cf3f20f056de18b936</anchor>
+      <arglist>(const char *host)</arglist>
     </member>
     <member kind="function">
       <type>int</type>

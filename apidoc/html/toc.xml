@@ -53,7 +53,7 @@
     <topic label="Release schedule" href="index.html#autotoc_md67"/>
   </topic>
   <topic label="Changelog" href="md_CHANGELOG.html">
-    <topic label="[1.0.1-rc1] - 2026-05-31" href="md_CHANGELOG.html#autotoc_md1">
+    <topic label="[1.0.1] - 2026-06-21" href="md_CHANGELOG.html#autotoc_md1">
       <topic label="Fixed" href="md_CHANGELOG.html#autotoc_md2"/>
       <topic label="Changed" href="md_CHANGELOG.html#autotoc_md3"/>
     </topic>
@@ -188,7 +188,7 @@
           <topic label="smaxAddSubscriber" href="smax_8h.html#a1714cac6dfa55917edecd0028e6da64c"/>
           <topic label="smaxCache" href="smax_8h.html#ad8121d1e9b6ee720bc2762aa33340bf1"/>
           <topic label="smaxConnect" href="smax_8h.html#a146fb2ed8512919dc91ecad6d08c74d1"/>
-          <topic label="smaxConnectTo" href="smax_8h.html#ad960c22b119ff2493a319945a9dd55a5"/>
+          <topic label="smaxConnectTo" href="smax_8h.html#a367f5e80f7d9f1cf3f20f056de18b936"/>
           <topic label="smaxControl" href="smax_8h.html#a68d38e9d6ff5d3015f1732cb2d47718f"/>
           <topic label="smaxControlBoolean" href="smax_8h.html#a1f7823d82d7f0df97535ea2034ab27c4"/>
           <topic label="smaxControlDouble" href="smax_8h.html#a382280f18f6f7b534395bed3e8d6f019"/>
@@ -424,6 +424,7 @@
           <topic label="_GNU_SOURCE" href="smax-messages_8c.html#a369266c24eacffb87046522897a570d5"/>
           <topic label="MESSAGES_ID" href="smax-messages_8c.html#a7b2e3f4ba6d955bd23ae56f2a2d9a3e3"/>
           <topic label="MESSAGES_PREFIX" href="smax-messages_8c.html#a309d33601440402f7f3fb5175864b62b"/>
+          <topic label="SMAX_DEFAULT_MESSAGE_SIZE" href="smax-messages_8c.html#ad0bb9d4d32a4a9499500815e8315e556"/>
           <topic label="smaxAddDefaultMessageProcessor" href="smax-messages_8c.html#aa3e777f85e81ffb9b02dc8cc3d124a94"/>
           <topic label="smaxAddMessageProcessor" href="smax-messages_8c.html#abaa2573fb8e85e8359c8853647c38f2f"/>
           <topic label="smaxRemoveMessageProcessor" href="smax-messages_8c.html#a1550f0f7aed841d5576d47ec7e62e0c4"/>
@@ -523,7 +524,7 @@
           <topic label="smaxAddConnectHook" href="smax_8c.html#ad63c425cc3affdf8bc803c7ff8dd6e30"/>
           <topic label="smaxAddDisconnectHook" href="smax_8c.html#a65ae161b28cfe4369709fae1d3ea678c"/>
           <topic label="smaxConnect" href="smax_8c.html#a146fb2ed8512919dc91ecad6d08c74d1"/>
-          <topic label="smaxConnectTo" href="smax_8c.html#ad960c22b119ff2493a319945a9dd55a5"/>
+          <topic label="smaxConnectTo" href="smax_8c.html#a367f5e80f7d9f1cf3f20f056de18b936"/>
           <topic label="smaxDisconnect" href="smax_8c.html#a9d1e6ffa837d3582a8165e326cc44bea"/>
           <topic label="smaxGetHostName" href="smax_8c.html#ac704fea3e664905af780d2566e3c74b6"/>
           <topic label="smaxGetKeys" href="smax_8c.html#a2544d1fa602e812004e1d68500024ae0"/>

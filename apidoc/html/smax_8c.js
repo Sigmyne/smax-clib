@@ -4,7 +4,7 @@ var smax_8c =
     [ "smaxAddConnectHook", "smax_8c.html#ad63c425cc3affdf8bc803c7ff8dd6e30", null ],
     [ "smaxAddDisconnectHook", "smax_8c.html#a65ae161b28cfe4369709fae1d3ea678c", null ],
     [ "smaxConnect", "smax_8c.html#a146fb2ed8512919dc91ecad6d08c74d1", null ],
-    [ "smaxConnectTo", "smax_8c.html#ad960c22b119ff2493a319945a9dd55a5", null ],
+    [ "smaxConnectTo", "smax_8c.html#a367f5e80f7d9f1cf3f20f056de18b936", null ],
     [ "smaxDisconnect", "smax_8c.html#a9d1e6ffa837d3582a8165e326cc44bea", null ],
     [ "smaxGetHostName", "smax_8c.html#ac704fea3e664905af780d2566e3c74b6", null ],
     [ "smaxGetKeys", "smax_8c.html#a2544d1fa602e812004e1d68500024ae0", null ],

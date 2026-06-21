@@ -163,9 +163,6 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('smax-util_8c.h
   <div class="headertitle"><div class="title">smax-util.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-
-<p>A collection of commonly used functions for the SMA-X library.  
-<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
@@ -207,9 +204,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a65cc6cdad09f861b968e2d492abed977" id="r_a65cc6cdad09f861b968e2d492abed977"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a65cc6cdad09f861b968e2d492abed977">x2smaxStruct</a> (<a class="elRef" href="../xchange/doc/html/structXStructure.html">XStructure</a> *s)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A collection of commonly used functions for the SMA-X library. </p>
-<dl class="section date"><dt>Date</dt><dd>Jun 25, 2019 </dd></dl>
-<dl class="section author"><dt>Author</dt><dd>Attila Kovacs </dd></dl>
+<div class="textblock"><dl class="section date"><dt>Date</dt><dd>Jun 25, 2019 </dd></dl>
+<dl class="section author"><dt>Author</dt><dd>Attila Kovacs</dd></dl>
+<p>A collection of commonly used functions for the SMA-X library. </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="abfe751f22aa718133911ffdee848f64a" name="abfe751f22aa718133911ffdee848f64a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abfe751f22aa718133911ffdee848f64a">&#9670;&#160;</a></span>smax2xField()</h2>
@@ -572,7 +569,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="elRef" href="../xchange/doc/html/xchange_8h.html#a7b2679c964ea5f2160380ed55654b873">X_SUCCESS(0)</a> if the timestamp was successfully parsed. X_NULL if there was no timestamp (NULL or empty string), or the <span class="tt">secs</span> argument is NULL. X_PARSE_ERROR if the seconds could not be parsed. 1 if there was an error parsing the nanosec part. X_NULL if the secs argument is NULL </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="elRef" href="../xchange/doc/html/xchange_8h.html#a7b2679c964ea5f2160380ed55654b873">X_SUCCESS(0)</a> if the timestamp was successfully parsed. X_NULL if there was no timestamp (NULL or empty string), or the <span class="tt">secs</span> argument is NULL. X_PARSE_ERROR if the seconds could not be parsed. 1 if there was an error parsing the nanosec part. </dd></dl>
 
 </div>
 </div>
@@ -655,7 +652,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Same as <a class="el" href="#a3385ed559f3866d76ec4efaa2885daa4">smaxScriptError()</a>, but it assumed the aller already has esclusive access to the configuration state, by having called smaxConfigLock() before.</p>
+<p>Same as <a class="el" href="#a3385ed559f3866d76ec4efaa2885daa4">smaxScriptError()</a>, but it assumed the caller already has exclusive access to the configuration state, by having called smaxConfigLock() before.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">name</td><td>The name of the calling function or name of script (whichever is more informative). </td></tr>

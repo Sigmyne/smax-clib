@@ -3,6 +3,7 @@ var smax_messages_8c =
     [ "_GNU_SOURCE", "smax-messages_8c.html#a369266c24eacffb87046522897a570d5", null ],
     [ "MESSAGES_ID", "smax-messages_8c.html#a7b2e3f4ba6d955bd23ae56f2a2d9a3e3", null ],
     [ "MESSAGES_PREFIX", "smax-messages_8c.html#a309d33601440402f7f3fb5175864b62b", null ],
+    [ "SMAX_DEFAULT_MESSAGE_SIZE", "smax-messages_8c.html#ad0bb9d4d32a4a9499500815e8315e556", null ],
     [ "smaxAddDefaultMessageProcessor", "smax-messages_8c.html#aa3e777f85e81ffb9b02dc8cc3d124a94", null ],
     [ "smaxAddMessageProcessor", "smax-messages_8c.html#abaa2573fb8e85e8359c8853647c38f2f", null ],
     [ "smaxRemoveMessageProcessor", "smax-messages_8c.html#a1550f0f7aed841d5576d47ec7e62e0c4", null ],

@@ -1,10 +1,13 @@
 var searchData=
 [
-  ['lazy_20pulling_20high_20frequency_20queries_0',['Lazy pulling (high-frequency queries)',['../index.html#autotoc_md35',1,'']]],
-  ['length_1',['length',['../../redisx/doc/html/structRedisEntry.html#a9f59b34b1f25fe00023291b678246bcc',1,'RedisEntry']]],
-  ['library_2',['Building the SMA-X C library',['../index.html#autotoc_md14',1,'']]],
-  ['line_20tools_3',['Command-line tools',['../index.html#autotoc_md18',1,'']]],
-  ['linking_20your_20application_20against_20smax_20clib_4',['Linking your application against &lt;span class=&quot;tt&quot;&gt;smax-clib&lt;/span&gt;',['../index.html#autotoc_md16',1,'']]],
-  ['links_5',['Related links',['../index.html#autotoc_md10',1,'']]],
-  ['lock_6',['lock',['../structXSyncPoint.html#a33586b4184d23f2b8f4df153ec23af13',1,'XSyncPoint']]]
+  ['messages_0',['Processing program messages',['../index.html#autotoc_md54',1,'']]],
+  ['messages_20from_20an_20application_1',['Broadcasting status messages from an application',['../index.html#autotoc_md53',1,'']]],
+  ['messages_20via_20sma_20x_2',['Program status / error messages via SMA-X',['../index.html#autotoc_md52',1,'']]],
+  ['messages_5fid_3',['MESSAGES_ID',['../smax-messages_8c.html#a7b2e3f4ba6d955bd23ae56f2a2d9a3e3',1,'smax-messages.c']]],
+  ['messages_5fprefix_4',['MESSAGES_PREFIX',['../smax-messages_8c.html#a309d33601440402f7f3fb5175864b62b',1,'smax-messages.c']]],
+  ['meta_5fcoords_5',['META_COORDS',['../smax_8h.html#a6306140d9f65104bc6e0bfd63cbbc2f1',1,'smax.h']]],
+  ['meta_5fdescription_6',['META_DESCRIPTION',['../smax_8h.html#a3cd80ac3dbca64268a52d6bc8b273d82',1,'smax.h']]],
+  ['meta_5funit_7',['META_UNIT',['../smax_8h.html#aa1f2f2081a2949053cf74cd4ad47a8d2',1,'smax.h']]],
+  ['metadata_8',['metadata',['../index.html#autotoc_md56',1,'Optional metadata'],['../index.html#autotoc_md29',1,'Standard metadata']]],
+  ['monitoring_20updates_9',['Monitoring updates',['../index.html#autotoc_md43',1,'']]]
 ];

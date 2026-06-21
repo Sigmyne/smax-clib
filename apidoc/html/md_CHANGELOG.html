@@ -167,8 +167,8 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('md_CHANGELOG.h
 <p>All notable changes to the <a href="https://github.com/Sigmyne/smax-clib">Sigmyne/smax-clib</a> library will be documented in this file.</p>
 <p>The format is based on <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a>, and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <h1 class="doxsection"><a class="anchor" id="autotoc_md1"></a>
-[1.0.1-rc1] - 2026-05-31</h1>
-<p>Release candidate for the upcoming maintenance release, expected around 15 July 2026.</p>
+[1.0.1] - 2026-06-21</h1>
+<p>Maintenance release, with bug fixes and various improvements.</p>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md2"></a>
 Fixed</h2>
 <ul>
@@ -182,10 +182,14 @@ Fixed</h2>
 Changed</h2>
 <ul>
 <li>Hash algorithms switched to FNV-1a.</li>
-<li>Use <span class="tt">snprintf()</span> instead of <span class="tt">sprintf()</span> when possible.</li>
+<li>Use <span class="tt"><a class="elRef" href="../xchange/doc/html/xchange_8c.html#ab0c1116cf7862434db129b2085f03ed6">x_snprintf()</a></span> instead of <span class="tt">sprintf()</span> when possible.</li>
 <li>Printing of <span class="tt">size_t</span> values (in debug mode).</li>
 <li>Bumbed default internal lookup cache size to 1024 slots (from 256).</li>
+<li>Uses <span class="tt"><a class="elRef" href="../xchange/doc/html/xchange_8h.html#aa87e0587ed0ace766672b12368d8498f">xIsDebug()</a></span> global function instead of <span class="tt"><a class="elRef" href="../xchange/doc/html/xchange_8h.html#ae861a4336106eb082e7d75dd5a44a207">xDebug</a></span> global var, for better compatibility with Windows DLLs.</li>
 <li>Various <span class="tt">Makefile</span> improvements.</li>
+<li>Changed progress message format, with fixed width percentage in square brackets and '' at end, e.g. "[100.0%] " before the message body.</li>
+<li>On older platforms without <span class="tt">vsnprintf()</span>, progress messages of up to 8 kB are supported. Attempt to send longer progress messages will result in program exit with an error. (Platforms with <span class="tt">vsnprintf()</span> support can send progress messages of arbitrary size.</li>
+<li>Progress messages enforce progress fraction in the [0.0:1.0] range. Out-of-bound input values are automatically changed to the nearest bounding value (e.g. -1.0 to 0.0; 1.1 to 1.0).</li>
 </ul>
 <h1 class="doxsection"><a class="anchor" id="autotoc_md4"></a>
 [1.0.0] - 2026-02-16</h1>
