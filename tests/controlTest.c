@@ -51,7 +51,7 @@ int main() {
   smaxSetPipelined(FALSE);
 
   xSetDebug(TRUE);
-  redisxDebugTraffic(TRUE);
+  //redisxDebugTraffic(TRUE);
 
   checkStatus("connect", smaxConnect());
 

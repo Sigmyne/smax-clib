@@ -60,7 +60,7 @@
 #define SMAX_PATCHLEVEL     1
 
 /// Additional release information in version, e.g. "-1", or "-rc1".
-#define SMAX_RELEASE_STRING "-devel"
+#define SMAX_RELEASE_STRING ""
 
 /// \cond PRIVATE
 
