@@ -18,6 +18,8 @@ Maintenance release, with bug fixes and various improvements.
  - Conditional assignment of optional arg in `smaxParseTime()`.
  
  - Fix name matching in `smaxGetCoordinateAxis()`. Previously, the conditions for matching were inverted.
+ 
+ - Fix update notification storage allocation (was allocating for message size rather than ID length).
 
  - Various issues fixed that were potted by Facebook's infer v1.3.
  

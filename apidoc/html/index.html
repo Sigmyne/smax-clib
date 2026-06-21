@@ -751,7 +751,7 @@ Monitoring updates</h3>
 <div class="line">  <span class="comment">// Ooops something did not go to plan</span></div>
 <div class="line">  ...</div>
 <div class="line">}</div>
-<div class="ttc" id="asmax-sub_8c_html_a53614ba57a594135c13b64a2d89eaa43"><div class="ttname"><a href="smax-sub_8c.html#a53614ba57a594135c13b64a2d89eaa43">smaxSubscribe</a></div><div class="ttdeci">int smaxSubscribe(const char *table, const char *key)</div><div class="ttdef"><b>Definition</b> smax-sub.c:107</div></div>
+<div class="ttc" id="asmax-sub_8c_html_a53614ba57a594135c13b64a2d89eaa43"><div class="ttname"><a href="smax-sub_8c.html#a53614ba57a594135c13b64a2d89eaa43">smaxSubscribe</a></div><div class="ttdeci">int smaxSubscribe(const char *table, const char *key)</div><div class="ttdef"><b>Definition</b> smax-sub.c:108</div></div>
 </div><!-- fragment --><p>and/or pattern(s):</p>
 <div class="fragment"><div class="line"><span class="keywordtype">int</span> status = <a class="code hl_function" href="smax-sub_8c.html#a53614ba57a594135c13b64a2d89eaa43">smaxSubscribe</a>(<span class="stringliteral">&quot;*&quot;</span>, <span class="stringliteral">&quot;b[a-c]?&quot;</span>);</div>
 <div class="line"><span class="keywordflow">if</span> (status &lt; 0) {</div>
@@ -774,7 +774,7 @@ Waiting for updates</h3>
 <div class="line">  ...</div>
 <div class="line">}</div>
 <div class="line">...</div>
-<div class="ttc" id="asmax-sub_8c_html_acb58402968158d0b07c9e5057c99d159"><div class="ttname"><a href="smax-sub_8c.html#acb58402968158d0b07c9e5057c99d159">smaxWaitOnSubscribedVar</a></div><div class="ttdeci">int smaxWaitOnSubscribedVar(const char *matchKey, char **changedTable, int timeout, sem_t *gating)</div><div class="ttdef"><b>Definition</b> smax-sub.c:579</div></div>
+<div class="ttc" id="asmax-sub_8c_html_acb58402968158d0b07c9e5057c99d159"><div class="ttname"><a href="smax-sub_8c.html#acb58402968158d0b07c9e5057c99d159">smaxWaitOnSubscribedVar</a></div><div class="ttdeci">int smaxWaitOnSubscribedVar(const char *matchKey, char **changedTable, int timeout, sem_t *gating)</div><div class="ttdef"><b>Definition</b> smax-sub.c:589</div></div>
 <div class="ttc" id="axchange_8h_html_ad525869626b4f755aa27d6ef37a15c3d"><div class="ttname"><a href="../xchange/doc/html/xchange_8h.html#ad525869626b4f755aa27d6ef37a15c3d">X_TIMEDOUT</a></div><div class="ttdeci">#define X_TIMEDOUT</div></div>
 </div><!-- fragment --><p>Similar methods allow you to wait for updates on any subscribed variable in selected tables, or the update of select variables in all subscribed tables, or any of the subscribed variables to change for the wait to end normally (with return value 0).</p>
 <p>The last parameter (<span class="tt">NULL</span> in the above example) allows to pass a pointer to a POSIX sempahore, which can be used for gating another thread, which might also want exclusive access to the SMA-X notifications, but we do not want it to accidentally block entering the wait in a timely manner.</p>
@@ -802,7 +802,7 @@ Update callbacks</h3>
 <div class="line">  <span class="comment">// Did not go to plan.</span></div>
 <div class="line">  ...</div>
 <div class="line">}</div>
-<div class="ttc" id="asmax-sub_8c_html_a827dd87397943f3384605f87116b630c"><div class="ttname"><a href="smax-sub_8c.html#a827dd87397943f3384605f87116b630c">smaxAddSubscriber</a></div><div class="ttdeci">int smaxAddSubscriber(const char *idStem, RedisSubscriberCall f)</div><div class="ttdef"><b>Definition</b> smax-sub.c:220</div></div>
+<div class="ttc" id="asmax-sub_8c_html_a827dd87397943f3384605f87116b630c"><div class="ttname"><a href="smax-sub_8c.html#a827dd87397943f3384605f87116b630c">smaxAddSubscriber</a></div><div class="ttdeci">int smaxAddSubscriber(const char *idStem, RedisSubscriberCall f)</div><div class="ttdef"><b>Definition</b> smax-sub.c:221</div></div>
 </div><!-- fragment --><p>When you no longer need to process such updates, you can simply remove the function from being called via <span class="tt">smaxRemoveSubscriber()</span>, and if you are absolutely sure that no other part of your code needs the subscription(s) that could trigger it, you can also unsubscribe from the trigger variables/pattern to eliminate unnecessary network traffic.</p>
 <p>One word of caution on callbacks is that they are expected to:</p>
 <ul>
@@ -981,8 +981,8 @@ Broadcasting status messages from an application</h3>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Broadcast a warning message for &quot;my_program_id&quot;</span></div>
 <div class="line">int status = <a class="code hl_function" href="smax-messages_8c.html#a1c90a439b48a53555e9cfb60ce1b9102">smaxSendWarning</a>(<span class="stringliteral">&quot;Something did not work&quot;</span> %s<span class="stringliteral">&quot;, explanation);</span></div>
-<div class="ttc" id="asmax-messages_8c_html_a1c90a439b48a53555e9cfb60ce1b9102"><div class="ttname"><a href="smax-messages_8c.html#a1c90a439b48a53555e9cfb60ce1b9102">smaxSendWarning</a></div><div class="ttdeci">int smaxSendWarning(const char *msg,...)</div><div class="ttdef"><b>Definition</b> smax-messages.c:243</div></div>
-<div class="ttc" id="asmax-messages_8c_html_af3e8295bb941f68cf3177c79cd5fb4d3"><div class="ttname"><a href="smax-messages_8c.html#af3e8295bb941f68cf3177c79cd5fb4d3">smaxSetMessageSenderID</a></div><div class="ttdeci">void smaxSetMessageSenderID(const char *id)</div><div class="ttdef"><b>Definition</b> smax-messages.c:142</div></div>
+<div class="ttc" id="asmax-messages_8c_html_a1c90a439b48a53555e9cfb60ce1b9102"><div class="ttname"><a href="smax-messages_8c.html#a1c90a439b48a53555e9cfb60ce1b9102">smaxSendWarning</a></div><div class="ttdeci">int smaxSendWarning(const char *msg,...)</div><div class="ttdef"><b>Definition</b> smax-messages.c:246</div></div>
+<div class="ttc" id="asmax-messages_8c_html_af3e8295bb941f68cf3177c79cd5fb4d3"><div class="ttname"><a href="smax-messages_8c.html#af3e8295bb941f68cf3177c79cd5fb4d3">smaxSetMessageSenderID</a></div><div class="ttdeci">void smaxSetMessageSenderID(const char *id)</div><div class="ttdef"><b>Definition</b> smax-messages.c:145</div></div>
 </div><!-- fragment --><p><a class="anchor" id="smax-processing-messages"></a> </p>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md54"></a>
 Processing program messages</h3>
@@ -1011,7 +1011,7 @@ Processing program messages</h3>
 <div class="line">  <span class="comment">// Oops that did not work as planned.</span></div>
 <div class="line">  ...</div>
 <div class="line">}</div>
-<div class="ttc" id="asmax-messages_8c_html_abaa2573fb8e85e8359c8853647c38f2f"><div class="ttname"><a href="smax-messages_8c.html#abaa2573fb8e85e8359c8853647c38f2f">smaxAddMessageProcessor</a></div><div class="ttdeci">int smaxAddMessageProcessor(const char *host, const char *prog, const char *type, void(*f)(XMessage *))</div><div class="ttdef"><b>Definition</b> smax-messages.c:339</div></div>
+<div class="ttc" id="asmax-messages_8c_html_abaa2573fb8e85e8359c8853647c38f2f"><div class="ttname"><a href="smax-messages_8c.html#abaa2573fb8e85e8359c8853647c38f2f">smaxAddMessageProcessor</a></div><div class="ttdeci">int smaxAddMessageProcessor(const char *host, const char *prog, const char *type, void(*f)(XMessage *))</div><div class="ttdef"><b>Definition</b> smax-messages.c:342</div></div>
 </div><!-- fragment --><p>Each string argument (<span class="tt">host</span>, <span class="tt">prog</span>, and <span class="tt">type</span>) may take an asterisk (<span class="tt">"*"</span>) or <span class="tt">NULL</span> as the argument to indicate that the processor function should be called for incoming messages for all values for the given parameter.</p>
 <p>The processor function can also inspect what type of message it received by comparing the <span class="tt"><a class="el" href="structXMessage.html" title="SMA-X program message.">XMessage</a></span> <span class="tt">type</span> value against one of the predefined constant expressions in <span class="tt"><a class="el" href="smax_8h.html">smax.h</a></span>:</p>
 <table class="markdownTable">
