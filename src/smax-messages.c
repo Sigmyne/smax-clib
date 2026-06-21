@@ -23,6 +23,11 @@
 #define MESSAGES_ID         "messages"          ///< Redis PUB_SUB channel head used for program messages
 #define MESSAGES_PREFIX     MESSAGES_ID X_SEP   ///< Prefix for Redis PUB/SUB channel for program messages (e.g. "messages:")
 
+#ifdef X_NO_SNPRINTF
+/// [bytes] Max message size for platforms without snprintf()
+#  define                   SMAX_MAX_MESSAGE_SIZE 8192
+#endif
+
 typedef struct MessageProcessor {
   int id;
   char *pattern;
@@ -278,8 +283,12 @@ int smaxSendProgress(double fraction, const char *msg, ...) {
     return X_NULL;
   }
 
+#ifdef X_NO_SNPRINTF
+  needed = SMAX_MAX_MESSAGE_SIZE;  // Default max message size for platforms without snprintf()
+#else
   needed = snprintf(NULL, 0, "%.1f %s", (100.0 * fraction), msg) + 1;
   if(needed < 0) return x_error(X_NULL, errno, fn, "snprintf() size calculation error");
+#endif
 
   progress = malloc((size_t) needed);
   if(!progress) return x_error(X_NULL, errno, fn, "malloc() error (%ld bytes)", (long) needed);

@@ -245,7 +245,7 @@ int smaxSetTLSCipherSuites(const char *list);
 int smaxSetDHCipherParams(const char *dh_file);
 
 int smaxConnect();
-int smaxConnectTo(const char *server);
+int smaxConnectTo(const char *host);
 int smaxDisconnect();
 int smaxIsConnected();
 int smaxReconnect();
