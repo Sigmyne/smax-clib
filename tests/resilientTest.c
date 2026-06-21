@@ -17,7 +17,7 @@
 #define TABLE   "_test_"
 #define NAME    "unix_time"
 
-static void checkStatus(char *op, int status) {
+static void checkStatus(const char *op, int status) {
   if(status >= 0) return;
   fprintf(stderr, "ERROR! %s: %s\n", op, smaxErrorDescription(status));
   exit(-1);

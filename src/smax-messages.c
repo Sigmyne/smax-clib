@@ -23,9 +23,11 @@
 #define MESSAGES_ID         "messages"          ///< Redis PUB_SUB channel head used for program messages
 #define MESSAGES_PREFIX     MESSAGES_ID X_SEP   ///< Prefix for Redis PUB/SUB channel for program messages (e.g. "messages:")
 
+#define SMAX_DEFAULT_MESSAGE_SIZE 4096          ///< [bytes] default message size on stack. Longer messages are allocated on the heap.
+
 #ifdef X_NO_SNPRINTF
-/// [bytes] Max. progress message size for platforms without snprintf()
-#  define                   SMAX_MAX_PROGRESS_SIZE 8192
+/// [bytes] Maximum message size for platforms without snprintf()
+#  define                   SMAX_MAX_MESSAGE_SIZE 8192
 #endif
 
 typedef struct MessageProcessor {
@@ -53,10 +55,16 @@ static int SendMessage(const char *type, const char *text, va_list varg) {
   static const char *fn = "SendMessage";
 
   Redis *r = smaxGetRedis();
-  char stdmsg[4096];        // standard message buffer, unless we need something larger.
+
+#ifdef X_NO_SNPRINTF
+  char stdmsg[SMAX_MAX_MESSAGE_SIZE];            // standard message buffer. WE don't support longer messages
+#else
+  char stdmsg[SMAX_DEFAULT_MESSAGE_SIZE];        // standard message buffer, unless we need something larger.
+#endif
+
   char *msg;                // Message buffer (standard or allocated)
 
-  const char *id = senderID ? senderID : smaxGetProgramID();
+  const char *id;
   char *channel;
   int n;
 #if !(__Lynx__ && __powerpc__)
@@ -68,14 +76,21 @@ static int SendMessage(const char *type, const char *text, va_list varg) {
 
   if(!r) return smaxError(fn, X_NO_INIT);
 
+  pthread_mutex_lock(&listMutex);
+  id = senderID ? senderID : smaxGetProgramID();
+
   n = sizeof(MESSAGES_PREFIX) + strlen(id) + X_SEP_LENGTH + strlen(type);
   channel = malloc(n);
-  if(!channel) return x_error(X_NULL, errno, fn, "malloc() error (channel: %d bytes)", n);
+  if(!channel) {
+    pthread_mutex_unlock(&listMutex);
+    return x_error(X_NULL, errno, fn, "malloc() error (channel: %d bytes)", n);
+  }
 
   x_snprintf(channel, n, MESSAGES_PREFIX "%s" X_SEP "%s", id, type);
+  pthread_mutex_unlock(&listMutex);
 
 #ifdef X_NO_SNPRINTF
-  // We don't seem to have snprint() / vsnprintf() here, so use the older version without length check
+  // We don't seem to have snprintf() / vsnprintf() here, so use the older version without length check
   msg = (char *) stdmsg;
   n = vsprintf(msg, text, varg);
   if(n > sizeof(stdmsg)) {
@@ -289,7 +304,7 @@ int smaxSendProgress(double fraction, const char *msg, ...) {
     fraction = 1.0;
 
 #ifdef X_NO_SNPRINTF
-  needed = SMAX_MAX_PROGRESS_SIZE;  // Default max progress message size for platforms without snprintf()
+  needed = SMAX_MAX_MESSAGE_SIZE;  // Default max progress message size for platforms without snprintf()
 #else
   needed = snprintf(NULL, 0, "[%5.1f%%] %s", (100.0 * fraction), msg) + 1;
   if(needed < 0) return x_error(X_NULL, errno, fn, "snprintf() size calculation error");

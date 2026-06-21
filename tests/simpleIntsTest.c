@@ -19,7 +19,7 @@
 #define NAME    "ints"
 #define VALUE
 
-static void checkStatus(char *op, int status) {
+static void checkStatus(const char *op, int status) {
   if(!status) return;
   fprintf(stderr, "ERROR! %s: %s\n", op, smaxErrorDescription(status));
   exit(-1);

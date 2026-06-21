@@ -33,7 +33,7 @@ static void *SMAXReconnectThread(void *arg);
 // Local variables ------------------------------------>
 
 /// A lock for ensuring exclusive access for pipeline configuration changes...
-/// and the variables that it controls, e.g. via lockConfig()
+/// and the variables that it controls, e.g. via smaxLockConfig() / smaxUnlockConfig()
 static pthread_mutex_t configLock = PTHREAD_MUTEX_INITIALIZER;
 
 static boolean isDisabled = FALSE;
@@ -249,7 +249,7 @@ int smaxError(const char *func, int errorCode) {
 #endif
 
   // If in the process of reconnecting, we don't want to spam about transmit errors here, so just return the error code...
-  if(errorCode == X_NO_SERVICE) if(isDisabled) return errorCode;
+  if(errorCode == X_NO_SERVICE && isDisabled) return errorCode;
 
   return redisxError(func, errorCode);
 }
@@ -1096,7 +1096,7 @@ int smaxStringToValues(const char *str, void *value, XType type, int eCount, int
     }
 
     // Zero out the remaining elements...
-    if(k < eCount) xZero(&c[k], type, eCount - k);
+    if(k < eCount) xZero(&c[k * eSize], type, eCount - k);
   }
 
   *pos = next - str;

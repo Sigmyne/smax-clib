@@ -93,7 +93,7 @@ static char *programID;
 /**
  * Configures the SMA-X server before connecting.
  *
- * @param host    The SMA-X REdis server host name or IP address.
+ * @param host    The SMA-X Redis server host name or IP address.
  * @param port    The Redis port number on the SMA-X server, or &lt=0 to use the default
  * @return        X_SUCCESS (0) if successful, or X_ALREADY_OPEN if cannot alter the server configuration
  *                because we are already in a connected state.
@@ -123,7 +123,7 @@ int smaxSetServer(const char *host, int port) {
  *
  * @param servers     An array of known Sentinel servers
  * @param nServers    The number of servers in the array
- * @return            X_SUCCESS (0) if successful or else an error code &lt;0.
+ * @return            X_SUCCESS (0) if successful, or else an error code &lt;0.
  *
  * @sa smaxConnect()
  */
@@ -209,7 +209,7 @@ void smaxSetVerbose(boolean value) {
 }
 
 /**
- * Checks id verbose reporting is enabled.
+ * Checks if verbose reporting is enabled.
  *
  * \return          TRUE if verbose reporting is enabled, otherwise FALSE.
  *
@@ -272,7 +272,7 @@ boolean smaxIsPipelined() {
  *
  * @param size      (bytes) requested buffer size, or <= 0 to use default value
  *
- * @sa smaxConnect;
+ * @sa smaxConnect()
  */
 int smaxSetTcpBuf(int size) {
   smaxLockConfig();
@@ -335,7 +335,7 @@ void smaxSetHostName(const char *name) {
 /**
  * Returns the SMA-X program ID.
  *
- * \return      The SMA-X program ID as &lt;hostname&gt;:&lt;programname&gt;, e.g. "hal9000:statusServer".
+ * \return      The SMA-X program ID as `<hostname>:<programname>`, e.g. `hal9000:statusServer`.
  *
  */
 char *smaxGetProgramID() {
@@ -376,7 +376,7 @@ Redis *smaxGetRedis() {
 }
 
 /**
- * Checks whether SMA-X sharing is currently open (by a preceding call to smaxConnect() call.
+ * Checks whether SMA-X sharing is currently open (by a preceding call to smaxConnect().
  *
  * \sa smaxConnect()
  * @sa smaxConnectTo()
@@ -526,7 +526,7 @@ int smaxConnect() {
  * Disables the SMA-X sharing capability, closing underlying network connections.
  *
  * \return      X_SUCCESS (0)       if the sharing was properly ended.
- *              X_NO_INIT           if SMA-X was has not been started prior to this call.
+ *              X_NO_INIT           if SMA-X has not been started prior to this call.
  *
  * @sa smaxConnect()
  * @sa smaxConnectTo()
@@ -548,7 +548,7 @@ int smaxDisconnect() {
  * connection is made. If resilient mode is enabled, then locally accumulated shares will be sent to
  * the Redis server upon reconnection. However, subscriptions are not automatically re-established. The
  * caller is responsible for reinstate any necessary subscriptions after the reconnection or via an
- * approproate connection hook.
+ * appropriate connection hook.
  *
  * \return      X_SUCCESS (0)   if successful
  *              X_NO_INIT       if SMA-X was never initialized.
@@ -622,7 +622,7 @@ int smaxAddConnectHook(void (*setupCall)(void)) {
  * Remove a post-connection callback function. It's a wrapper to redisxRemoveConnectHook().
  *
  * @param setupCall     Callback function
- * @return              X_SUCCESS (0) or an error code (&lt;0) from redisxAddConnectHook().
+ * @return              X_SUCCESS (0) or an error code (&lt;0) from redisxRemoveConnectHook().
  *
  * @sa smaxAddConnectHook()
  * @sa smaxConnect()
@@ -640,7 +640,7 @@ int smaxRemoveConnectHook(void (*setupCall)(void)) {
  * Add a callback function for when SMA-X is disconnected. It's a wrapper to redisxAddDisconnectHook().
  *
  * @param cleanupCall   Callback function
- * @return              X_SUCCESS (0) or an error code (&lt;0) from redisxAddConnectHook().
+ * @return              X_SUCCESS (0) or an error code (&lt;0) from redisxAddDisconnectHook().
  *
  * @sa smaxRemoveDisconnectHook()
  * @sa smaxDisconnect()
@@ -654,7 +654,7 @@ int smaxAddDisconnectHook(void (*cleanupCall)(void)) {
 }
 
 /**
- * Remove a post-cdisconnect callback function. It's a wrapper to redisxRemiveDisconnectHook().
+ * Remove a post-disconnect callback function. It's a wrapper to redisxRemoveDisconnectHook().
  *
  * @param cleanupCall   Callback function
  * @return              X_SUCCESS (0) or an error code (&lt;0) from redisxAddConnectHook().
@@ -773,8 +773,8 @@ int smaxPull(const char *table, const char *key, XType type, int count, void *va
  * Share the data into a Redis hash table over the interactive Redis client. It's a fire-and-forget
  * type implementation, which sends the data to Redis, without waiting for confirmation of its arrival.
  * The choice improves the efficiency and throughput, and minimizes execution time, of the call, but it
- * also means that a pipelined pull request in quick succession, e.g. via smaxQueue(), may return
- * a value on the pipeline client _before_ this call is fully executed on the interactive Redis client.
+ * also means that a pipelined pull request in quick succession may return a value on the pipeline
+ * client _before_ this call is fully executed on the interactive Redis client.
  *
  * (It is generally unlikely that you will follow this share call with a pipelined pull of the same
  * variable. It would not only create superflous network traffic for no good reason, but it also
@@ -902,7 +902,7 @@ int smaxShareField(const char *table, const XField *f) {
 
 /**
  * Sends a structure to Redis, and all its data including recursive
- * sub-structures, in a single atromic transaction.
+ * sub-structures, in a single atomic transaction.
  *
  * \param id        Structure's ID, i.e. its own aggregated hash table name.
  * \param s         Pointer to the structure data.
@@ -946,7 +946,7 @@ static int SendStruct(const char *id, const XStructure *s) {
 
 /**
  * Share a structure, and all its data including recursive
- * sub-structures, in a single atromic transaction.
+ * sub-structures, in a single atomic transaction.
  *
  * \param id        Structure's ID, i.e. its own aggregated hash table name.
  * \param s         Pointer to the structure data.
@@ -1099,8 +1099,8 @@ int smaxRead(PullRequest *req, int channel) {
   if(!req->group[0]) return x_error(X_GROUP_INVALID, EINVAL, fn, "req->group is empty");
   if(req->value == NULL) return x_error(X_NULL, EINVAL, fn, "req->value is NULL");
   if(req->type != X_STRUCT) {
-    if(req->key == NULL) return x_error(X_NAME_INVALID, EINVAL, fn, "req->group is NULL");
-    if(!req->key[0]) return x_error(X_NAME_INVALID, EINVAL, fn, "req->group is empty");
+    if(req->key == NULL) return x_error(X_NAME_INVALID, EINVAL, fn, "req->key is NULL");
+    if(!req->key[0]) return x_error(X_NAME_INVALID, EINVAL, fn, "req->key is empty");
   }
   if(!r) return smaxError(fn, X_NO_INIT);
 
@@ -1461,7 +1461,7 @@ static int ParseStructData(XStructure *s, RESP *names, RESP *data, XMeta *meta) 
  * may return a value on the pipeline client _before_ this call is fully executed on the interactive Redis client.
  *
  * (It is generally unlikely that you will follow this share call with a pipelined pull of the same
- * variable. It would not only create superflous network traffic for no good reason, but it also
+ * variable. It would not only create superfluous network traffic for no good reason, but it also
  * would have unpredictable results. So, don't.)
  *
  * \param table         Hash table name.

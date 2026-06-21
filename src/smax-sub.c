@@ -20,7 +20,7 @@
 /// \endcond
 
 
-// A lock for ensuring exlusive access for the monitor list...
+// A lock for ensuring exclusive access for the monitor list...
 // and the variables that it controls, e.g. via lockNotify()
 static pthread_mutex_t notifyLock = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t notifyBlock = PTHREAD_COND_INITIALIZER;
@@ -36,27 +36,28 @@ static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 /// \cond PRIVATE
 
 void ProcessUpdateNotificationAsync(const char *pattern, const char *channel, const char *msg, long length) {
-  (void) pattern;
+  int idlen;
+
+  (void) pattern; // unused
+  (void) length;  // unused
 
   xvprintf("{message} %s %s\n", channel, msg);
 
   if(strncmp(channel, SMAX_UPDATES, SMAX_UPDATES_LENGTH)) return; // Wrong message prefix
 
+  idlen = strlen(channel + SMAX_UPDATES_LENGTH) + 1; // The length of the SMA-X ID that received the notification
+
   smaxLockNotify();
 
   // Resize the notify values as needed.
-  if(length > 0) if(notifySize < length+1) {
-    char *oldid = notifyID;
-    notifyID = realloc(notifyID, length+1);
-    if(!notifyID) {
-      perror("WARNING! realloc notifyID");
-      free(oldid);
-    }
-    notifySize = notifyID ? length+1 : 0;
+  if(idlen > notifySize) {
+    notifyID = realloc(notifyID, idlen);
+    x_check_alloc(notifyID);
+    notifySize = idlen;
   }
 
-  if(notifySize > 0) notifyID[0] = '\0';  // Reset the notify values to empty strings (if not NULL)
-  strcpy(notifyID, channel + SMAX_UPDATES_LENGTH);
+  if(idlen) memcpy(notifyID, channel + SMAX_UPDATES_LENGTH, idlen);
+  else if(notifySize) *notifyID = '\0';
 
   // Send notification to all blocking threads...
   pthread_cond_broadcast(&notifyBlock);
@@ -65,7 +66,7 @@ void ProcessUpdateNotificationAsync(const char *pattern, const char *channel, co
 }
 
 void smaxInitNotify() {
-  // Initial sotrage for update notifications
+  // Initial storage for update notifications
   notifySize = 80;
   notifyID = (char *) calloc(1, notifySize);
   x_check_alloc(notifyID);
@@ -148,9 +149,9 @@ int smaxSubscribe(const char *table, const char *key) {
 /**
  * Unsubscribes from a specific key(s) in specific group(s). Both the group and key names may contain Redis
  * subscription patterns, e.g. '*' or '?', or bound characters in square-brackets, e.g. '[ab]'. Unsubscribing
- * will only stops the delivery of update notifications for the affected varuiables, but does not deactivate
+ * will only stops the delivery of update notifications for the affected variables, but does not deactivate
  * the associated callbacks for these added via smaxAddSubscriber(). Therefore you should also call
- * smaxRemovesubscribers() as appropriate to deactivate actions that can no longer get triggered by
+ * smaxRemoveSubscribers() as appropriate to deactivate actions that can no longer get triggered by
  * updates.
  *
  * \param table         Variable group pattern, i.e. structure or hash-table name(s) (NULL is the same as '*').
@@ -179,8 +180,8 @@ int smaxUnsubscribe(const char *table, const char *key) {
   if(lookup) {
     XField *f = xLookupField(lookup, p);
     if(f != NULL) {
-      // Descrement the number of subscribers to the pattern,
-      // and unsubscribe from Redis of no subsciber reamins for
+      // Decrement the number of subscribers to the pattern,
+      // and unsubscribe from Redis of no subscriber remains for
       // the pattern.
       int *count = (int *) f->value;
       if(--(*count) <= 0) {
@@ -198,12 +199,12 @@ int smaxUnsubscribe(const char *table, const char *key) {
 }
 
 /**
- * Add a subcriber (callback) function to process incoming PUB/SUB messages for a given SMA-X table (or id). The
- * function should itself check that the channel receiving notification is indeed what it expectes before
+ * Add a subscriber (callback) function to process incoming PUB/SUB messages for a given SMA-X table (or id). The
+ * function should itself check that the channel receiving notification is indeed what it expects before
  * acting on it, as the callback routine will be invoked for any update inside the specified table, unless the
  * table argument refers to a specific aggregate ID of a single variable. This call only registers the callback
  * routine for SMA-X update notifications for variables that begin with the specified stem. You will still have
- * to subscrive to any relevant variables with smaxSubscribe() to enable delivering update notifications for the
+ * to subscribe to any relevant variables with smaxSubscribe() to enable delivering update notifications for the
  * variables of your choice.
  *
  * @param idStem    Table name or ID stem for which the supplied callback function will be invoked as long
@@ -213,7 +214,7 @@ int smaxUnsubscribe(const char *table, const char *key) {
  * @param f         The function to call when there is an incoming PUB/SUB update to a channel starting with
  *                  stem.
  *
- * @return          X_SUCCESS if successful, or else an approriate error code by redisxAddSubscriber()
+ * @return          X_SUCCESS if successful, or else an appropriate error code by redisxAddSubscriber()
  *
  * @sa smaxSubscribe()
  */
@@ -293,7 +294,7 @@ char *smaxGetUpdateChannelPattern(const char *table, const char *key) {
  * \param[out] changedKey       Pointer to the variable that points to the string buffer for the returned variable name or NULL.
  *                              The lease of the buffer is for the call only.
  * \param[in] timeout           (s) Timeout value. 0 or negative values result in an indefinite wait.
- * \param[in,out] gating        Optional semaphore to post after thuis wait call gains exclusive access to the notification
+ * \param[in,out] gating        Optional semaphore to post after this wait call gains exclusive access to the notification
  *                              mutex. Another thread may wait on that semaphore before it too tries to get exclusive access
  *                              to SMA-X notifications via some other library call, to ensure that the wait is entered (or
  *                              else fails) in a timely manner, without unwittingly being blocked by the other thread.
@@ -305,7 +306,7 @@ char *smaxGetUpdateChannelPattern(const char *table, const char *key) {
  *              X_GROUP_INVALID     if the buffer for the returned table name is NULL.
  *              X_NAME_INVALID      if the buffer for the returned variable name is NULL.
  *              X_INTERRUPTED       if smaxReleaseWaits() was called.
- *              X_INCOMPLETE        if the wait timed out.
+ *              X_TIMEDOUT          if the wait timed out.
  *
  * @sa smaxSubscribe()
  * \sa smaxWaitOnSubscribed()
@@ -350,7 +351,7 @@ int smaxWaitOnAnySubscribed(char **changedTable, char **changedKey, int timeout,
         smaxUnlockNotify();
         return x_error(X_TIMEDOUT, ETIMEDOUT, fn, "wait timed out");
       }
-      return x_error(X_INCOMPLETE, status, fn, "pthread_cond_wait() error: %s", strerror(status));
+      return x_error(X_FAILURE, status, fn, "pthread_cond_wait() error: %s", strerror(status));
     }
 
     if(!smaxIsConnected()) {
@@ -376,7 +377,9 @@ int smaxWaitOnAnySubscribed(char **changedTable, char **changedKey, int timeout,
 
     if(sep != NULL) {
       *changedKey = xStringCopyOf(sep + X_SEP_LENGTH);
-      *changedTable = (char *) malloc(sep - notifyID);
+      *changedTable = (char *) malloc(sep - notifyID + 1);
+      x_check_alloc(*changedTable);
+
       memcpy(*changedTable, notifyID, sep - notifyID);
       (*changedTable)[sep - notifyID] = '\0';
     }
@@ -411,7 +414,7 @@ int smaxWaitOnAnySubscribed(char **changedTable, char **changedKey, int timeout,
  * \param[in]  host       Host name on which to wait for updates, or NULL if any host.
  * \param[in]  key        Variable name to wait to be updated, or NULL if any variable.
  * \param[in]  timeout    (s) Timeout value. 0 or negative values result in an indefinite wait.
- * \param[in,out] gating  Optional semaphore to post after thuis wait call gains exclusive access to the notification
+ * \param[in,out] gating  Optional semaphore to post after this wait call gains exclusive access to the notification
  *                        mutex. Another thread may wait on that semaphore before it too tries to get exclusive access
  *                        to SMA-X notifications via some other library call, to ensure that the wait is entered (or
  *                        else fails) in a timely manner, without unwittingly being blocked by the other thread.
@@ -432,9 +435,15 @@ static int WaitOn(const char *table, const char *key, int timeout, sem_t *gating
 
   va_start(args, gating);         /* Initialize the argument list. */
 
-  while(TRUE) {
+  while(1) {
     int status;
     char **ptr;
+
+    // Discard unmatched updates...
+    if(gotTable) free(gotTable);
+    if(gotKey) free(gotKey);
+    gotTable = NULL;
+    gotKey = NULL;
 
     status = smaxWaitOnAnySubscribed(&gotTable, &gotKey, timeout, gating);
     if(status) {
@@ -444,20 +453,21 @@ static int WaitOn(const char *table, const char *key, int timeout, sem_t *gating
 
     if(table != NULL) {
       if(!gotTable) {
-        x_warn(fn, "got NULL table.\n", fn);
+        x_warn(fn, "got NULL table.\n");
         continue;
       }
-      if(strcmp(gotTable, table)) {
-        continue;
+      if(strcmp(gotTable, table) != 0) {
+        continue; // Update for a different table than what we select for...
       }
     }
+
     if(key != NULL) {
       if(!gotKey) {
-        x_warn(fn, "got NULL key.\n", fn);
+        x_warn(fn, "got NULL key.\n");
         continue;
       }
-      if(strcmp(gotKey, key)) {
-        continue;
+      if(strcmp(gotKey, key) != 0) {
+        continue; // Update for a different key than what we select for...
       }
     }
 
@@ -465,13 +475,13 @@ static int WaitOn(const char *table, const char *key, int timeout, sem_t *gating
       ptr = va_arg(args, char **);
       *ptr = gotTable;
     }
+
     if(key == NULL) {
       ptr = va_arg(args, char **);
       *ptr = gotKey;
     }
 
-    if(table == NULL || key == NULL) va_end(args);
-
+    va_end(args);
     return X_SUCCESS;
   }
 }
@@ -483,7 +493,7 @@ static int WaitOn(const char *table, const char *key, int timeout, sem_t *gating
  * \param table             Hash table name
  * \param key               Variable name to wait on.
  * \param timeout           (s) Timeout value. 0 or negative values result in an indefinite wait.
- * \param[in,out] gating    Optional semaphore to post after thuis wait call gains exclusive access to the notification
+ * \param[in,out] gating    Optional semaphore to post after this wait call gains exclusive access to the notification
  *                          mutex. Another thread may wait on that semaphore before it too tries to get exclusive access
  *                          to SMA-X notifications via some other library call, to ensure that the wait is entered (or
  *                          else fails) in a timely manner, without unwittingly being blocked by the other thread.
@@ -523,7 +533,7 @@ int smaxWaitOnSubscribed(const char *table, const char *key, int timeout, sem_t 
  *                           or which is set to NULL. The lease of the buffer is for the call only. The caller
  *                           should copy its content if persistent storage is required.
  * \param[in] timeout        (s) Timeout value. 0 or negative values result in an indefinite wait.
- * \param[in,out] gating     Optional semaphore to post after thuis wait call gains exclusive access to the notification
+ * \param[in,out] gating     Optional semaphore to post after this wait call gains exclusive access to the notification
  *                           mutex. Another thread may wait on that semaphore before it too tries to get exclusive access
  *                           to SMA-X notifications via some other library call, to ensure that the wait is entered (or
  *                           else fails) in a timely manner, without unwittingly being blocked by the other thread.
@@ -559,7 +569,7 @@ int smaxWaitOnSubscribedGroup(const char *matchTable, char **changedKey, int tim
  *                           or which is set to NULL. The lease of the buffer is for the call only. The caller
  *                           should copy its content if persistent storage is required.
  * \param[in] timeout        (s) Timeout value. 0 or negative values result in an indefinite wait.
- * \param[in,out] gating     Optional semaphore to post after thuis wait call gains exclusive access to the notification
+ * \param[in,out] gating     Optional semaphore to post after this wait call gains exclusive access to the notification
  *                           mutex. Another thread may wait on that semaphore before it too tries to get exclusive access
  *                           to SMA-X notifications via some other library call, to ensure that the wait is entered (or
  *                           else fails) in a timely manner, without unwittingly being blocked by the other thread.
@@ -647,7 +657,7 @@ int smaxLockNotify() {
  */
 int smaxUnlockNotify() {
   int status = pthread_mutex_unlock(&notifyLock);
-  if(status) fprintf(stderr, "WARNING! SMA-X : smaxUnockNotify() failed with code: %d.\n", status);
+  if(status) fprintf(stderr, "WARNING! SMA-X : smaxUnlockNotify() failed with code: %d.\n", status);
   return status;
 }
 
