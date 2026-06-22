@@ -257,8 +257,8 @@ int smaxControlInt(const char *table, const char *key, int value, const char *re
 }
 
 /**
- * Sets a string type SMA-X control variable, and returns the string response to the monitored reply,
- * or NULL in case of an error.
+ * Sets a double precision type SMA-X control variable, and returns the string response to the
+ * monitored reply, or NULL in case of an error.
  *
  * @param table         SMA-X table name
  * @param key           The command keyword

@@ -33,7 +33,7 @@
 static void checkStatus(const char *op, int status) {
   if(!status) return;
   fprintf(stderr, "ERROR! %s: %s\n", op, smaxErrorDescription(status));
-  exit(-1);
+  exit(EXIT_FAILURE);
 }
 
 int ControlFunction(const char *table, const char *key, void *parg) {
@@ -68,7 +68,7 @@ int main() {
     fprintf(stderr, "ERROR! Unexpected reply: expected %d, got %d.\n", 1, reply);
     if(errno) fprintf(stderr, "      errno = %d (%s)\n", errno, strerror(errno));
     fprintf(stderr, "control: FAILED\n");
-    return -1;
+    return EXIT_FAILURE;
   }
 
   fprintf(stderr, "control: OK\n");

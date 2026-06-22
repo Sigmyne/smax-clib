@@ -310,7 +310,7 @@ char *smaxGetCachedString(const char *table, const char *key);
 int smaxGetCachedStruct(const char *id, XStructure *s);
 int smaxLazyEnd(const char *table, const char *key);
 int smaxLazyFlush();
-unsigned long smaxGetLazyUpdateCount(const char *table, const char *key);
+long smaxGetLazyUpdateCount(const char *table, const char *key);
 
 
 // Some convenience methods for simpler shares ----------->

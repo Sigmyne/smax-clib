@@ -64,7 +64,7 @@ int smaxUnlockConfig() {
 
 /**
  * Creates a new SMA-X metadata object with defaults. Effectively the same as calling
- * calloc() followed by xResetMeta().
+ * malloc() followed by xResetMeta().
  *
  * @return              Pointer to a new metadata object initialized to defaults.
  *
@@ -504,7 +504,7 @@ int smaxParseTime(const char *timestamp, time_t *secs, long *nanosecs) {
       if(nanosecs) *nanosecs = 0;
       return 1;
     }
-    if(nanosecs) *nanosecs = (int) (1e9 * d);
+    if(nanosecs) *nanosecs = (long) (1e9 * d);
   }
   else if(nanosecs) *nanosecs = 0;
 
@@ -808,7 +808,7 @@ char *smaxValuesToString(const void *value, XType type, int eCount, char *trybuf
     x_error(0, EINVAL, fn, "structures not allowed");
     return NULL;                     // structs are not serialized by this function.
   }
-  if(type == X_RAW) if(value) return *(char **) value;
+  if(type == X_RAW) return *(char **) value;
 
   // Figure out how big the serialized string might be...
   if(type == X_UNKNOWN) stringSize = 2 * eCount;
