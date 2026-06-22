@@ -3,7 +3,7 @@
  *
  * \date Jan 26, 2018
  * \author Attila Kovacs
- * \version 1.0
+ * \version 1.1
  *
  *  smax-clib C/C++ client library to an SMA-X database, available on GitHub as:
  *
@@ -54,13 +54,13 @@
 #define SMAX_MAJOR_VERSION  1
 
 /// API minor version
-#define SMAX_MINOR_VERSION  0
+#define SMAX_MINOR_VERSION  1
 
 /// Integer sub version of the release
-#define SMAX_PATCHLEVEL     1
+#define SMAX_PATCHLEVEL     0
 
 /// Additional release information in version, e.g. "-1", or "-rc1".
-#define SMAX_RELEASE_STRING ""
+#define SMAX_RELEASE_STRING "-devel"
 
 /// \cond PRIVATE
 
