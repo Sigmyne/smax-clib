@@ -53,7 +53,7 @@
     <topic label="Release schedule" href="index.html#autotoc_md67"/>
   </topic>
   <topic label="Changelog" href="md_CHANGELOG.html">
-    <topic label="[1.0.1] - 2026-06-21" href="md_CHANGELOG.html#autotoc_md1">
+    <topic label="[1.0.1] - 2026-06-23" href="md_CHANGELOG.html#autotoc_md1">
       <topic label="Fixed" href="md_CHANGELOG.html#autotoc_md2"/>
       <topic label="Changed" href="md_CHANGELOG.html#autotoc_md3"/>
     </topic>
@@ -226,7 +226,7 @@
           <topic label="smaxGetDoubleField" href="smax_8h.html#ab7c45d4512c22c24153763aa9e227b68"/>
           <topic label="smaxGetHostName" href="smax_8h.html#ac704fea3e664905af780d2566e3c74b6"/>
           <topic label="smaxGetKeys" href="smax_8h.html#a2544d1fa602e812004e1d68500024ae0"/>
-          <topic label="smaxGetLazyUpdateCount" href="smax_8h.html#acdcd9f8bc1d613ce4296fdbedcef7d68"/>
+          <topic label="smaxGetLazyUpdateCount" href="smax_8h.html#a212452da0ec8b258e4bf298d81062830"/>
           <topic label="smaxGetLongField" href="smax_8h.html#a8035211bd1fe17551a1517560b2547c4"/>
           <topic label="smaxGetMetaCount" href="smax_8h.html#ac6d47a508669e4ee215cb72c5366fc52"/>
           <topic label="smaxGetProgramID" href="smax_8h.html#abc07a7599e0bac1be15bbcb6b63d4710"/>
@@ -409,7 +409,7 @@
           <topic label="smaxGetCachedLong" href="smax-lazy_8c.html#a1333099138d6d33cfbb9b3196e42a33e"/>
           <topic label="smaxGetCachedString" href="smax-lazy_8c.html#aee7126a7619eda468edc016caec97dce"/>
           <topic label="smaxGetCachedStruct" href="smax-lazy_8c.html#afc92364467acaed551aa67dae89429c3"/>
-          <topic label="smaxGetLazyUpdateCount" href="smax-lazy_8c.html#acdcd9f8bc1d613ce4296fdbedcef7d68"/>
+          <topic label="smaxGetLazyUpdateCount" href="smax-lazy_8c.html#a212452da0ec8b258e4bf298d81062830"/>
           <topic label="smaxLazyEnd" href="smax-lazy_8c.html#a167a60b494fa9ec5b046f9da796f18b5"/>
           <topic label="smaxLazyFlush" href="smax-lazy_8c.html#af3d0cff3f8a6ab745907f4544981fdd1"/>
           <topic label="smaxLazyPull" href="smax-lazy_8c.html#ab50222d7bbaa985fd6d004d67b0269ce"/>

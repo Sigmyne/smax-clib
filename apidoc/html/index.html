@@ -74,7 +74,7 @@ mermaid.initialize({ startOnLoad: true, theme: theme });
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="Sigmyne-logo-55x55.png"/></td>
   <td id="projectalign">
-   <div id="projectname">smax-clib<span id="projectnumber">&#160;v1.0</span>
+   <div id="projectname">smax-clib<span id="projectnumber">&#160;v1.1</span>
    </div>
    <div id="projectbrief">A C/C++ client library for SMA-X</div>
   </td>
@@ -619,10 +619,10 @@ Lazy pulling (high-frequency queries)</h2>
 <div class="line"><a class="code hl_struct" href="structXMeta.html">XMeta</a> meta;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> status = <a class="code hl_function" href="smax-lazy_8c.html#ab50222d7bbaa985fd6d004d67b0269ce">smaxLazyPull</a>(<span class="stringliteral">&quot;some_table&quot;</span>, <span class="stringliteral">&quot;some_data&quot;</span>, X_INT, 3, sizes, data, &amp;meta);</div>
-<div class="ttc" id="asmax-lazy_8c_html_ab50222d7bbaa985fd6d004d67b0269ce"><div class="ttname"><a href="smax-lazy_8c.html#ab50222d7bbaa985fd6d004d67b0269ce">smaxLazyPull</a></div><div class="ttdeci">int smaxLazyPull(const char *table, const char *key, XType type, int count, void *value, XMeta *meta)</div><div class="ttdef"><b>Definition</b> smax-lazy.c:476</div></div>
+<div class="ttc" id="asmax-lazy_8c_html_ab50222d7bbaa985fd6d004d67b0269ce"><div class="ttname"><a href="smax-lazy_8c.html#ab50222d7bbaa985fd6d004d67b0269ce">smaxLazyPull</a></div><div class="ttdeci">int smaxLazyPull(const char *table, const char *key, XType type, int count, void *value, XMeta *meta)</div><div class="ttdef"><b>Definition</b> smax-lazy.c:475</div></div>
 </div><!-- fragment --><p>or</p>
 <div class="fragment"><div class="line"><span class="keywordtype">int</span> status = <a class="code hl_function" href="smax-lazy_8c.html#a31ed83292a29d69e1c9635b21aae7561">smaxLazyPullDouble</a>(<span class="stringliteral">&quot;some_table&quot;</span>, <span class="stringliteral">&quot;some_var&quot;</span>);</div>
-<div class="ttc" id="asmax-lazy_8c_html_a31ed83292a29d69e1c9635b21aae7561"><div class="ttname"><a href="smax-lazy_8c.html#a31ed83292a29d69e1c9635b21aae7561">smaxLazyPullDouble</a></div><div class="ttdeci">double smaxLazyPullDouble(const char *table, const char *key)</div><div class="ttdef"><b>Definition</b> smax-lazy.c:530</div></div>
+<div class="ttc" id="asmax-lazy_8c_html_a31ed83292a29d69e1c9635b21aae7561"><div class="ttname"><a href="smax-lazy_8c.html#a31ed83292a29d69e1c9635b21aae7561">smaxLazyPullDouble</a></div><div class="ttdeci">double smaxLazyPullDouble(const char *table, const char *key)</div><div class="ttdef"><b>Definition</b> smax-lazy.c:529</div></div>
 </div><!-- fragment --><p>But, under the hood, it does something different. The first time a new variable is lazy pulled it is fetched from the <a class="elRef" href="../redisx/doc/html/structRedis.html">Redis</a> database just like a regular pull. But, it also will cache the value, and watch for update notifications from the SMA-X server. Thus, as long as no update notification is received, successive calls will simply return the locally cached value. This can save big on network usage, and also provides orders of magnitude faster access so long as the variable remains unchanged.</p>
 <p>When the variable is updated in SMA-X, our client library will be notified, and one of two things can happen:</p>
 <ol type="1">
@@ -632,7 +632,7 @@ Lazy pulling (high-frequency queries)</h2>
 <p>The choice between the two is yours, and you can control which suits your need best. The default behavior for lazy pulls is (1), but you may call <span class="tt"><a class="el" href="smax-lazy_8c.html#ad8121d1e9b6ee720bc2762aa33340bf1">smaxCache()</a></span> after the first pull of a variable, to indicate that you want to enable background cache updates (2) for it. The advantage of (1) is that it will never serve you outdated data even if there are significant network latencies &ndash; but you may have to wait a little to fetch updates. On the other hand (2) will always provide a recent value with effectively no latency, but this value may be outdated if there are delays on the network updating the cache. The difference is typically at the micro-seconds level on a local LAN. However, (2) may be preferable when you need to access SMA-X data from timing critical code blocks, where it is more important to ensure that the value is returned quickly, rather than whether it is a millisecond too old or not.</p>
 <p>You can also explicitly select the second behavior by using <span class="tt"><a class="el" href="smax-lazy_8c.html#ac6c4d66145f9aa2e9fe7646538d9c1bf">smaxGetCached()</a></span> instead of <span class="tt"><a class="el" href="smax-lazy_8c.html#ab50222d7bbaa985fd6d004d67b0269ce">smaxLazyPull()</a></span>:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">int</span> status = <a class="code hl_function" href="smax-lazy_8c.html#ac6c4d66145f9aa2e9fe7646538d9c1bf">smaxGetCached</a>(<span class="stringliteral">&quot;some_table&quot;</span>, <span class="stringliteral">&quot;some_data&quot;</span>, X_INT, 3, sizes, data, &amp;meta);</div>
-<div class="ttc" id="asmax-lazy_8c_html_ac6c4d66145f9aa2e9fe7646538d9c1bf"><div class="ttname"><a href="smax-lazy_8c.html#ac6c4d66145f9aa2e9fe7646538d9c1bf">smaxGetCached</a></div><div class="ttdeci">int smaxGetCached(const char *table, const char *key, XType type, int count, void *value, XMeta *meta)</div><div class="ttdef"><b>Definition</b> smax-lazy.c:434</div></div>
+<div class="ttc" id="asmax-lazy_8c_html_ac6c4d66145f9aa2e9fe7646538d9c1bf"><div class="ttname"><a href="smax-lazy_8c.html#ac6c4d66145f9aa2e9fe7646538d9c1bf">smaxGetCached</a></div><div class="ttdeci">int smaxGetCached(const char *table, const char *key, XType type, int count, void *value, XMeta *meta)</div><div class="ttdef"><b>Definition</b> smax-lazy.c:433</div></div>
 </div><!-- fragment --><p>In either case, when you are done using lazy variables, you should let the library know that it no longer needs to watch updates for these, by calling either <span class="tt"><a class="el" href="smax-lazy_8c.html#a167a60b494fa9ec5b046f9da796f18b5">smaxLazyEnd()</a></span> on specific variables, or else <span class="tt"><a class="el" href="smax-lazy_8c.html#af3d0cff3f8a6ab745907f4544981fdd1">smaxLazyFlush()</a></span> to stop watching updates for all lazy variables. (A successive lazy pull will automatically start watching for updates again, in case you wish to re-enable).</p>
 <div class="fragment"><div class="line"><span class="comment">// Lazy pull a bunch of data (typically in a loop).</span></div>
 <div class="line"><span class="keywordflow">for</span>(...) {</div>
@@ -648,7 +648,7 @@ Lazy pulling (high-frequency queries)</h2>
 <div class="line"> </div>
 <div class="line"><span class="comment">// And to stop lazy accessing all</span></div>
 <div class="line">smaxLazyFlush();</div>
-<div class="ttc" id="asmax-lazy_8c_html_a167a60b494fa9ec5b046f9da796f18b5"><div class="ttname"><a href="smax-lazy_8c.html#a167a60b494fa9ec5b046f9da796f18b5">smaxLazyEnd</a></div><div class="ttdeci">int smaxLazyEnd(const char *table, const char *key)</div><div class="ttdef"><b>Definition</b> smax-lazy.c:778</div></div>
+<div class="ttc" id="asmax-lazy_8c_html_a167a60b494fa9ec5b046f9da796f18b5"><div class="ttname"><a href="smax-lazy_8c.html#a167a60b494fa9ec5b046f9da796f18b5">smaxLazyEnd</a></div><div class="ttdeci">int smaxLazyEnd(const char *table, const char *key)</div><div class="ttdef"><b>Definition</b> smax-lazy.c:777</div></div>
 </div><!-- fragment --><hr  />
 <p><a class="anchor" id="pipelined-pulls"></a> </p>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md37"></a>

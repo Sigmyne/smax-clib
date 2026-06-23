@@ -611,10 +611,10 @@
       <arglist>(const char *table, int *n)</arglist>
     </member>
     <member kind="function">
-      <type>unsigned long</type>
+      <type>long</type>
       <name>smaxGetLazyUpdateCount</name>
       <anchorfile>smax_8h.html</anchorfile>
-      <anchor>acdcd9f8bc1d613ce4296fdbedcef7d68</anchor>
+      <anchor>a212452da0ec8b258e4bf298d81062830</anchor>
       <arglist>(const char *table, const char *key)</arglist>
     </member>
     <member kind="function">
@@ -1854,10 +1854,10 @@
       <arglist>(const char *id, XStructure *s)</arglist>
     </member>
     <member kind="function">
-      <type>unsigned long</type>
+      <type>long</type>
       <name>smaxGetLazyUpdateCount</name>
       <anchorfile>smax-lazy_8c.html</anchorfile>
-      <anchor>acdcd9f8bc1d613ce4296fdbedcef7d68</anchor>
+      <anchor>a212452da0ec8b258e4bf298d81062830</anchor>
       <arglist>(const char *table, const char *key)</arglist>
     </member>
     <member kind="function">

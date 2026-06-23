@@ -79,7 +79,7 @@ var NAVTREE =
       [ "Debug support", "index.html#autotoc_md63", null ],
       [ "Future plans", "index.html#autotoc_md65", null ],
       [ "Release schedule", "index.html#autotoc_md67", null ],
-      [ "[1.0.1] - 2026-06-21", "md_CHANGELOG.html#autotoc_md1", [
+      [ "[1.0.1] - 2026-06-23", "md_CHANGELOG.html#autotoc_md1", [
         [ "Fixed", "md_CHANGELOG.html#autotoc_md2", null ],
         [ "Changed", "md_CHANGELOG.html#autotoc_md3", null ]
       ] ],

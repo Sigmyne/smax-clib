@@ -74,7 +74,7 @@ mermaid.initialize({ startOnLoad: true, theme: theme });
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="Sigmyne-logo-55x55.png"/></td>
   <td id="projectalign">
-   <div id="projectname">smax-clib<span id="projectnumber">&#160;v1.0</span>
+   <div id="projectname">smax-clib<span id="projectnumber">&#160;v1.1</span>
    </div>
    <div id="projectbrief">A C/C++ client library for SMA-X</div>
   </td>
@@ -177,7 +177,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a1333099138d6d33cfbb9b3196e42a33e" id="r_a1333099138d6d33cfbb9b3196e42a33e"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#a1333099138d6d33cfbb9b3196e42a33e">smaxGetCachedLong</a> (const char *table, const char *key, long long defaultValue)</td></tr>
 <tr class="memitem:aee7126a7619eda468edc016caec97dce" id="r_aee7126a7619eda468edc016caec97dce"><td class="memItemLeft">char *&#160;</td><td class="memItemRight"><a class="el" href="#aee7126a7619eda468edc016caec97dce">smaxGetCachedString</a> (const char *table, const char *key)</td></tr>
 <tr class="memitem:afc92364467acaed551aa67dae89429c3" id="r_afc92364467acaed551aa67dae89429c3"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#afc92364467acaed551aa67dae89429c3">smaxGetCachedStruct</a> (const char *id, <a class="elRef" href="../xchange/doc/html/structXStructure.html">XStructure</a> *s)</td></tr>
-<tr class="memitem:acdcd9f8bc1d613ce4296fdbedcef7d68" id="r_acdcd9f8bc1d613ce4296fdbedcef7d68"><td class="memItemLeft">unsigned long&#160;</td><td class="memItemRight"><a class="el" href="#acdcd9f8bc1d613ce4296fdbedcef7d68">smaxGetLazyUpdateCount</a> (const char *table, const char *key)</td></tr>
+<tr class="memitem:a212452da0ec8b258e4bf298d81062830" id="r_a212452da0ec8b258e4bf298d81062830"><td class="memItemLeft">long&#160;</td><td class="memItemRight"><a class="el" href="#a212452da0ec8b258e4bf298d81062830">smaxGetLazyUpdateCount</a> (const char *table, const char *key)</td></tr>
 <tr class="memitem:a167a60b494fa9ec5b046f9da796f18b5" id="r_a167a60b494fa9ec5b046f9da796f18b5"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a167a60b494fa9ec5b046f9da796f18b5">smaxLazyEnd</a> (const char *table, const char *key)</td></tr>
 <tr class="memitem:af3d0cff3f8a6ab745907f4544981fdd1" id="r_af3d0cff3f8a6ab745907f4544981fdd1"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#af3d0cff3f8a6ab745907f4544981fdd1">smaxLazyFlush</a> ()</td></tr>
 <tr class="memitem:ab50222d7bbaa985fd6d004d67b0269ce" id="r_ab50222d7bbaa985fd6d004d67b0269ce"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#ab50222d7bbaa985fd6d004d67b0269ce">smaxLazyPull</a> (const char *table, const char *key, <a class="elRef" href="../xchange/doc/html/xchange_8h.html#a1c7e02eda23566a7891310fd09307a70">XType</a> type, int count, void *value, <a class="el" href="structXMeta.html">XMeta</a> *meta)</td></tr>
@@ -216,7 +216,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Specify that a specific variable should be cached for minimum overhead lazy access. When a variable is lazy cached its local copy is automatically updated in the background so that accessing it is always nearly instantaneous. Lazy caching is a good choice for variables that change less frequently than they are polled typically. For variables that change frequently (ans used less frequently), lazy caching is not a great choice since it consumes network bandwidth even when the variable is not being accessed.</p>
+<p>Specify that a specific variable should be cached for minimum overhead lazy access. When a variable is lazy cached its local copy is automatically updated in the background so that accessing it is always nearly instantaneous. Lazy caching is a good choice for variables that change less frequently than they are polled typically. For variables that change frequently (and used less frequently), lazy caching is not a great choice since it consumes network bandwidth even when the variable is not being accessed.</p>
 <p>Once a variable is lazy cached, it can be accessed instantaneously via <a class="el" href="#ac6c4d66145f9aa2e9fe7646538d9c1bf">smaxGetCached()</a> without any blocking network operations.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -269,7 +269,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Retrieve a variable from the local cache (if available), or else pull from the SMA-X database. If local caching was not previously eanbled, it will be enabled with this call, so that subsequent calls will always return data from the locally updated cache with minimal overhead and effectively no latency.</p>
+<p>Retrieve a variable from the local cache (if available), or else pull from the SMA-X database. If local caching was not previously enabled, it will be enabled with this call, so that subsequent calls will always return data from the locally updated cache with minimal overhead and effectively no latency.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">table</td><td>The hash table name. </td></tr>
@@ -282,9 +282,9 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>X_SUCCESS (0), or X_NO_SERVICE is SMA-X is not accessible, or another error (&lt;0) from <a class="el" href="smax_8h.html">smax.h</a> or <a class="elRef" href="../xchange/doc/html/xchange_8h.html">xchange.h</a>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>sa <a class="el" href="#ad8121d1e9b6ee720bc2762aa33340bf1">smaxCache()</a> </dd>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ad8121d1e9b6ee720bc2762aa33340bf1">smaxCache()</a> </dd>
 <dd>
-sa smaxLaxyPull() </dd></dl>
+<a class="el" href="#ab50222d7bbaa985fd6d004d67b0269ce">smaxLazyPull()</a> </dd></dl>
 
 </div>
 </div>
@@ -316,7 +316,7 @@ sa smaxLaxyPull() </dd></dl>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a cached string value into the specified string buffer. If the data is not yet cached, it will pull the value from SMA-X, and will begin updating the cache automatically in the background so successive calls will return promptly without blocking. That is until <span class="tt">smaxLaxyFlush()</span> is called or else <span class="tt">smaxLaxyEnd()</span> for the variable.</p>
+<p>Returns a cached string value into the specified string buffer. If the data is not yet cached, it will pull the value from SMA-X, and will begin updating the cache automatically in the background so successive calls will return promptly without blocking. That is until <span class="tt"><a class="el" href="#af3d0cff3f8a6ab745907f4544981fdd1">smaxLazyFlush()</a></span> is called or else <span class="tt"><a class="el" href="#a167a60b494fa9ec5b046f9da796f18b5">smaxLazyEnd()</a></span> for the variable.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">table</td><td>The hash table name. </td></tr>
@@ -351,7 +351,7 @@ sa smaxLaxyPull() </dd></dl>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a single cached double-precision value for a given SMA-X variable, or NAN if the value could not be retrieved. If the data is not yet cached, it will pull the value from SMA-X, and will begin updating the cache automatically in the background so successive calls will return promptly without blocking. That is until <span class="tt">smaxLaxyFlush()</span> is called or else <span class="tt">smaxLaxyEnd()</span> for the variable.</p>
+<p>Returns a single cached double-precision value for a given SMA-X variable, or NAN if the value could not be retrieved. If the data is not yet cached, it will pull the value from SMA-X, and will begin updating the cache automatically in the background so successive calls will return promptly without blocking. That is until <span class="tt"><a class="el" href="#af3d0cff3f8a6ab745907f4544981fdd1">smaxLazyFlush()</a></span> is called or else <span class="tt"><a class="el" href="#a167a60b494fa9ec5b046f9da796f18b5">smaxLazyEnd()</a></span> for the variable.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">table</td><td>The hash table name. </td></tr>
@@ -393,7 +393,7 @@ sa smaxLaxyPull() </dd></dl>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a single cached double-precision value for a given SMA-X variable, or a default value if the value could not be retrieved. If the data is not yet cached, it will pull the value from SMA-X, and will begin updating the cache automatically in the background so successive calls will return promptly without blocking. That is until <span class="tt">smaxLaxyFlush()</span> is called or else <span class="tt">smaxLaxyEnd()</span> for the variable.</p>
+<p>Returns a single cached double-precision value for a given SMA-X variable, or a default value if the value could not be retrieved. If the data is not yet cached, it will pull the value from SMA-X, and will begin updating the cache automatically in the background so successive calls will return promptly without blocking. That is until <span class="tt"><a class="el" href="#af3d0cff3f8a6ab745907f4544981fdd1">smaxLazyFlush()</a></span> is called or else <span class="tt"><a class="el" href="#a167a60b494fa9ec5b046f9da796f18b5">smaxLazyEnd()</a></span> for the variable.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">table</td><td>The hash table name. </td></tr>
@@ -436,7 +436,7 @@ sa smaxLaxyPull() </dd></dl>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a single cached integer value for a given SMA-X variable, or a default value if the value could not be retrieved. If the data is not yet cached, it will pull the value from SMA-X, and will begin updating the cache automatically in the background so successive calls will return promptly without blocking. That is until <span class="tt">smaxLaxyFlush()</span> is called or else <span class="tt">smaxLaxyEnd()</span> for the variable.</p>
+<p>Returns a single cached integer value for a given SMA-X variable, or a default value if the value could not be retrieved. If the data is not yet cached, it will pull the value from SMA-X, and will begin updating the cache automatically in the background so successive calls will return promptly without blocking. That is until <span class="tt"><a class="el" href="#af3d0cff3f8a6ab745907f4544981fdd1">smaxLazyFlush()</a></span> is called or else <span class="tt"><a class="el" href="#a167a60b494fa9ec5b046f9da796f18b5">smaxLazyEnd()</a></span> for the variable.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">table</td><td>The hash table name. </td></tr>
@@ -472,7 +472,7 @@ sa smaxLaxyPull() </dd></dl>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a single cached string value for a given SMA-X variable, or a NULL if the value could not be retrieved. If the data is not yet cached, it will pull the value from SMA-X, and will begin updating the cache automatically in the background so successive calls will return promptly without blocking. That is until <span class="tt">smaxLaxyFlush()</span> is called or else <span class="tt">smaxLaxyEnd()</span> for the variable.</p>
+<p>Returns a single cached string value for a given SMA-X variable, or a NULL if the value could not be retrieved. If the data is not yet cached, it will pull the value from SMA-X, and will begin updating the cache automatically in the background so successive calls will return promptly without blocking. That is until <span class="tt"><a class="el" href="#af3d0cff3f8a6ab745907f4544981fdd1">smaxLazyFlush()</a></span> is called or else <span class="tt"><a class="el" href="#a167a60b494fa9ec5b046f9da796f18b5">smaxLazyEnd()</a></span> for the variable.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">table</td><td>Hash table name. </td></tr>
@@ -507,7 +507,7 @@ sa smaxLaxyPull() </dd></dl>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Copies cached data data into a structure, discarding any prior data that the structure might contain. If the data is not yet cached, it will pull the value from SMA-X, and will update the cache automatically in the background so successive calls will return promptly without blocking. That is until <span class="tt">smaxLaxyFlush()</span> is called or else <span class="tt">smaxLaxyEnd()</span> for the variable.</p>
+<p>Copies cached data into a structure, discarding any prior data that the structure might contain. If the data is not yet cached, it will pull the value from SMA-X, and will update the cache automatically in the background so successive calls will return promptly without blocking. That is until <span class="tt"><a class="el" href="#af3d0cff3f8a6ab745907f4544981fdd1">smaxLazyFlush()</a></span> is called or else <span class="tt"><a class="el" href="#a167a60b494fa9ec5b046f9da796f18b5">smaxLazyEnd()</a></span> for the variable.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">id</td><td>Aggregate structure ID. </td></tr>
@@ -524,14 +524,14 @@ sa smaxLaxyPull() </dd></dl>
 
 </div>
 </div>
-<a id="acdcd9f8bc1d613ce4296fdbedcef7d68" name="acdcd9f8bc1d613ce4296fdbedcef7d68"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acdcd9f8bc1d613ce4296fdbedcef7d68">&#9670;&#160;</a></span>smaxGetLazyUpdateCount()</h2>
+<a id="a212452da0ec8b258e4bf298d81062830" name="a212452da0ec8b258e4bf298d81062830"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a212452da0ec8b258e4bf298d81062830">&#9670;&#160;</a></span>smaxGetLazyUpdateCount()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned long smaxGetLazyUpdateCount </td>
+          <td class="memname">long smaxGetLazyUpdateCount </td>
           <td>(</td>
           <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>table</em></span>, </td>
         </tr>
@@ -601,7 +601,7 @@ sa smaxLaxyPull() </dd></dl>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Discards caches for all lazy variables (i.e. stops all subscriptions to variable updates, at least until the next <a class="el" href="#ab50222d7bbaa985fd6d004d67b0269ce">smaxLazyPull()</a> call). Generally speaking, it's a good idea to call this routine when one is done using a set of lazy variables for the time being, but want to avoid the tedium of calling <a class="el" href="#a167a60b494fa9ec5b046f9da796f18b5">smaxLazyEnd()</a> individually for each of them. Note however, that after flushing the lazy caches, the fist lazy call following for each variable will inevitably result in a real SMA-X pull. So use it carefully!</p>
+<p>Discards caches for all lazy variables (i.e. stops all subscriptions to variable updates, at least until the next <a class="el" href="#ab50222d7bbaa985fd6d004d67b0269ce">smaxLazyPull()</a> call). Generally speaking, it's a good idea to call this routine when one is done using a set of lazy variables for the time being, but want to avoid the tedium of calling <a class="el" href="#a167a60b494fa9ec5b046f9da796f18b5">smaxLazyEnd()</a> individually for each of them. Note however, that after flushing the lazy caches, the first lazy call following for each variable will inevitably result in a real SMA-X pull. So use it carefully!</p>
 <dl class="section return"><dt>Returns</dt><dd>Number of monitor points flushed.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#ab50222d7bbaa985fd6d004d67b0269ce">smaxLazyPull()</a> </dd>
 <dd>

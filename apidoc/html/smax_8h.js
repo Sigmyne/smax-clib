@@ -88,7 +88,7 @@ var smax_8h =
     [ "smaxGetDoubleField", "smax_8h.html#ab7c45d4512c22c24153763aa9e227b68", null ],
     [ "smaxGetHostName", "smax_8h.html#ac704fea3e664905af780d2566e3c74b6", null ],
     [ "smaxGetKeys", "smax_8h.html#a2544d1fa602e812004e1d68500024ae0", null ],
-    [ "smaxGetLazyUpdateCount", "smax_8h.html#acdcd9f8bc1d613ce4296fdbedcef7d68", null ],
+    [ "smaxGetLazyUpdateCount", "smax_8h.html#a212452da0ec8b258e4bf298d81062830", null ],
     [ "smaxGetLongField", "smax_8h.html#a8035211bd1fe17551a1517560b2547c4", null ],
     [ "smaxGetMetaCount", "smax_8h.html#ac6d47a508669e4ee215cb72c5366fc52", null ],
     [ "smaxGetProgramID", "smax_8h.html#abc07a7599e0bac1be15bbcb6b63d4710", null ],
