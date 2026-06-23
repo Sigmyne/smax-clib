@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [1.0.1] - 2026-06-21
+## [1.0.1] - 2026-06-23
 
 Maintenance release, with bug fixes and various improvements.
 
