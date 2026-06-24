@@ -1,3 +1,7 @@
+<a href="https://doi.org/10.5281/zenodo.20819033">
+ <img src="resources/zenodo.20819033.svg" alt="DOI: 10.5281/zenodo.20819033"/>
+</a>
+
 A free C/C++ client library and toolkit for the 
 [SMA Exchange (SMA-X)](https://docs.google.com/document/d/1eYbWDClKkV7JnJxv4MxuNBNV47dFXuUWu7C4Ve_YTf0/edit?usp=sharing) 
 structured real-time database
