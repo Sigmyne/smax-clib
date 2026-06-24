@@ -85,13 +85,20 @@ jobs:
       uses: mattnotmitt/doxygen-action@edge
       with:
         additional-packages: font-roboto
-        working-directory: ./xchange 
+        working-directory: ./xchange/doc 
         
     - name: Generate redisx apidocs
       uses: mattnotmitt/doxygen-action@edge
       with:
         additional-packages: font-roboto
-        working-directory: ./redisx
+        working-directory: ./redisx/doc
+        
+    - name: Link to xchange / RedisX documentation
+      run: |
+        sed -i "s:\(TAGFILES\s*=\)$:\1\
+               ../xchange/doc/xchange.tag=../xchange/doc/html \
+               ../redisx/doc/redisx.tag=../redisx/doc/html \
+               :g" smax-clib/Doxyfile
 
     - name: Generate smax-clib apidocs
       uses: mattnotmitt/doxygen-action@edge
