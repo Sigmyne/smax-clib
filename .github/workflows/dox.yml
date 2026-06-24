@@ -54,15 +54,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: install doxygen
-      run: sudo apt-get install doxygen
-
-    - name: Checkout smax-clib
-      uses: actions/checkout@v6
-      with:
-        repository: Sigmyne/smax-clib
-        path: smax-clib
-
     - name: Check out xchange dependency
       uses: actions/checkout@v6
       with:
@@ -75,14 +66,32 @@ jobs:
         repository: Sigmyne/redisx
         path: redisx
 
-    - name: Generate docs
-      run: make -C xchange dox 
-
-    - name: Generate docs
-      run: make -C redisx dox  
-
-    - name: Generate headless README for smax-clib
+    - name: Checkout smax-clib
+      uses: actions/checkout@v6
+      with:
+        repository: Sigmyne/smax-clib
+        path: smax-clib
+        
+    - name: Make headless xchange README
+      run: make -C xchange/doc README.md
+    
+    - name: Make headless RedisX README
+      run: make -C redisx/doc README.md
+      
+    - name: Make headless smax-clib README
       run: make -C smax-clib README-smax.md
+
+    - name: Generate xchange apidocs
+      uses: mattnotmitt/doxygen-action@edge
+      with:
+        additional-packages: font-roboto
+        working-directory: ./xchange 
+        
+    - name: Generate redisx apidocs
+      uses: mattnotmitt/doxygen-action@edge
+      with:
+        additional-packages: font-roboto
+        working-directory: ./redisx
 
     - name: Generate smax-clib apidocs
       uses: mattnotmitt/doxygen-action@edge
