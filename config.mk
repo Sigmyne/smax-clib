@@ -23,7 +23,6 @@ INC ?= include
 
 # Folders for compiled objects, libraries, and binaries, respectively 
 OBJ ?= obj
-LIB ?= lib
 BIN ?= bin
 
 # Compiler: use gcc by default

@@ -4,6 +4,10 @@
 #
 # Author: Attila Kovacs
 
+LIB ?= ../lib
+
+LDFLAGS += -L$(LIB)
+
 ifdef XCHANGE
   CPPFLAGS += -I$(XCHANGE)/include
   LDFLAGS += -L$(XCHANGE)/lib
@@ -35,5 +39,3 @@ $(BIN)/simpleScalar: $(OBJ)/simpleScalar.o $(SMAX)
 $(BIN)/simpleArray: $(OBJ)/simpleArray.o $(SMAX) 
 
 
-# Standard generic rules and targets...
-include $(GLOBALINC)/recipes.mk

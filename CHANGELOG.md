@@ -14,6 +14,8 @@ Upcoming feature release, possibly around 1 September 2026.
 ### Changed
 
  - #16: Use `XBoolean` instead of `boolean` type (requires xchange v1.3).
+ 
+ - Implicit or explicit `LIB` directory in `Makefile`s.
 
 
 ## [1.0.1] - 2026-06-23
