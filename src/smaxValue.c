@@ -269,7 +269,7 @@ static int printValue(const char *group, const char *key) {
     void *buf;
     int n;
 
-    buf = malloc(count * xElementSizeOf(type));
+    buf = malloc((size_t) count * xElementSizeOf(type));
     if(smaxStringToValues(value, buf, type, count, &n) < count) {
       status = NOT_ENOUGH_TOKENS;
       if(printErrors) fprintf(stderr, "WARNING! SMA-X data has fewer components.\n");
