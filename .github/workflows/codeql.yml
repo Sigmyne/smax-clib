@@ -76,7 +76,7 @@ jobs:
       uses: github/codeql-action/init@v4.37.3
       with:
         languages: ${{ matrix.language }}
-        build-mode: manual
+        build-mode: none
 
     - name: Manual build dependencies
       shell: bash
