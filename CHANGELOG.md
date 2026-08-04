@@ -7,6 +7,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+
+Upcoming feature release, possibly around 1 September 2026.
+
+### Changed
+
+ - #16: Use `XBoolean` instead of `boolean` type (requires xchange v1.3).
+
+
 ## [1.0.1] - 2026-06-23
 
 Maintenance release, with bug fixes and various improvements.
