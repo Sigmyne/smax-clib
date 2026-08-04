@@ -27,16 +27,16 @@
 #define MAX_UNPULLED_LAZY_UPDATES       10      ///< Number of unprocessed updates, before unsubscribing from notifications...
 
 typedef struct LazyMonitor {
-  boolean isLinked;         ///< If the monitor is linked in list and not to be destroyed as such.
+  XBoolean isLinked;         ///< If the monitor is linked in list and not to be destroyed as such.
   int users;                ///< Number of callers currently using this monitor point -- update with monitorLock only!
   char *table;              ///< The Redis hash table name in which the data is stored
   char *key;                ///< The hash field name, or NULL if the monitor is for the structure represented by the table.
   char *channel;            ///< The pub/sub channel, e.g. "smax:<group>:<key>"
   char *data;               ///< The serialized data, as stored in Redis, or a pointer to an XStructure
   XMeta *meta;              ///< (optional) metadata
-  boolean isCached;         ///< Whether the variable is continuously caching 'current' data.
-  boolean isCurrent;        ///< If the locally stored data is current.
-  boolean isPending;        ///< Whether already queued for an update.
+  XBoolean isCached;         ///< Whether the variable is continuously caching 'current' data.
+  XBoolean isCurrent;        ///< If the locally stored data is current.
+  XBoolean isPending;        ///< Whether already queued for an update.
   time_t updateTime;        ///< Time of last update.
   unsigned long updateCount;    ///< Number of times the variable was updated.
   unsigned long unpulledCount;  ///< Number of updates since last pull...
@@ -52,8 +52,8 @@ static LazyMonitor *monitorTable[SMAX_LOOKUP_SIZE];             ///< hashed moni
 static pthread_mutex_t monitorLock = PTHREAD_MUTEX_INITIALIZER; ///< Mutex for accessing monitor tables
 static pthread_mutex_t dataLock = PTHREAD_MUTEX_INITIALIZER;    ///< mutex for accessing monitor data/metadata
 
-static LazyMonitor *CreateMonitorAsync(const char *table, const char *key, XType type, boolean withMeta);
-static boolean DestroyMonitorAsync(LazyMonitor *m);
+static LazyMonitor *CreateMonitorAsync(const char *table, const char *key, XType type, XBoolean withMeta);
+static XBoolean DestroyMonitorAsync(LazyMonitor *m);
 static size_t GetChannelLookupIndex(const char *channel);
 static __inline__ int GetTableIndex(const LazyMonitor *m);
 static LazyMonitor *GetMonitorAsync(const char *table, const char *key);
@@ -321,7 +321,7 @@ static int GetCachedAsync(const LazyMonitor *m, XType type, int count, void *val
   return X_SUCCESS;
 }
 
-static LazyMonitor *GetCreateMonitor(const char *table, const char *key, XType type, boolean withMeta) {
+static LazyMonitor *GetCreateMonitor(const char *table, const char *key, XType type, XBoolean withMeta) {
   static const char *fn = "GetCreateMonitor";
 
   LazyMonitor *m;
@@ -894,7 +894,7 @@ long smaxGetLazyUpdateCount(const char *table, const char *key) {
  *
  * \sa Release()
  */
-static LazyMonitor *CreateMonitorAsync(const char *table, const char *key, XType type, boolean withMeta) {
+static LazyMonitor *CreateMonitorAsync(const char *table, const char *key, XType type, XBoolean withMeta) {
   static const char *fn = "CreateMonitorAsync";
 
   LazyMonitor *m;
@@ -967,7 +967,7 @@ static LazyMonitor *CreateMonitorAsync(const char *table, const char *key, XType
  * \return      TRUE (non-zero) if the given monitor is destroyed, otherwise FALSE (0).
  *
  */
-static boolean DestroyMonitorAsync(LazyMonitor *m) {
+static XBoolean DestroyMonitorAsync(LazyMonitor *m) {
   if(m == NULL) return TRUE;
 
   if(m->isLinked) {
@@ -1098,7 +1098,7 @@ static LazyMonitor *GetMonitorAsync(const char *table, const char *key) {
 static void ProcessLazyUpdates(const char *pattern, const char *channel, const char *msg, long length) {
   LazyMonitor *m;
   char *id;
-  boolean checkParents = TRUE;
+  XBoolean checkParents = TRUE;
 
   (void) pattern;
   (void) length;

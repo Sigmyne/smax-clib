@@ -20,7 +20,7 @@
 
 #define PI 3.14159265358979
 
-static void readBenchmark(int n, boolean pipelined, boolean withMeta);
+static void readBenchmark(int n, XBoolean pipelined, XBoolean withMeta);
 static int readBunch(XMeta *meta);
 static int queueBunch(XMeta *meta);
 
@@ -119,7 +119,7 @@ int main(int argc, const char *argv[]) {
 }
 
 
-static void readBenchmark(int n, boolean pipelined, boolean withMeta) {
+static void readBenchmark(int n, XBoolean pipelined, XBoolean withMeta) {
   struct timespec start, end;
   double dt;
   int k, N = 0;
@@ -161,7 +161,7 @@ static void writeBenchmark(int n) {
 
 // These variables must be persistent, or else we get segfaults
 // (probably because they aren't being used actually...)
-static boolean bval;
+static XBoolean bval;
 static int ival;
 static float fval;
 static double dval;

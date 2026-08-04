@@ -237,7 +237,7 @@ int smaxSetTcpBuf(int size);
 
 int smaxSetTLS(const char *ca_path, const char *ca_file);
 int smaxDisableTLS();
-int smaxSetTLSVerify(boolean value);
+int smaxSetTLSVerify(XBoolean value);
 int smaxSetMutualTLS(const char *cert_file, const char *key_file);
 int smaxSetTLSServerName(const char *host);
 int smaxSetTLSCiphers(const char *list);
@@ -277,7 +277,7 @@ XStructure *smaxPullStruct(const char *name, XMeta *meta, int *status);
 XField *smaxPullField(const char *id, XMeta *meta, int *status);
 
 // Convenience methods for serialized strucures ---------->
-boolean smaxGetBooleanField(const XStructure *s, const char *name, boolean defaultValue);
+XBoolean smaxGetBooleanField(const XStructure *s, const char *name, XBoolean defaultValue);
 long long smaxGetLongField(const XStructure *s, const char *name, long long defaultValue);
 double smaxGetDoubleField(const XStructure *s, const char *name, double defaultValue);
 char *smaxGetRawField(const XStructure *s, const char *name, char *defaultValue);
@@ -314,14 +314,14 @@ long smaxGetLazyUpdateCount(const char *table, const char *key);
 
 
 // Some convenience methods for simpler shares ----------->
-int smaxShareBoolean(const char *table, const char *key, boolean value);
+int smaxShareBoolean(const char *table, const char *key, XBoolean value);
 int smaxShareByte(const char *table, const char *key, signed char value);
 int smaxShareShort(const char *table, const char *key, short value);
 int smaxShareInt(const char *table, const char *key, int value);
 int smaxShareLong(const char *table, const char *key, long long value);
 int smaxShareDouble(const char *table, const char *key, double value);
 int smaxShareString(const char *table, const char *key, const char *sValue);
-int smaxShareBooleans(const char *table, const char *key, const boolean *values, int n);
+int smaxShareBooleans(const char *table, const char *key, const XBoolean *values, int n);
 int smaxShareBytes(const char *table, const char *key, const signed char *values, int n);
 int smaxShareShorts(const char *table, const char *key, const short *values, int n);
 int smaxShareInts(const char *table, const char *key, const int *values, int n);
@@ -401,14 +401,14 @@ XField *smaxCreateField(const char *name, XType type, int ndim, const int *sizes
 XField *smaxCreateDoubleField(const char *name, double value);
 XField *smaxCreateLongField(const char *name, long long value);
 XField *smaxCreateIntField(const char *name, int value);
-XField *smaxCreateBooleanField(const char *name, boolean value);
+XField *smaxCreateBooleanField(const char *name, XBoolean value);
 XField *smaxCreateStringField(const char *name, const char *value);
 
 // Controls / Commands via SMA-X
 char *smaxControl(const char *table, const char *key, const void *value, XType type, int count,
         const char *replyTable, const char *replyKey, int timeout);
-boolean smaxControlBoolean(const char *table, const char *key, boolean value, const char *replyTable,
-        const char *replyKey, boolean defaultReply, int timeout);
+XBoolean smaxControlBoolean(const char *table, const char *key, XBoolean value, const char *replyTable,
+        const char *replyKey, XBoolean defaultReply, int timeout);
 char *smaxControlString(const char *table, const char *key, const char *value, const char *replyTable,
         const char *replyKey, int timeout);
 int smaxControlInt(const char *table, const char *key, int value, const char *replyTable,
@@ -419,13 +419,13 @@ int smaxSetControlFunction(const char *table, const char *key, SMAXControlFuncti
 
 // Helpers / Controls ----------------------------------------->
 Redis *smaxGetRedis();
-void smaxSetVerbose(boolean value);
-boolean smaxIsVerbose();
-void smaxSetResilient(boolean value);
-boolean smaxIsResilient();
-void smaxSetResilientExit(boolean value);
-int smaxSetPipelined(boolean isEnabled);
-boolean smaxIsPipelined();
+void smaxSetVerbose(XBoolean value);
+XBoolean smaxIsVerbose();
+void smaxSetResilient(XBoolean value);
+XBoolean smaxIsResilient();
+void smaxSetResilientExit(XBoolean value);
+int smaxSetPipelined(XBoolean isEnabled);
+XBoolean smaxIsPipelined();
 int smaxSetMaxPendingPulls(int n);
 char *smaxGetScriptSHA1(const char *scriptName, int *status);
 char *smaxGetHostName();

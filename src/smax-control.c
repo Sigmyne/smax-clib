@@ -180,7 +180,7 @@ char *smaxControl(const char *table, const char *key, const void *value, XType t
  * @sa smaxControlDouble()
  * @sa smaxControlString()
  */
-boolean smaxControlBoolean(const char *table, const char *key, boolean value, const char *replyTable, const char *replyKey, boolean defaultReply, int timeout) {
+XBoolean smaxControlBoolean(const char *table, const char *key, XBoolean value, const char *replyTable, const char *replyKey, XBoolean defaultReply, int timeout) {
   static const char *fn = "smaxControlBoolean";
 
   char *reply = smaxControl(table, key, &value, X_BOOLEAN, 1, replyTable, replyKey, timeout);

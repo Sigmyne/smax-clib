@@ -43,9 +43,9 @@ static void UpdatePushRequest(const char *table, const XField *field);
 static void DestroyPushRequest(PushRequest *req);
 
 // Always initialize with FALSE...
-static boolean resilient = TRUE;      ///< By default we'll try to keep going if SMA-X is unreachble
+static XBoolean resilient = TRUE;      ///< By default we'll try to keep going if SMA-X is unreachble
 static int nPending;
-static boolean exitAfterSync = TRUE;  ///< We will try send local updates to SMA-X before exiting after connection recovery.
+static XBoolean exitAfterSync = TRUE;  ///< We will try send local updates to SMA-X before exiting after connection recovery.
 
 /**
  * Enables the resiliency feature of the library, which keeps track of local changes destined to the
@@ -59,7 +59,7 @@ static boolean exitAfterSync = TRUE;  ///< We will try send local updates to SMA
  * @sa smaxIsResilient()
  * @sa smaxSetResilientExit()
  */
-void smaxSetResilient(boolean value) {
+void smaxSetResilient(XBoolean value) {
   pthread_mutex_lock(&tableLock);
 
   if(value && !resilient) {
@@ -83,7 +83,7 @@ void smaxSetResilient(boolean value) {
  *
  * @sa smaxSetResilient()
  */
-boolean smaxIsResilient() {
+XBoolean smaxIsResilient() {
   return resilient;
 }
 
@@ -101,7 +101,7 @@ boolean smaxIsResilient() {
  * @sa smaxSetResilient()
  * @sa smaxAddConnectHook()
  */
-void smaxSetResilientExit(boolean value) {
+void smaxSetResilientExit(XBoolean value) {
   exitAfterSync = value ? TRUE : FALSE;
 }
 

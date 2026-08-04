@@ -33,7 +33,7 @@
 #define RST   "\x1B[0m"
 /// \endcond
 
-static boolean showMeta = FALSE, showList = FALSE, printErrors = FALSE, json = FALSE;
+static XBoolean showMeta = FALSE, showList = FALSE, printErrors = FALSE, json = FALSE;
 static XType type = X_UNKNOWN;
 static int count = -1;
 static char *host;

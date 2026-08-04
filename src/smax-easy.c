@@ -567,7 +567,7 @@ int smaxShareLong(const char *table, const char *key, long long value) {
  *
  * \sa smaxShareBooleans()
  */
-int smaxShareBoolean(const char *table, const char *key, boolean value) {
+int smaxShareBoolean(const char *table, const char *key, XBoolean value) {
   prop_error("smaxShareBoolean", smaxShareBooleans(table, key, &value, 1));
   return X_SUCCESS;
 }
@@ -717,14 +717,14 @@ int smaxShareInts(const char *table, const char *key, const int *values, int n) 
  *
  * \param table     Hash table name.
  * \param key       Variable name under which the data is stored.
- * \param values    Pointer to `boolean[]` array.
+ * \param values    Pointer to `XBoolean[]` array.
  * \param n         Number of elements in array to share.
  *
  * \return      X_SUCCESS (0), or else an appropriate error code (&lt;0) from smaxShare().
  *
  * @sa smaxShareBoolean()
  */
-int smaxShareBooleans(const char *table, const char *key, const boolean *values, int n) {
+int smaxShareBooleans(const char *table, const char *key, const XBoolean *values, int n) {
   prop_error("smaxShareBooleans", smaxShare(table, key, values, X_BOOLEAN, n));
   return X_SUCCESS;
 }
@@ -913,7 +913,7 @@ XField *smaxCreateIntField(const char *name, int value) {
  *
  * @sa xSetField()
  */
-XField *smaxCreateBooleanField(const char *name, boolean value) {
+XField *smaxCreateBooleanField(const char *name, XBoolean value) {
   XField *f = smaxCreateScalarField(name, X_BOOLEAN, &value);
   return f ? f : x_trace_null("smaxCreateBooleanField", NULL);
 }
@@ -944,8 +944,8 @@ XField *smaxCreateStringField(const char *name, const char *value) {
  *
  * @sa xGetField()
  */
-boolean smaxGetBooleanField(const XStructure *s, const char *name, boolean defaultValue) {
-  boolean b;
+XBoolean smaxGetBooleanField(const XStructure *s, const char *name, XBoolean defaultValue) {
+  XBoolean b;
   const XField *f = xGetField(s, name);
 
   if(!f) return defaultValue;

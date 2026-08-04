@@ -57,7 +57,7 @@ static XQueue queued;
 static int nQueued = 0;
 static int maxQueued = SMAX_DEFAULT_MAX_QUEUED;
 
-static boolean isQueueInitialized = FALSE;
+static XBoolean isQueueInitialized = FALSE;
 
 /**
  * Creates a synchronization point that can be waited upon until all elements queued prior to creation
