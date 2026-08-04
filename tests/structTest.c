@@ -4,7 +4,7 @@
  * @date Created on: Jun 20, 2020
  * @author Attila Kovacs
  *
- *      Simple program to test sharing and pulling nexted structures, and other structure functions.
+ *      Simple program to test sharing and pulling nested structures, and other structure functions.
  *
  */
 
@@ -18,10 +18,10 @@
 #define NAME    "struct"
 
 
-static void checkStatus(char *op, int status) {
+static void checkStatus(const char *op, int status) {
   if(status >= 0) return;
   fprintf(stderr, "ERROR! %s: %s\n", op, smaxErrorDescription(status));
-  exit(-1);
+  exit(EXIT_FAILURE);
 }
 
 
@@ -54,7 +54,7 @@ static int testStructFunc(XStructure *s) {
 
   // Accessing non-existent field...
   if(xGetField(s, "noSuchField")) checkStatus("get(noSuchField)", X_FAILURE);
-  if(xRemoveField(s, "noSuchField")) checkStatus("get(noSuchField)", X_FAILURE);
+  if(xRemoveField(s, "noSuchField")) checkStatus("remove(noSuchField)", X_FAILURE);
 
   // Overwriting a field.
   f = smaxCreateScalarField("field2", X_STRING, &override);
@@ -63,7 +63,7 @@ static int testStructFunc(XStructure *s) {
   f = xSetField(s, f);
   if(!f) checkStatus("overwrite", X_FAILURE);
 
-  // Destoying the structure(s)
+  // Destroying the structure(s)
   xDestroyStruct(s);
   s = NULL;
 
@@ -73,7 +73,6 @@ static int testStructFunc(XStructure *s) {
 
 int main() {
   XStructure *s, *ss, *in;
-  XMeta m = X_META_INIT;
   int status;
   float fValues[] = {1.0, 2.0, 3.0};
 
@@ -95,13 +94,14 @@ int main() {
 
   checkStatus("share", smaxShareStruct(TABLE X_SEP NAME, s));
 
-  in = smaxPullStruct(TABLE X_SEP NAME, &m, &status);
+  in = smaxPullStruct(TABLE X_SEP NAME, NULL, &status);
+  checkStatus("pull", status);
 
   checkStatus("disconnect", smaxDisconnect());
 
   checkStatus("compare", cmpStruct(s, in));
 
-  // Destoying the structure
+  // Destroying the structure
   xDestroyStruct(in);
   in = NULL;
 

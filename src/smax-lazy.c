@@ -17,7 +17,6 @@
 #include <pthread.h>
 #include <string.h>
 #include <unistd.h>
-#include <semaphore.h>
 #include <errno.h>
 #include <math.h>
 
@@ -99,7 +98,7 @@ static int Release(LazyMonitor *m) {
 /**
  * Applies an update to a cached lazy monitor. It swaps the contents of the update with that
  * of the specified monitor, s.t. the previous monitor content is available in the update
- * after the call. The caller can use it and/or destroy it if it's not longer important.
+ * after the call. The caller can use it and/or destroy it if it's no longer important.
  *
  * @param update    Pointer to the update, usually created via CreateStaging().
  * @param m         Pointer to the cached monitor point.
@@ -188,7 +187,7 @@ static LazyMonitor *CreateStaging(const LazyMonitor *m) {
  * as it happens with a single reassignment of a pointer.
  *
  * @param m     Pointer to a lazy monitor datum.
- * @return      X_SUCCESS (0) if successfull or else an error (&lt;0) from smaxPull().
+ * @return      X_SUCCESS (0) if successful or else an error (&lt;0) from smaxPull().
  */
 static int QueueUpdateAsync(LazyMonitor *m) {
   LazyMonitor *staging;
@@ -196,7 +195,7 @@ static int QueueUpdateAsync(LazyMonitor *m) {
   void *ptr;
   int status = X_SUCCESS;
 
-  xvprintf("SMA-X: Initiate queueing aync update for %s" X_SEP "%s\n", m->table, m->key);
+  xvprintf("SMA-X: Initiate queueing async update for %s" X_SEP "%s\n", m->table, m->key);
 
   if(!m) return x_error(X_NULL, EINVAL, "QueueUpdateAsync", "input parameter 'm' is NULL");
 
@@ -235,7 +234,7 @@ static int QueueUpdateAsync(LazyMonitor *m) {
  * as it happens with a single reassignment of a pointer.
  *
  * @param m     Pointer to a lazy monitor datum.
- * @return      X_SUCCESS (0) if successfull or else an error (&lt;0) from smaxPull().
+ * @return      X_SUCCESS (0) if successful or else an error (&lt;0) from smaxPull().
  */
 static int UpdateCachedAsync(LazyMonitor *m) {
   static const char *fn = "UpdateCachedAsync";
@@ -275,7 +274,7 @@ static int UpdateCachedAsync(LazyMonitor *m) {
  * @param[in]  count    Number of elements requested
  * @param[out] value    Buffer to fill with the requested data type/count.
  *
- * @return      X_SUCCESS (0) if successfull, or else an error code from smaxStringToValues()
+ * @return      X_SUCCESS (0) if successful, or else an error code from smaxStringToValues()
  */
 static int GetCachedAsync(const LazyMonitor *m, XType type, int count, void *value) {
   static const char *fn = "GetCachedAsync";
@@ -367,7 +366,7 @@ static int FetchDataAsync(LazyMonitor *m, XType type, int count, void *value, XM
 
   if(status) {
     xZero(value, type, count);
-    if(meta) if(meta != m->meta) smaxResetMeta(meta);
+    if(meta && meta != m->meta) smaxResetMeta(meta);
   }
   else {
     m->unpulledCount = 0LL;   // Reset the unread updates counter
@@ -375,7 +374,7 @@ static int FetchDataAsync(LazyMonitor *m, XType type, int count, void *value, XM
     // Copy/parse the cached data into the requested destination.
     pthread_mutex_lock(&dataLock);
     status = GetCachedAsync(m, type, count, value);
-    if(meta) if(meta != m->meta) *meta = *m->meta;
+    if(meta && meta != m->meta) *meta = *m->meta;
     pthread_mutex_unlock(&dataLock);
   }
 
@@ -387,7 +386,7 @@ static int FetchDataAsync(LazyMonitor *m, XType type, int count, void *value, XM
  * Specify that a specific variable should be cached for minimum overhead lazy access. When a variable is lazy cached
  * its local copy is automatically updated in the background so that accessing it is always nearly instantaneous.
  * Lazy caching is a good choice for variables that change less frequently than they are polled typically. For
- * variables that change frequently (ans used less frequently), lazy caching is not a great choice since it consumes
+ * variables that change frequently (and used less frequently), lazy caching is not a great choice since it consumes
  * network bandwidth even when the variable is not being accessed.
  *
  * Once a variable is lazy cached, it can be accessed instantaneously via smaxGetCached() without any blocking
@@ -416,7 +415,7 @@ int smaxCache(const char *table, const char *key, XType type) {
 
 /**
  * Retrieve a variable from the local cache (if available), or else pull from the SMA-X database. If local caching was not
- * previously eanbled, it will be enabled with this call, so that subsequent calls will always return data from the locally
+ * previously enabled, it will be enabled with this call, so that subsequent calls will always return data from the locally
  * updated cache with minimal overhead and effectively no latency.
  *
  * @param table   The hash table name.
@@ -428,8 +427,8 @@ int smaxCache(const char *table, const char *key, XType type) {
  * @return        X_SUCCESS (0), or X_NO_SERVICE is SMA-X is not accessible, or another error (&lt;0)
  *                from smax.h or xchange.h.
  *
- * @sa sa smaxCache()
- * @sa sa smaxLaxyPull()
+ * @sa smaxCache()
+ * @sa smaxLazyPull()
  */
 int smaxGetCached(const char *table, const char *key, XType type, int count, void *value, XMeta *meta) {
   static const char *fn = "smaxGetCached";
@@ -611,8 +610,8 @@ int smaxLazyPullStruct(const char *id, XStructure *s) {
  * Returns a single cached integer value for a given SMA-X variable, or a default value if the
  * value could not be retrieved. If the data is not yet cached, it will pull the value from
  * SMA-X, and will begin updating the cache automatically in the background so successive calls will
- * return promptly without blocking. That is until `smaxLaxyFlush()` is called or
- * else `smaxLaxyEnd()` for the variable.
+ * return promptly without blocking. That is until `smaxLazyFlush()` is called or
+ * else `smaxLazyEnd()` for the variable.
  *
  * \param table           The hash table name.
  * \param key             The variable name under which the data is stored.
@@ -637,8 +636,8 @@ long long smaxGetCachedLong(const char *table, const char *key, long long defaul
  * Returns a single cached double-precision value for a given SMA-X variable, or NAN if the
  * value could not be retrieved. If the data is not yet cached, it will pull the value from
  * SMA-X, and will begin updating the cache automatically in the background so successive calls
- * will return promptly without blocking. That is until `smaxLaxyFlush()` is called or
- * else `smaxLaxyEnd()` for the variable.
+ * will return promptly without blocking. That is until `smaxLazyFlush()` is called or
+ * else `smaxLazyEnd()` for the variable.
  *
  * \param table           The hash table name.
  * \param key             The variable name under which the data is stored.
@@ -657,8 +656,8 @@ double smaxGetCachedDouble(const char *table, const char *key) {
  * Returns a single cached double-precision value for a given SMA-X variable, or a default value if the
  * value could not be retrieved. If the data is not yet cached, it will pull the value from
  * SMA-X, and will begin updating the cache automatically in the background so successive calls will
- * return promptly without blocking. That is until `smaxLaxyFlush()` is called or
- * else `smaxLaxyEnd()` for the variable.
+ * return promptly without blocking. That is until `smaxLazyFlush()` is called or
+ * else `smaxLazyEnd()` for the variable.
  *
  * \param table           The hash table name.
  * \param key             The variable name under which the data is stored.
@@ -679,8 +678,8 @@ double smaxGetCachedDoubleDefault(const char *table, const char *key, double def
 /**
  * Returns a cached string value into the specified string buffer. If the data is not yet cached, it
  * will pull the value from SMA-X, and will begin updating the cache automatically in the background so
- * successive calls will return promptly without blocking. That is until `smaxLaxyFlush()` is called or
- * else `smaxLaxyEnd()` for the variable.
+ * successive calls will return promptly without blocking. That is until `smaxLazyFlush()` is called or
+ * else `smaxLazyEnd()` for the variable.
  *
  * @param table         The hash table name.
  * @param key           The variable name under which the data is stored.
@@ -699,8 +698,8 @@ int smaxGetCachedChars(const char *table, const char *key, char *buf, int n) {
  * Returns a single cached string value for a given SMA-X variable, or a NULL if the
  * value could not be retrieved. If the data is not yet cached, it will pull the value from
  * SMA-X, and will begin updating the cache automatically in the background so successive calls
- * will return promptly without blocking. That is until `smaxLaxyFlush()` is called or
- * else `smaxLaxyEnd()` for the variable.
+ * will return promptly without blocking. That is until `smaxLazyFlush()` is called or
+ * else `smaxLazyEnd()` for the variable.
  *
  * \param table           Hash table name.
  * \param key             Variable name under which the data is stored.
@@ -717,17 +716,17 @@ char *smaxGetCachedString(const char *table, const char *key) {
   status = smaxGetCached(table, key, X_STRING, 1, &str, NULL);
   if(status) {
     if(str) free(str);
-    return x_trace_null("smaxLazyPullString", NULL);
+    return x_trace_null("smaxGetCachedString", NULL);
   }
 
   return str;
 }
 
 /**
- * Copies cached data data into a structure, discarding any prior data that the structure might contain.
+ * Copies cached data into a structure, discarding any prior data that the structure might contain.
  * If the data is not yet cached, it will pull the value from SMA-X, and will update the cache automatically
  * in the background so successive calls will return promptly without blocking. That is until
- * `smaxLaxyFlush()` is called or else `smaxLaxyEnd()` for the variable.
+ * `smaxLazyFlush()` is called or else `smaxLazyEnd()` for the variable.
  *
  * @param[in]  id       Aggregate structure ID.
  * @param[out] s        Destination structure to populate with the retrieved fields
@@ -744,7 +743,7 @@ int smaxGetCachedStruct(const char *id, XStructure *s) {
 /**
  * Stops processing updates in the background for a specific variable.
  *
- * \param m     Pointer to the variable'structure monitor point structure.
+ * \param m     Pointer to the variable's monitor point structure.
  *
  */
 static void RemoveMonitorAsync(LazyMonitor *m) {
@@ -818,7 +817,7 @@ static int FlushTableAsync(LazyMonitor *m) {
  * Discards caches for all lazy variables (i.e. stops all subscriptions to variable updates, at least until
  * the next smaxLazyPull() call). Generally speaking, it's a good idea to call this routine when one is done
  * using a set of lazy variables for the time being, but want to avoid the tedium of calling smaxLazyEnd()
- * individually for each of them. Note however, that after flushing the lazy caches, the fist lazy call
+ * individually for each of them. Note however, that after flushing the lazy caches, the first lazy call
  * following for each variable will inevitably result in a real SMA-X pull. So use it carefully!
  *
  * \return      Number of monitor points flushed.
@@ -858,9 +857,9 @@ int smaxLazyFlush() {
  *                  is not being monitored, or if the arguments are invalid.
  *
  */
-unsigned long smaxGetLazyUpdateCount(const char *table, const char *key) {
+long smaxGetLazyUpdateCount(const char *table, const char *key) {
   LazyMonitor *m;
-  unsigned long n;
+  long n;
 
   if(!table) return -1;
   if(!key) return -1;
@@ -872,7 +871,7 @@ unsigned long smaxGetLazyUpdateCount(const char *table, const char *key) {
     pthread_mutex_unlock(&monitorLock);
     return -1;
   }
-  n = m->updateCount;
+  n = (long) m->updateCount;
   ReleaseAsync(m);
 
   pthread_mutex_unlock(&monitorLock);
@@ -959,7 +958,7 @@ static LazyMonitor *CreateMonitorAsync(const char *table, const char *key, XType
 
 /**
  * Attempts to destroy (deallocate) a monitor point structure. It should be called only if the monitor point
- * is not in the monitor list, and assumed that the monitor'structure mutex is unlocked. If the monitor still has
+ * is not in the monitor list, and assumed that the monitor's mutex is unlocked. If the monitor still has
  * active users, the call will return with FALSE, and let Release() handle the destruction when the monitor
  * point is no longer in use.
  *
@@ -1036,7 +1035,7 @@ static __inline__ int GetTableIndex(const LazyMonitor *m) {
  * \param table     The hash table name.
  * \param key       The variable name under which the data is stored.
  *
- * \return          Pointer to the variable'structure monitor point structure, or NULL if it is not (yet)
+ * \return          Pointer to the variable's monitor point structure, or NULL if it is not (yet)
  *                  being monitored.
  *
  * \sa Release()
@@ -1067,7 +1066,7 @@ static LazyMonitor *GetExistingMonitorAsync(const char *table, const char *key) 
  * \param table     The hash table name.
  * \param key       The variable name under which the data is stored.
  *
- * \return          Pointer to the variable'structure monitor point structure, or NULL if it is not (yet)
+ * \return          Pointer to the variable's monitor point structure, or NULL if it is not (yet)
  *                  being monitored.
  *
  * \sa Release()

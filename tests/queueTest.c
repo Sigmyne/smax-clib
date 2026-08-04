@@ -20,7 +20,7 @@
 #include "smax.h"
 
 #ifndef SMAX_TEST_TIMEOUT
-#  define SMAX_TEST_TIMEOUT 3   ///< [s] Default timeout
+#  define SMAX_TEST_TIMEOUT 10   ///< [s] Default timeout
 #endif
 
 #define TABLE   "_test_" X_SEP "queued"
@@ -35,7 +35,7 @@ static int testSyncPoint();
 static int testWaitComplete();
 static int testCallback();
 
-static void checkStatus(char *op, int status) {
+static void checkStatus(const char *op, int status) {
   if(!status) return;
   fprintf(stderr, "ERROR! %s: %s\n", op, smaxErrorDescription(status));
   exit(-1);

@@ -41,7 +41,7 @@ jobs:
       run: sudo apt-get install doxygen
 
     - name: Check out smax-clib
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Generate docs
       run: make local-dox
@@ -54,35 +54,51 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: install doxygen
-      run: sudo apt-get install doxygen
-
-    - name: Checkout smax-clib
-      uses: actions/checkout@v6
-      with:
-        repository: Sigmyne/smax-clib
-        path: smax-clib
-
     - name: Check out xchange dependency
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Sigmyne/xchange
         path: xchange
 
     - name: Check out RedisX dependency
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Sigmyne/redisx
         path: redisx
 
-    - name: Generate docs
-      run: make -C xchange dox 
-
-    - name: Generate docs
-      run: make -C redisx dox  
-
-    - name: Generate headless README for smax-clib
+    - name: Checkout smax-clib
+      uses: actions/checkout@v7
+      with:
+        repository: Sigmyne/smax-clib
+        path: smax-clib
+        
+    - name: Make headless xchange README
+      run: make -C xchange/doc README.md
+    
+    - name: Make headless RedisX README
+      run: make -C redisx/doc README.md
+      
+    - name: Make headless smax-clib README
       run: make -C smax-clib README-smax.md
+
+    - name: Generate xchange apidocs
+      uses: mattnotmitt/doxygen-action@edge
+      with:
+        additional-packages: font-roboto
+        working-directory: ./xchange/doc 
+        
+    - name: Generate redisx apidocs
+      uses: mattnotmitt/doxygen-action@edge
+      with:
+        additional-packages: font-roboto
+        working-directory: ./redisx/doc
+        
+    - name: Link to xchange / RedisX documentation
+      run: |
+        sed -i "s:\(TAGFILES\s*=\)$:\1\
+               ../xchange/doc/xchange.tag=../xchange/doc/html \
+               ../redisx/doc/redisx.tag=../redisx/doc/html \
+               :g" smax-clib/Doxyfile
 
     - name: Generate smax-clib apidocs
       uses: mattnotmitt/doxygen-action@edge
@@ -94,7 +110,7 @@ jobs:
       run: for file in smax-clib/apidoc/html/*.html ; do sudo sed -i "/<\/head>/e cat resources/analytics.html" $file ; done
 
     - name: Checkout gh-pages
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         ref: 'gh-pages'
         path: site
@@ -127,10 +143,10 @@ jobs:
     steps:
 
     - name: Checkout source
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Checkout gh-pages
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         ref: 'gh-pages'
         path: site

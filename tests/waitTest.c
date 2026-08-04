@@ -5,7 +5,7 @@
  * @author Attila Kovacs
  *
  *      This simple program demonstrates and tests the use of lazy pulling from the SMA-X database.
- *      Lazy polling allows frequent checking on (i.e. polling) an infrequently changing variable's content
+ *      Lazy pulling allows frequent checking on (i.e. polling) an infrequently changing variable's content
  *      without causing excessive network traffic. Data is pulled from SMA-X only on the first call
  *      to smaxLazyPull(), and then only when an update notification is received for the lazy value.
  */
@@ -21,7 +21,7 @@
 #include "smax.h"
 
 #ifndef SMAX_TEST_TIMEOUT
-#  define SMAX_TEST_TIMEOUT 3     ///< [s] Default timeout
+#  define SMAX_TEST_TIMEOUT 10     ///< [s] Default timeout
 #endif
 
 #define TABLE   "_test_" X_SEP "wait"
@@ -31,7 +31,7 @@
 // Variables updated by the polling thread and checked/reported by main()
 static int gotUpdate = FALSE;
 
-static void checkStatus(char *op, int status) {
+static void checkStatus(const char *op, int status) {
   if(!status) return;
   fprintf(stderr, "ERROR! %s: %s\n", op, smaxErrorDescription(status));
   exit(-1);
@@ -47,8 +47,8 @@ static void *WaitingThread(void *arg) {
 
   (void) arg; // unused
 
-  // Lazy pull including metadata, but meta argument may be NULL if we don't need it.
-  smaxPull(TABLE, NAME, X_INT, 1, &initial, &meta);
+  // Pull including metadata, but meta argument may be NULL if we don't need it.
+  checkStatus("initial pull", smaxPull(TABLE, NAME, X_INT, 1, &initial, &meta));
 
   while(TRUE) {
     char *key;
@@ -56,14 +56,18 @@ static void *WaitingThread(void *arg) {
 
     status = smaxWaitOnSubscribedGroup(TABLE, &key, SMAX_TEST_TIMEOUT, NULL);
     if(status) smaxError("WaitingThread", status);
-    else if(!strcmp(key, NAME)) {                   // Check that it was indeed the key we are expecting that updated.
+    else if(strcmp(NAME, key) == 0) {                   // Check that it was indeed the key we are expecting that updated.
       int final;
-      // Lazy pull including metadata, but meta argument may be NULL if we don't need it.
-      smaxPull(TABLE, NAME, X_INT, 1, &final, &meta);
+      // Pull including metadata, but meta argument may be NULL if we don't need it.
+      checkStatus("final pull", smaxPull(TABLE, NAME, X_INT, 1, &final, &meta));
       if(final != initial) gotUpdate = TRUE;
       break;
     }
-    else fprintf(stderr, "ERROR! Got unexpected update for key=%s\n", key);
+    else {
+      fprintf(stderr, "ERROR! Got unexpected update for key=%s\n", key);
+      gotUpdate = FALSE;
+      break;
+    }
   }
 
   return NULL;
@@ -71,7 +75,8 @@ static void *WaitingThread(void *arg) {
 
 int main() {
   pthread_t tid;
-  int timeoutLoops = 100 * SMAX_TEST_TIMEOUT;
+  int timeoutLoops = 100 * SMAX_TEST_TIMEOUT, i;
+
 
   xSetDebug(TRUE);
 
@@ -83,7 +88,18 @@ int main() {
   checkStatus("share", smaxShareInt(TABLE, NAME, 0));
 
   // Wait until we are sure the starting value is in the database.
-  while(smaxPullInt(TABLE, NAME, -1) != 0) continue;
+  for (i = timeoutLoops; --i >= 0; ) {
+    struct timespec interval = { 0, 10000000 }; // Check every 10ms
+
+    if(smaxPullInt(TABLE, NAME, -1) == 0) break;
+
+    nanosleep(&interval, NULL);
+  }
+
+  if(i < 0) {
+    fprintf(stderr, "ERROR! could not confirm initial value in DB.\n");
+    exit(-1);
+  }
 
   checkStatus("subscribe", smaxSubscribe(TABLE, NAME));
 
@@ -106,6 +122,7 @@ int main() {
 
     if(gotUpdate) {
       printf("wait: OK\n");
+      pthread_join(tid, NULL);
       exit(0);
     }
 

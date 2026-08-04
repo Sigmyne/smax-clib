@@ -3,7 +3,7 @@
  *
  * \date Jan 26, 2018
  * \author Attila Kovacs
- * \version 1.0
+ * \version 1.1
  *
  *  smax-clib C/C++ client library to an SMA-X database, available on GitHub as:
  *
@@ -54,10 +54,10 @@
 #define SMAX_MAJOR_VERSION  1
 
 /// API minor version
-#define SMAX_MINOR_VERSION  0
+#define SMAX_MINOR_VERSION  1
 
 /// Integer sub version of the release
-#define SMAX_PATCHLEVEL     1
+#define SMAX_PATCHLEVEL     0
 
 /// Additional release information in version, e.g. "-1", or "-rc1".
 #define SMAX_RELEASE_STRING "-devel"
@@ -94,7 +94,8 @@
  */
 
 #ifndef SMAX_LOOKUP_SIZE
-#  define SMAX_LOOKUP_SIZE    1024          ///< Hash lookup table size (for lazy pulls and resilient shares). I should be in the signed `int` range.
+/// Hash lookup table size (for lazy pulls and resilient shares). It should be in the signed `int` range.
+#  define SMAX_LOOKUP_SIZE    1024
 #endif
 
 /// \cond PROTECTED
@@ -130,7 +131,7 @@
 #define SMAX_MSG_WARNING    "warning"       ///< Program warnings.
 #define SMAX_MSG_ERROR      "error"         ///< Program errors.
 
-#define SMAX_ORIGIN_LENGTH  80              ///< (bytes) Maximum length of 'origin' meatdata, including termination.
+#define SMAX_ORIGIN_LENGTH  80              ///< (bytes) Maximum length of 'origin' metadata, including termination.
 
 /**
  * \brief Synchronization point that can be waited upon when queueing pipelined pulls.
@@ -190,7 +191,7 @@ typedef struct XMeta {
 } XMeta;
 
 /**
- * Default initialized for SMA-X medatadata structure. You should always initialize local metadata with
+ * Default initialized for SMA-X metadata structure. You should always initialize local metadata with
  * this.
  */
 #define X_META_INIT             { 0, X_UNKNOWN, -1, {0}, -1, {'\0'}, {}, 0 }
@@ -210,8 +211,8 @@ typedef struct {
 
 /**
  * A function which is executed when a designated control variable is updated in SMA-X.
- * The function should pull the associated value and act on ot as desired, usually
- * reporting completion (or an error) in an approriate related variable.
+ * The function should pull the associated value and act on it as desired, usually
+ * reporting completion (or an error) in an appropriate related variable.
  *
  * @param table   Hash table in which the control variable resides.
  * @param key     Name of the control variable.
@@ -244,7 +245,7 @@ int smaxSetTLSCipherSuites(const char *list);
 int smaxSetDHCipherParams(const char *dh_file);
 
 int smaxConnect();
-int smaxConnectTo(const char *server);
+int smaxConnectTo(const char *host);
 int smaxDisconnect();
 int smaxIsConnected();
 int smaxReconnect();
@@ -309,7 +310,7 @@ char *smaxGetCachedString(const char *table, const char *key);
 int smaxGetCachedStruct(const char *id, XStructure *s);
 int smaxLazyEnd(const char *table, const char *key);
 int smaxLazyFlush();
-unsigned long smaxGetLazyUpdateCount(const char *table, const char *key);
+long smaxGetLazyUpdateCount(const char *table, const char *key);
 
 
 // Some convenience methods for simpler shares ----------->

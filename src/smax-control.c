@@ -47,7 +47,7 @@ typedef struct {
   int timeout;          ///< [s] Timeout
   int status;           ///< Return status
   int error_code;       ///< Standard POSIX error code (see errno.h)
-  sem_t sem;            ///< Sempahore for when response is ready.
+  sem_t sem;            ///< Semaphore for when response is ready.
 } ControlVar;
 
 /**
@@ -66,13 +66,13 @@ static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 /// \endcond
 
 static void *MonitorThread(void *arg) {
-  ControlVar *control = (ControlVar *) arg;
-  control->status = smaxWaitOnSubscribed(control->table, control->key, control->timeout, &control->sem);
-  if(control->status != X_SUCCESS) {
-    control->error_code = errno;
+  ControlVar *reply = (ControlVar *) arg;
+  reply->status = smaxWaitOnSubscribed(reply->table, reply->key, reply->timeout, &reply->sem);
+  if(reply->status != X_SUCCESS) {
+    reply->error_code = errno;
     return NULL;
   }
-  return (void *) smaxPullRaw(control->table, control->key, NULL, &control->status);
+  return (void *) smaxPullRaw(reply->table, reply->key, NULL, &reply->status);
 }
 
 /**
@@ -125,7 +125,7 @@ char *smaxControl(const char *table, const char *key, const void *value, XType t
   }
 
   // Proceed only when the monitor is in waiting status...
-  if(sem_wait(&reply.sem) < 0) {;
+  if(sem_wait(&reply.sem) < 0) {
     smaxUnsubscribe(reply.table, reply.key);
     sem_destroy(&reply.sem);
     x_error(0, errno, fn, "sem_wait() error: %s\n", strerror(errno));
@@ -138,7 +138,7 @@ char *smaxControl(const char *table, const char *key, const void *value, XType t
   status = smaxShare(table, key, value, type, count);
   smaxUnlockNotify();
 
-  // Now send the control command
+  // Check if the control command was sent successfully
   if(status != X_SUCCESS) {
     pthread_cancel(tid);
     smaxUnsubscribe(reply.table, reply.key);
@@ -193,7 +193,7 @@ XBoolean smaxControlBoolean(const char *table, const char *key, XBoolean value, 
 }
 
 /**
- * Sets a atring type SMA-X control variable, and returns the string response to the monitored reply,
+ * Sets a string type SMA-X control variable, and returns the string response to the monitored reply,
  * or NULL in case of an error.
  *
  * @param table         SMA-X table name
@@ -238,7 +238,7 @@ char *smaxControlString(const char *table, const char *key, const char *value, c
  *                      indicate the type of error).
  *
  * @sa smaxControlBoolean()
- * @sa smaxControlInt()
+ * @sa smaxControlDouble()
  * @sa smaxControlString()
  */
 int smaxControlInt(const char *table, const char *key, int value, const char *replyTable, const char *replyKey, int defaultReply, int timeout) {
@@ -257,8 +257,8 @@ int smaxControlInt(const char *table, const char *key, int value, const char *re
 }
 
 /**
- * Sets a atring type SMA-X control variable, and returns the string response to the monitored reply,
- * or NULL in case of an error.
+ * Sets a double precision type SMA-X control variable, and returns the string response to the
+ * monitored reply, or NULL in case of an error.
  *
  * @param table         SMA-X table name
  * @param key           The command keyword
@@ -373,7 +373,7 @@ static void ProcessControls(const char *pattern, const char *channel, const char
  * instead (see `smaxAddSubscriber()`).
  *
  * @param table   The hash table in which the control variable resides.
- * @param key     the control variable to monitor. It may not contain a sepatator.
+ * @param key     the control variable to monitor. It may not contain a separator.
  * @param func    The new function to call if the monitored control variable receives an update,
  *                or NULL to clear a previously configured function for the given variable.
  * @param parg    Optional pointer argument to pass along to the command procesing function, or
@@ -430,7 +430,7 @@ int smaxSetControlFunction(const char *table, const char *key, SMAXControlFuncti
       // Start processing control calls...
       status = smaxAddSubscriber(NULL, ProcessControls);
       if(status) {
-        if(id) free(id);
+        free(id);
         pthread_mutex_unlock(&mutex);
         return x_trace(fn, NULL, status);
       }

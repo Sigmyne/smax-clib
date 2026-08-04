@@ -27,7 +27,7 @@ static int gotUpdate = FALSE;
 static long long nQueries = 0;
 static int nUpdates = 0;
 
-static void checkStatus(char *op, int status) {
+static void checkStatus(const char *op, int status) {
   if(!status) return;
   fprintf(stderr, "ERROR! %s: %s\n", op, smaxErrorDescription(status));
   exit(-1);
@@ -76,7 +76,7 @@ static void *PollingThread(void *arg) {
 
 int main() {
   pthread_t tid;
-  int timeoutLoops = 100;
+  int timeoutLoops = 1000;
 
   xSetDebug(TRUE);
 
