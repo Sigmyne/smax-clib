@@ -5,6 +5,9 @@
 #          build configuration. 
 # ===============================================================================
 
+# Implicit directory in which to build libraries
+LIB ?= lib
+
 include config.mk
 
 # ===============================================================================
@@ -13,9 +16,6 @@ include config.mk
 
 # The version of the shared .so libraries
 SO_VERSION := 1
-
-# Implicit directory in which to build libraries
-LIB ?= lib
 
 # Check if there is a doxygen we can run
 ifndef DOXYGEN
