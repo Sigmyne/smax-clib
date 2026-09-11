@@ -4,9 +4,12 @@
 #
 # Author: Attila Kovacs
 
+EXAMPLES = $(subst .c,,$(wildcard *.c))
+
 LIB ?= ../lib
 
-LDFLAGS += -L$(LIB)
+CPPFLAGS += -I../include
+LDFLAGS += -L$(LIB) -lsmax -lredisx -lxchange -lpthread
 
 ifdef XCHANGE
   CPPFLAGS += -I$(XCHANGE)/include
@@ -24,18 +27,31 @@ ifeq ($(OSNAME), Linux)
   LDFLAGS += -lrt
 endif
 
-# Top level make targets...
-all:  $(BIN)/scalar $(BIN)/array $(BIN)/multidim $(BIN)/simpleScalar $(BIN)/simpleArray
+.PHONY: all
+all: $(EXAMPLES)
 
-# Additional dependencies...
-$(BIN)/scalar: $(OBJ)/scalar.o $(SMAX) 
+# Static code analysis using 'cppcheck'
+.PHONY: analyze
+analyze:
+	@echo "   [analyze]"
+	@cppcheck $(CPPFLAGS) $(CHECKOPTS) .
 
-$(BIN)/array: $(OBJ)/array.o $(SMAX) 
+.PHONY: clean
+clean:
 
-$(BIN)/multidim: $(OBJ)/multidim.o $(SMAX) 
+.PHONY: distclean
+distclean:
+	@rm -f $(EXAMPLES)
 
-$(BIN)/simpleScalar: $(OBJ)/simpleScalar.o $(SMAX) 
-
-$(BIN)/simpleArray: $(OBJ)/simpleArray.o $(SMAX) 
-
-
+.PHONY: help
+help:
+	@echo
+	@echo "Syntax: make [target]"
+	@echo
+	@echo "The following targets are available:"
+	@echo
+	@echo "  all           (default) Build all example programs."
+	@echo "  analyze       Runs 'cppcheck' static analysis tool on sources."
+	@echo "  clean         Removes intermediate products."
+	@echo "  distclean     Deletes all generated files."
+	@echo

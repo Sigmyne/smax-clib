@@ -44,7 +44,7 @@ jobs:
       uses: actions/checkout@v7
 
     - name: Generate docs
-      run: make local-dox
+      run: make dox
 
   site-update:
     name: Update github pages
@@ -79,7 +79,7 @@ jobs:
       run: make -C redisx/doc README.md
       
     - name: Make headless smax-clib README
-      run: make -C smax-clib README-smax.md
+      run: make -C smax-clib/doc README.md
 
     - name: Generate xchange apidocs
       uses: mattnotmitt/doxygen-action@edge
@@ -96,18 +96,18 @@ jobs:
     - name: Link to xchange / RedisX documentation
       run: |
         sed -i "s:\(TAGFILES\s*=\)$:\1\
-               ../xchange/doc/xchange.tag=../xchange/doc/html \
-               ../redisx/doc/redisx.tag=../redisx/doc/html \
+               ../../xchange/doc/xchange.tag=../../xchange/doc/html \
+               ../../redisx/doc/redisx.tag=../../redisx/doc/html \
                :g" smax-clib/Doxyfile
 
     - name: Generate smax-clib apidocs
       uses: mattnotmitt/doxygen-action@edge
       with:
         additional-packages: font-roboto
-        working-directory: ./smax-clib
+        working-directory: ./smax-clib/doc
         
     - name: Insert Google analytics tracker
-      run: for file in smax-clib/apidoc/html/*.html ; do sudo sed -i "/<\/head>/e cat resources/analytics.html" $file ; done
+      run: for file in smax-clib/doc/html/*.html ; do sudo sed -i "/<\/head>/e cat resources/analytics.html" $file ; done
 
     - name: Checkout gh-pages
       uses: actions/checkout@v7
@@ -119,13 +119,13 @@ jobs:
       run: mkdir -p site/doc
 
     - name: Copy README
-      run: cp smax-clib/README-smax.md site/doc/README.md
+      run: cp smax-clib/doc/README-smax.md site/doc/README.md
 
     - name: Copy CHANGELOG
       run: cp smax-clib/CHANGELOG.md site/doc/
 
     - name: Copy API documentation
-      run: cp -a smax-clib/apidoc site/
+      run: cp -a smax-clib/doc site/apidoc
 
     - name: Push to pages
       run: |

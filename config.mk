@@ -28,26 +28,9 @@ BIN ?= bin
 # Compiler: use gcc by default
 CC ?= gcc
 
-# Add include/ directory
-CPPFLAGS += -I$(INC)
-
-# Base compiler options (if not defined externally...)
-CFLAGS ?= -g -Os -Wall
-
-# Compile for specific C standard
-ifdef CSTANDARD
-  CFLAGS += -std=$(CSTANDARD)
-endif
-
-# Extra warnings (not supported on all compilers)
-ifeq ($(WEXTRA), 1) 
-  CFLAGS += -Wextra
-endif
-
-# Add source code fortification checks
-ifdef FORTIFY 
-  CFLAGS += -D_FORTIFY_SOURCE=$(FORTIFY)
-endif
+# Whether to build with TLS support (via OpenSSL). If not defined, we'll
+# enable it automatically if libssl is available
+#WITH_TLS = 1
 
 # On some old platforms __progname is not provided by libc. We have a 
 # workaround in place for LynxOS/PowerPCs. For other platforms without
@@ -55,14 +38,14 @@ endif
 # instead.
 #NO_PROCNAME = 1
 
+# Add include/ directory
+CPPFLAGS += -I$(INC)
+
+# Base compiler options (if not defined externally...)
+CFLAGS ?= -g -Os -Wall
+
 # Extra link flags (if any)
 #LDFLAGS =
-
-# Link flags required for network functions (if any) to include in LDFLAGS
-#NETFLAGS = -lnsl
-
-# Link flags required for OS calls (if any) to include in LDFLAGS
-#OSFLAGS =
 
 # cppcheck options for 'check' target
 CHECKOPTS ?= --enable=performance,warning,portability,style --language=c \
@@ -77,9 +60,13 @@ CHECKOPTS += --inline-suppr $(CHECKEXTRA)
 # Specific Doxygen to use if not the default one
 #DOXYGEN ?= /opt/bin/doxygen
 
-# Whether to build with TLS support (via OpenSSL). If not defined, we'll
-# enable it automatically if libssl is available
-#WITH_TLS = 1
+# Link flags required for network functions (if any) to include in LDFLAGS
+#NETFLAGS = -lnsl
+
+# Link flags required for OS calls (if any) to include in LDFLAGS
+#OSFLAGS =
+
+
 
 # ============================================================================
 # END of user config section. 
@@ -103,10 +90,8 @@ ifneq ($(shell which ldconfig), )
   # Detect OpenSSL automatically, and enable TLS support if present
   ifndef WITH_TLS 
     ifneq ($(shell ldconfig -p | grep libssl), )
-      $(info INFO: TLS support is enabled automatically.)
       WITH_TLS = 1
     else
-      $(info INFO: optional TLS support is not enabled.)
       WITH_TLS = 0
     endif
   endif
@@ -130,7 +115,22 @@ ifeq ($(WITH_TLS),1)
 endif
 
 # Link against pthread and dependencies
-LDFLAGS += -lpthread -lredisx -lxchange 
+LDFLAGS += -lm -lredisx -lxchange 
+
+# Compile for specific C standard
+ifdef CSTANDARD
+  CFLAGS += -std=$(CSTANDARD)
+endif
+
+# Extra warnings (not supported on all compilers)
+ifeq ($(WEXTRA), 1) 
+  CFLAGS += -Wextra
+endif
+
+# Add source code fortification checks
+ifdef FORTIFY 
+  CFLAGS += -D_FORTIFY_SOURCE=$(FORTIFY)
+endif
 
 # Search for libraries under LIB
 ifneq ($(findstring $(LIB),$(LD_LIBRARY_PATH)),$LIB)
