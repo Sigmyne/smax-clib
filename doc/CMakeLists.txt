@@ -49,7 +49,7 @@ if(Doxygen_FOUND)
     )
 
     # Install Doxygen tag, which downstream docs can link to.
-    install(FILES redisx.tag
+    install(FILES smax.tag
         DESTINATION ${CMAKE_INSTALL_DOCDIR}
         COMPONENT Development
     )

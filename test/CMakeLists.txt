@@ -14,6 +14,10 @@ list(TRANSFORM TEST_PROGRAMS REPLACE "[.]c$" "")
 
 # Build each test program
 foreach(TEST ${TEST_PROGRAMS})
+    if(${TEST} STREQUAL "benchmark" AND NOT BUILD_BENCHMARK)
+        continue()
+    endif()
+
     set(TEST_SOURCE ${TEST}.c)
 
     add_executable(${TEST} ${TEST_SOURCE})
@@ -24,7 +28,6 @@ foreach(TEST ${TEST_PROGRAMS})
     target_link_libraries(${TEST} PRIVATE core)
     
     if(${TEST} STREQUAL "benchmark")
-        find_library(POPT_LIBRARY popt REQUIRED)
         target_link_libraries(${TEST} PRIVATE ${POPT_LIBRARY})
     endif()
 

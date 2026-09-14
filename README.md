@@ -202,9 +202,11 @@ The __smax-clib__ CMake build supports the following options (in addition to the
  - `BUILD_SHARED_LIBS=ON|OFF` (default: OFF) - Build shared libraries instead of static
  - `BUILD_CLI=ON|OFF` (default: OFF) - Build `redisx-cli` tool (requires `popt`, `bsd` and `readline` libraries). 
  - `BUILD_DOC=ON|OFF` (default: OFF) - Compile HTML documentation. Requires `doxygen`.
- - `BUILD_EXAMPLES=ON|OFF` (default: OFF) - Build the included examples
  - `BUILD_TESTING=ON|OFF` (default: ON) - Build regression tests.
+ - `BUILD_EXAMPLES=ON|OFF` (default: OFF) - Build the included examples
+ - `BUILD_BENCKMARK=ON|OFF` (default: OFF) - Build benchmarking tool.
  - `ENABLE_ONLINE_TESTING` (default: OFF) - Run tests with a running Redis / Valkey Server on `localhost`.
+ - `ENABLE_TLS` (default: OFF) - Build with TLS support (RedisX must also be built with TLS support enabled).
  - `xchange_DIR=<path>` - Path (absolute or relative) to the `xchange` CMake build directory.
  - `redisx_DIR=<path>` - Path (absolute or relative) to the `redisx` CMake build directory.
 

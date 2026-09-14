@@ -32,24 +32,23 @@ jobs:
       XCHANGE: xchange
       REDISX: redisx
     steps:
+      - name: Check out smax-clib
+        uses: actions/checkout@v7
 
-    - name: Check out smax-clib
-      uses: actions/checkout@v7
+      - name: Check out xchange dependency
+        uses: actions/checkout@v7
+        with:
+          repository: Sigmyne/xchange
+          path: xchange
 
-    - name: Check out xchange dependency
-      uses: actions/checkout@v7
-      with:
-        repository: Sigmyne/xchange
-        path: xchange
+      - name: Check out RedisX dependency
+        uses: actions/checkout@v7
+        with:
+          repository: Sigmyne/redisx
+          path: redisx
 
-    - name: Check out RedisX dependency
-      uses: actions/checkout@v7
-      with:
-        repository: Sigmyne/redisx
-        path: redisx
+      - name: install package dependencies
+        run: sudo apt-get install -y cppcheck
 
-    - name: install package dependencies
-      run: sudo apt-get install -y cppcheck
-
-    - name: Run cppcheck
-      run: make analyze
+      - name: Run cppcheck
+        run: make analyze

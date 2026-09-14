@@ -461,13 +461,14 @@ int smaxDeletePattern(const char *pattern);
 #ifdef _MSC_VER
 #  include <windows.h>
 
-#  define XCND_TYPE                             CONDITION_VARIABLE
+typedef CONDITION_VARIABLE      xcnd_type;
+
 #  define XCND_INITIALIZER                      CONDITION_VARIABLE_INIT
 
 #  define xcnd_init(cond)                       InitializeConditionVariable(cond)
 #  define xcnd_wait(cond, mutex)                SleepConditionVariableSRW(cond, mutex, INFINITE, 0);
 #  define xcnd_timedwait(cond, mutex, millis)   SleepConditionVariableSRW(cond, mutex, millis, 0);
-#  define xcnd_broadcast                        WakeAllConditionVariable;
+#  define xcnd_broadcast                        WakeAllConditionVariable
 #  define xcnd_destroy                          (void)
 
 #  define sched_yield                           SwitchToThread
@@ -475,7 +476,8 @@ int smaxDeletePattern(const char *pattern);
 #else
 #  include <pthread.h>
 
-#  define XCND_TYPE                             pthread_cond_t
+typedef pthread_cond_t          xcnd_type;
+
 #  define XCND_INITIALIZER                      PTHREAD_COND_INITIALIZER
 
 #  define xcnd_init(cond)                       pthread_cond_init(x, NULL)

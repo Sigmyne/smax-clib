@@ -43,7 +43,7 @@ if(ENABLE_TLS)
     target_compile_definitions(core PRIVATE WITH_TLS=1)
     target_link_libraries(core PUBLIC OpenSSL::SSL)
     if(BUILD_CLI)
-       target_link_libraries(smax-clib PRIVATE OpenSSL::SSL)
+       target_link_libraries(core PRIVATE OpenSSL::SSL)
     endif()
 endif()
 
