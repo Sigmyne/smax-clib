@@ -26,8 +26,11 @@ endif
 
 # If there is doxygen, build the API documentation also by default
 ifeq ($(.SHELLSTATUS),0)
-  DOC_TARGETS += local-dox
+  DOC_TARGETS += dox
 endif
+
+# Link against thread libs
+LDFLAGS += -lpthread
 
 # Build for distribution
 .PHONY: distro
@@ -52,10 +55,19 @@ shared: $(LIB)/libsmax.so
 .PHONY: static
 static: $(LIB)/libsmax.a
 
+# Command-line tools
+.PHONY: tools
+tools: $(BIN)/smaxValue $(BIN)/smaxWrite
+
 # Run regression tests
 .PHONY: test
 test: $(LIBSMAX) tools
-	$(MAKE) -f test.mk
+	$(MAKE) -C test run
+
+# Examples
+.PHONY: examples
+examples: $(LIBSMAX)
+	$(MAKE) -C examples
 
 # Build benchmark program
 .PHONY: benchmark
@@ -71,19 +83,22 @@ check: test analyze
 infer: clean
 	infer run -- $(MAKE) $(LIBSMAX)
 
-# Command-line tools
-.PHONY: tools
-tools: $(BIN)/smaxValue $(BIN)/smaxWrite
-
 # Remove intermediates
 .PHONY: clean
 clean:
-	rm -f $(OBJECTS) README-smax.md gmon.out
+	@rm -f $(OBJECTS) README-smax.md gmon.out
+	@$(MAKE) -s -C test clean
+	@$(MAKE) -s -C examples clean
+	@$(MAKE) -s -C doc clean
 
 # Remove all generated files
 .PHONY: distclean
 distclean: clean
-	rm -f Doxyfile.local $(LIB)/libsmax.so* $(LIB)/libsmax.a
+	@rm -f $(LIB)/libsmax.so* $(LIB)/libsmax.a $(BIN)/smaxValue $(BIN)/smaxWrite
+	@rm -rf build
+	@$(MAKE) -s -C test distclean
+	@$(MAKE) -s -C examples distclean
+	@$(MAKE) -s -C doc distclean
 
 # ----------------------------------------------------------------------------
 # The nitty-gritty stuff below
@@ -109,17 +124,9 @@ $(LIB)/libsmax.a: $(OBJECTS)
 README-smax.md: README.md
 	LINE=`sed -n '/\# /{=;q;}' $<` && tail -n +$$((LINE+2)) $< > $@
 
-dox: README-smax.md
-
-.INTERMEDIATE: Doxyfile.local
-Doxyfile.local: Doxyfile Makefile
-	sed "s:^TAGFILES.*$$:TAGFILES = :g" $< > $@
-
-# Local documentation without specialized headers. The resulting HTML documents do not have
-# Google Search or Analytics tracking info.
-.PHONY: local-dox
-local-dox: README-smax.md Doxyfile.local
-	doxygen Doxyfile.local
+.PHONY: dox
+dox:
+	$(MAKE) -C doc
 
 # Some standard GNU targets, that should always exist...
 .PHONY: html
@@ -189,20 +196,20 @@ install-man:
 install-headers:
 	@echo "installing headers to $(DESTDIR)$(includedir)"
 	install -d $(DESTDIR)$(includedir)
-	$(INSTALL_DATA) -D include/* $(DESTDIR)$(includedir)/
+	$(INSTALL_DATA) -D include/smax.h $(DESTDIR)$(includedir)/
 
 .PHONY: install-html
 install-html:
-ifneq ($(wildcard apidoc/html/search/*),)
+ifneq ($(wildcard doc/html/search/*),)
 	@echo "installing API documentation to $(DESTDIR)$(htmldir)"
 	install -d $(DESTDIR)$(htmldir)/search
-	$(INSTALL_DATA) -D apidoc/html/search/* $(DESTDIR)$(htmldir)/search/
-	$(INSTALL_DATA) -D apidoc/html/*.* $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) -D doc/html/search/* $(DESTDIR)$(htmldir)/search/
+	$(INSTALL_DATA) -D doc/html/*.* $(DESTDIR)$(htmldir)/
 	@echo "installing Doxygen tag file to $(DESTDIR)$(docdir)"
 	install -d $(DESTDIR)$(docdir)
-	$(INSTALL_DATA) -D apidoc/*.tag $(DESTDIR)$(docdir)/
+	$(INSTALL_DATA) -D doc/*.tag $(DESTDIR)$(docdir)/
 else
-	@echo "WARNING! Skipping apidoc install: needs doxygen and 'local-dox'"
+	@echo "WARNING! Skipping API doc install: needs doxygen and 'dox'"
 endif
 
 # Built-in help screen for `make help`

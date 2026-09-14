@@ -7,7 +7,7 @@
  *
  *  smax-clib C/C++ client library to an SMA-X database, available on GitHub as:
  *
- *   https://github.com/Smithsonian/redisx
+ *   https://github.com/Sigmyne/smax-clib
  *
  */
 
@@ -21,6 +21,7 @@
 
 #include <redisx.h>
 #include <xchange.h>
+
 
 #ifndef SMAX_DEFAULT_HOSTNAME
 #  define SMAX_DEFAULT_HOSTNAME             "smax"      ///< Host name of Redis server used for SMA-X.
@@ -452,5 +453,47 @@ int smaxSetPipelineConsumer(void (*f)(RESP *));
 int smaxDeletePattern(const char *pattern);
 #endif
 
+
+// ------------------------------------------------------------------------------------
+// Below are definitions to use internally but dependent libraries may use them too...
+/// \cond PRIVATE
+
+#ifdef _MSC_VER
+#  include <windows.h>
+
+typedef CONDITION_VARIABLE      xcnd_type;
+
+#  define XCND_INITIALIZER                      CONDITION_VARIABLE_INIT
+
+#  define xcnd_init(cond)                       InitializeConditionVariable(cond)
+#  define xcnd_wait(cond, mutex)                SleepConditionVariableSRW(cond, mutex, INFINITE, 0);
+#  define xcnd_timedwait(cond, mutex, millis)   SleepConditionVariableSRW(cond, mutex, millis, 0);
+#  define xcnd_broadcast                        WakeAllConditionVariable
+#  define xcnd_destroy                          (void)
+
+#  define sched_yield                           SwitchToThread
+#  define strtok_r                              strtok_s    ///< MSC equivalent
+#else
+#  include <pthread.h>
+
+typedef pthread_cond_t          xcnd_type;
+
+#  define XCND_INITIALIZER                      PTHREAD_COND_INITIALIZER
+
+#  define xcnd_init(cond)                       pthread_cond_init(x, NULL)
+#  define xcnd_wait(cond, mutex)                pthread_cond_wait(cond, mutex)
+#  define xcnd_timedwait(cond, mutex, millis) { \
+        struct timespec ts;  \
+        clock_gettime(CLOCK_REALTIME, &ts); \
+        ts.tv_nsec += 1000000L * (millis % 1000); \
+        ts.tv_sec += millis / 1000 + ts.tv_nsec / 1000000000L; \
+        ts.tv_nsec %= 1000000000L; \
+        pthread_cond_timedwait(cond, mutex, &ts); \
+}
+#  define xcnd_broadcast                        pthread_cond_broadcast
+#  define xcnd_destroy                          pthread_cond_destroy
+#endif
+
+/// \endcond
 
 #endif /* SMAX_H_ */

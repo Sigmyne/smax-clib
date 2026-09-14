@@ -1,0 +1,38 @@
+# Additional CMake configuration file for building the C++ regression testing 
+# programs of the RedisX library. The programs are added to the test suite.
+#
+# To invoke simply configure the cmake build in the redisx root directory with
+# the -DBUILD_TESTING=ON options.
+#
+# Author: Attila Kovacs
+
+# test all sources
+FILE(GLOB TEST_PROGRAMS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.c)
+
+# Test programs, matching the test sources
+list(TRANSFORM TEST_PROGRAMS REPLACE "[.]c$" "")
+
+# Build each test program
+foreach(TEST ${TEST_PROGRAMS})
+    if(${TEST} STREQUAL "benchmark" AND NOT BUILD_BENCHMARK)
+        continue()
+    endif()
+
+    set(TEST_SOURCE ${TEST}.c)
+
+    add_executable(${TEST} ${TEST_SOURCE})
+              
+    target_include_directories(${TEST} PRIVATE ${PROJECT_SOURCE_DIR}/include)
+        
+    # Link against the xchange library
+    target_link_libraries(${TEST} PRIVATE core)
+    
+    if(${TEST} STREQUAL "benchmark")
+        target_link_libraries(${TEST} PRIVATE ${POPT_LIBRARY})
+    endif()
+
+    if(ENABLE_ONLINE_TESTING)
+        add_test(NAME ${TEST} COMMAND ${TEST})
+    endif()
+endforeach()
+

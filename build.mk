@@ -17,7 +17,7 @@ $(LIB)/%.so.$(SO_VERSION):
 # Unversioned shared libs (for linking against)
 $(LIB)/lib%.so:
 	@rm -f $@
-	ln -sr $< $@
+	( cd $(dir $@); ln -s $(notdir $<) $(notdir $@) )
 
 # Static library: *.a
 $(LIB)/%.a:
@@ -31,19 +31,19 @@ $(BIN)/%: $(OBJ)/%.o $(LIBSMAX)
 	$(CC) -o $@ $< $(LDFLAGS) -lpopt -lsmax
 
 # Create sub-directories for build targets
-dep $(OBJ) $(LIB) $(BIN) apidoc:
+dep $(OBJ) $(LIB) $(BIN):
 	mkdir -p $@
 
 # Remove intermediate files locally
 .PHONY: clean-local
 clean-local:
-	rm -rf obj
+	@rm -rf obj
 
 # Remove all locally built files, effectively restoring the repo to its 
 # pristine state
 .PHONY: distclean-local
 distclean-local: clean-local
-	rm -rf bin lib apidoc infer-out
+	@rm -rf bin lib infer-out
 
 # Remove intermediate files (general)
 .PHONY: clean
@@ -58,11 +58,3 @@ distclean: distclean-local
 analyze:
 	@echo "   [analyze]"
 	@cppcheck $(CPPFLAGS) $(CHECKOPTS) src
-
-# Doxygen documentation (HTML and man pages) under apidocs/
-.PHONY: dox
-dox: README.md Doxyfile apidoc $(SRC) $(INC)
-	@echo "   [doxygen]"
-	@$(DOXYGEN)
-
-

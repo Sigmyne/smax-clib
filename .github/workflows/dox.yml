@@ -36,15 +36,14 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - name: install doxygen
+        run: sudo apt-get install doxygen
 
-    - name: install doxygen
-      run: sudo apt-get install doxygen
+      - name: Check out smax-clib
+        uses: actions/checkout@v7
 
-    - name: Check out smax-clib
-      uses: actions/checkout@v7
-
-    - name: Generate docs
-      run: make local-dox
+      - name: Generate docs
+        run: make dox
 
   site-update:
     name: Update github pages
@@ -53,87 +52,84 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - name: Check out xchange
+        uses: actions/checkout@v7
+        with:
+          repository: Sigmyne/xchange
+          path: xchange
 
-    - name: Check out xchange dependency
-      uses: actions/checkout@v7
-      with:
-        repository: Sigmyne/xchange
-        path: xchange
+      - name: Check out RedisX
+        uses: actions/checkout@v7
+        with:
+          path: redisx
 
-    - name: Check out RedisX dependency
-      uses: actions/checkout@v7
-      with:
-        repository: Sigmyne/redisx
-        path: redisx
+      - name: Check out smax-clib
+        uses: actions/checkout@v7
+        with:
+          path: smax-clib
 
-    - name: Checkout smax-clib
-      uses: actions/checkout@v7
-      with:
-        repository: Sigmyne/smax-clib
-        path: smax-clib
-        
-    - name: Make headless xchange README
-      run: make -C xchange/doc README.md
-    
-    - name: Make headless RedisX README
-      run: make -C redisx/doc README.md
-      
-    - name: Make headless smax-clib README
-      run: make -C smax-clib README-smax.md
+      - name: Make headless xchange README
+        run: make -C xchange/doc README.md
 
-    - name: Generate xchange apidocs
-      uses: mattnotmitt/doxygen-action@edge
-      with:
-        additional-packages: font-roboto
-        working-directory: ./xchange/doc 
-        
-    - name: Generate redisx apidocs
-      uses: mattnotmitt/doxygen-action@edge
-      with:
-        additional-packages: font-roboto
-        working-directory: ./redisx/doc
-        
-    - name: Link to xchange / RedisX documentation
-      run: |
-        sed -i "s:\(TAGFILES\s*=\)$:\1\
-               ../xchange/doc/xchange.tag=../xchange/doc/html \
-               ../redisx/doc/redisx.tag=../redisx/doc/html \
-               :g" smax-clib/Doxyfile
+      - name: Make headless RedisX README
+        run: make -C redisx/doc README.md
 
-    - name: Generate smax-clib apidocs
-      uses: mattnotmitt/doxygen-action@edge
-      with:
-        additional-packages: font-roboto
-        working-directory: ./smax-clib
-        
-    - name: Insert Google analytics tracker
-      run: for file in smax-clib/apidoc/html/*.html ; do sudo sed -i "/<\/head>/e cat resources/analytics.html" $file ; done
+      - name: Make headless smax-clib README
+        run: make -C smax-clib/doc README.md
 
-    - name: Checkout gh-pages
-      uses: actions/checkout@v7
-      with:
-        ref: 'gh-pages'
-        path: site
+      - name: Generate xchange apidocs
+        uses: mattnotmitt/doxygen-action@edge
+        with:
+          additional-packages: font-roboto
+          working-directory: ./xchange/doc
 
-    - name: Assert site/doc/
-      run: mkdir -p site/doc
+      - name: Generate RedisX apidocs
+        uses: mattnotmitt/doxygen-action@edge
+        with:
+          additional-packages: font-roboto
+          working-directory: ./redisx/doc
 
-    - name: Copy README
-      run: cp smax-clib/README-smax.md site/doc/README.md
+      - name: Link to xchange / RedisX documentation
+        run: |
+          sed -i "s:\(TAGFILES\s*=\)$:\1\
+               ../../xchange/doc/xchange.tag=../../xchange/doc/html \
+               ../../xchange/doc/redisx.tag=../../redisx/doc/html \
+               :g" smax-clib/doc/Doxyfile
 
-    - name: Copy CHANGELOG
-      run: cp smax-clib/CHANGELOG.md site/doc/
+      - name: Generate smax-clib apidocs
+        uses: mattnotmitt/doxygen-action@edge
+        with:
+          additional-packages: font-roboto
+          working-directory: ./smax-clib/doc
 
-    - name: Copy API documentation
-      run: cp -a smax-clib/apidoc site/
+      - name: Insert Google analytics tracker
+        run: for file in smax-clib/doc/html/*.html ; do sudo sed -i "/<\/head>/e cat resources/analytics.html" $file ; done
 
-    - name: Push to pages
-      run: |
-        cd site
-        git config --global user.email "$GITHUB_JOB+github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "github-actions"
-        git add -A
-        git commit -m "[automated site update]" && git push || true
+      - name: Checkout gh-pages
+        uses: actions/checkout@v7
+        with:
+          ref: 'gh-pages'
+          path: site
+
+      - name: Assert site/doc/
+        run: mkdir -p site/doc
+
+      - name: Copy CHANGELOG
+        run: cp smax-clib/CHANGELOG.md site/doc/
+
+      - name: Copy README
+        run: cp smax-clib/doc/README.md site/doc/README.md
+
+      - name: Copy API documentation
+        run: cp -a smax-clib/doc site/apidoc
+
+      - name: Push to pages
+        run: |
+          cd site
+          git config --global user.email "$GITHUB_JOB+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions"
+          git add -A
+          git commit -m "[automated site update]" && git push || true
 
   changelog-update:
     name: Update CHANGELOG on github pages
@@ -141,26 +137,25 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout source
+        uses: actions/checkout@v7
 
-    - name: Checkout source
-      uses: actions/checkout@v7
+      - name: Checkout gh-pages
+        uses: actions/checkout@v7
+        with:
+          ref: 'gh-pages'
+          path: site
 
-    - name: Checkout gh-pages
-      uses: actions/checkout@v7
-      with:
-        ref: 'gh-pages'
-        path: site
+      - name: Assert site/doc/
+        run: mkdir -p site/doc
 
-    - name: Assert site/doc/
-      run: mkdir -p site/doc
+      - name: Copy CHANGELOG
+        run: cp CHANGELOG.md site/doc/
 
-    - name: Copy CHANGELOG
-      run: cp CHANGELOG.md site/doc/
-
-    - name: Push to pages
-      run: |
-        cd site
-        git config --global user.email "$GITHUB_JOB+github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "github-actions"
-        git add -A
-        git commit -m "[automated site update]" && git push || true
+      - name: Push to pages
+        run: |
+          cd site
+          git config --global user.email "$GITHUB_JOB+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions"
+          git add -A
+          git commit -m "[automated site update]" && git push || true

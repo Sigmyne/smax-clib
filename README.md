@@ -100,6 +100,17 @@ Additionally, to configure your Redis (or Valkey / Dragonfly) servers for SMA-X,
 ------------------------------------------------------------------------------
 
 <a name="building-smax"></a>
+## Building and installation
+
+ - [Build / install using GNU make](#smax-gnu-build)
+ - [Build / install using CMake](#smax-cmake-build)
+
+The __RedisX__ library can be built either as a shared (`libredisx.so[.1]`) or as a static (`libredisx.a`) library, 
+depending on what suits your needs best. You can also compile HTML documentation, examples and test programs, using
+either GNU `make` or CMake.
+ 
+
+<a name="smax-gnu-build"></a>
 ## Building the SMA-X C library
 
 The __smax-clib__ library can be built either as a shared (`libsmax.so[.1]`) and as a static (`libsmax.a`) library, 
@@ -169,6 +180,74 @@ Or, to stage the installation (to `/usr`) under a 'build root':
 ```bash
   $ make DESTDIR="/tmp/stage" install
 ```
+
+<a name="smax-cmake-build"></a>
+### Build / install using CMake 
+
+As of v1.1, __smax-clib__ can be built using [CMake](https://cmake.org/) also. CMake allows for greater portability 
+than the regular GNU `Makefile`. Note, however, that the CMake configuration does not support all of the build options 
+of the GNU `Makefile`, such as code coverage tracking. 
+
+<details>
+
+The basic build recipe for CMake is:
+
+```bash
+  $ cmake -B build
+  $ cmake --build build
+```
+
+The __smax-clib__ CMake build supports the following options (in addition to the standard CMake options):
+
+ - `BUILD_SHARED_LIBS=ON|OFF` (default: OFF) - Build shared libraries instead of static
+ - `BUILD_CLI=ON|OFF` (default: OFF) - Build `redisx-cli` tool (requires `popt`, `bsd` and `readline` libraries). 
+ - `BUILD_DOC=ON|OFF` (default: OFF) - Compile HTML documentation. Requires `doxygen`.
+ - `BUILD_TESTING=ON|OFF` (default: ON) - Build regression tests.
+ - `BUILD_EXAMPLES=ON|OFF` (default: OFF) - Build the included examples
+ - `BUILD_BENCKMARK=ON|OFF` (default: OFF) - Build benchmarking tool.
+ - `ENABLE_ONLINE_TESTING` (default: OFF) - Run tests with a running Redis / Valkey Server on `localhost`.
+ - `ENABLE_TLS` (default: OFF) - Build with TLS support (RedisX must also be built with TLS support enabled).
+ - `xchange_DIR=<path>` - Path (absolute or relative) to the `xchange` CMake build directory.
+ - `redisx_DIR=<path>` - Path (absolute or relative) to the `redisx` CMake build directory.
+
+For example, to configure the build of __smax-clib__ with shared libraries and build local documentations
+
+```bash
+  $ cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_CLI=ON -DBUILD_DOC=ON
+```
+
+and then perform the build:
+
+```bash 
+  $ cmake --build build
+```
+
+Or, on Windows (Microsoft Visual C) you will want:
+
+```bash
+  $ cmake --build build --config Release
+```
+
+If a `CMAKE_BUILD_TYPE` is not set, the build will only use the `CFLAGS` (if any) that were set in the environment.
+This is ideal for those who want to have full control of the compiler flags used in the build. Specifying
+`Release` or `Debug` will append a particular set of appropriate compiler options which are suited for the given 
+build type. (If you want to use the MinGW compiler on Windows, you'll want to set 
+`-DCMAKE_C_COMPILER=gcc -G "MinGW Makefiles"` options also.)
+
+After a successful build, you can install the `Runtime` (libraries), and `Development` (headers, CMake config, and 
+`pkg-config`) components, e.g. under `/usr/local`, as:
+
+```bash
+  $ cmake --install build --prefix /usr/local 
+```
+
+Or, you can use the `--component` option to install just the selected components. For example, to install just
+the `Runtime` component:
+
+```bash
+  $ cmake --install build --component Runtime --prefix /usr/local
+```
+</details>
 
 -----------------------------------------------------------------------------
 

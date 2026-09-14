@@ -14,7 +14,6 @@
 #include <time.h>
 #include <unistd.h>
 #include <popt.h>
-#include <bsd/readpassphrase.h>
 
 #include "smax.h"
 
@@ -38,7 +37,6 @@ int main(int argc, const char *argv[]) {
   int port = 6379;
   char *user = NULL;
   char *password = NULL;
-  int askpass = FALSE;
   int cycles = 100;
   int dbIndex = 0;
   int verbose = FALSE;
@@ -49,9 +47,6 @@ int main(int argc, const char *argv[]) {
           {"port",       'p', POPT_ARG_INT    | POPT_ARGFLAG_SHOW_DEFAULT,    &port,     0, "Server port.", "<port>"}, //
           {"pass",       'a', POPT_ARG_STRING, &password,  0, "Password to use when connecting to the server.", "<password>"}, //
           {"user",         0, POPT_ARG_STRING, &user,      0, "Used to send ACL style 'AUTH username pass'. Needs -a.", "<username>"}, //
-          {"askpass",      0, POPT_ARG_NONE,   &askpass,   0, "Force user to input password with mask from STDIN.  " //
-                  "If this argument is used, '-a' will be ignored.", NULL //
-          }, //
           {"repeat",    'r', POPT_ARG_INT    | POPT_ARGFLAG_SHOW_DEFAULT,   &cycles,     0, "Repeat this many times.", "<times>"}, //
           {"db",        'n', POPT_ARG_INT     | POPT_ARGFLAG_SHOW_DEFAULT, &dbIndex,     0, "Database number.", "<index>"}, //
           {"verbose",     0, POPT_ARG_NONE,   &verbose,    0, "Verbose mode.", NULL }, //
@@ -72,14 +67,6 @@ int main(int argc, const char *argv[]) {
 
     switch(rc) {
       case 'v': printVersion(fn); return 0;
-    }
-  }
-
-  if(askpass) {
-    password = (char *) malloc(1024);
-    if(readpassphrase("Enter password: ", password, 1024, 0) == NULL) {
-      free(password);
-      password = NULL;
     }
   }
 

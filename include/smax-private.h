@@ -19,6 +19,20 @@
 
 #define RELEASEID       "<release>"     ///< Redis PUB/SUB channel prefix for wait release notifications.
 
+#if defined(_MSC_VER)
+#  include <windows.h>
+
+
+
+#else
+#  include <pthread.h>
+#  include <stdlib.h>         // for NULL
+
+
+
+#endif
+
+
 /// \cond PROTECTED
 
 typedef struct PullRequest {

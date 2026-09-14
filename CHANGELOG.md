@@ -11,9 +11,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Upcoming feature release, possibly around 1 September 2026.
 
+### Added
+
+ - #26: Added CMake build support and CI workflow.
+
 ### Changed
 
  - #16: Use `XBoolean` instead of `boolean` type (requires xchange v1.3).
+ 
+ - #26: Updated CI workflows.
  
  - Implicit or explicit `LIB` directory in `Makefile`s.
 
