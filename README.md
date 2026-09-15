@@ -1,5 +1,5 @@
-![Build Status](https://github.com/Sigmyne/smax-clib/actions/workflows/build.yml/badge.svg)
-![Test Status](https://github.com/Sigmyne/redisx/actions/workflows/test.yml/badge.svg)
+![GNU make](https://github.com/Sigmyne/smax-clib/actions/workflows/gnu.yml/badge.svg)
+![CMake](https://github.com/Sigmyne/redisx/actions/workflows/cmake.yml/badge.svg)
 ![Static Analysis](https://github.com/Sigmyne/smax-clib/actions/workflows/analyze.yml/badge.svg)
 <a href="https://sigmyne.github.io/smax-clib/apidoc/html/files.html">
  ![API documentation](https://github.com/Sigmyne/smax-clib/actions/workflows/dox.yml/badge.svg)
