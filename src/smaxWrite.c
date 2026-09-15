@@ -170,6 +170,11 @@ int main(int argc, const char *argv[]) {
   }
 
   if(!host) host = getenv("SMAX_HOST");
+  if(port <= 0) {
+    const char *portspec = getenv("SMAX_PORT");
+    if(portspec) port = (int) strtol(portspec, NULL, 10);
+  }
+
   if(host || port > 0) smaxSetServer(host, port);
 
   status = smaxConnect();

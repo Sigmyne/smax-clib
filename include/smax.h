@@ -16,11 +16,10 @@
 
 #include <time.h>
 #include <math.h>
-#include <pthread.h>
-#include <semaphore.h>
 
 #include <redisx.h>
 #include <xchange.h>
+#include <xmutex.h>
 
 
 #ifndef SMAX_DEFAULT_HOSTNAME
@@ -134,6 +133,263 @@
 
 #define SMAX_ORIGIN_LENGTH  80              ///< (bytes) Maximum length of 'origin' metadata, including termination.
 
+
+
+// ------------------------------------------------------------------------------------
+// Below are definitions to use internally but dependent libraries may use them too...
+/// \cond PRIVATE
+
+#ifdef _MSC_VER
+#  include <windows.h>
+
+
+typedef CONDITION_VARIABLE      xcnd_type;      ///< portable condition type
+
+/// portable condition initializer macro.
+#  define XCND_INITIALIZER                      CONDITION_VARIABLE_INIT
+
+/**
+ * Initializes a portable condition variable/
+ *
+ * @param cond          Pointer to a xcnd_type portable contition variable.
+ */
+#  define xcnd_init(cond)                       InitializeConditionVariable(cond)
+
+/**
+ * Waits for a portable condition to be notified. You should call it with the
+ * portable mutex locked. The call will unlock the mutex if and when it enter the
+ * blocking state. If the condition is notified, the mutex will be locked again
+ * before returning.
+ *
+ * @param cond          Pointer to a xcnd_type portable contition variable.
+ * @param mutex         Pointer to the portable mutex ensuring synchronized access to
+ *                      the condition. The mutex should be locked before passing it to
+ *                      this call. On normal return it will be locked also, but not in
+ *                      case of an error return.
+ * @return              0 if successful or else -1 if there was an error
+ *                      (for example if the wait was interrupted, on platforms
+ *                      where it is possible to do so).
+ */
+#  define xcnd_wait(cond, mutex)                ( SleepConditionVariableSRW(cond, mutex, INFINITE, 0) ? 0 : -1 )
+
+/**
+ * Waits for a portable condition to be notified, or until a timeout is reached. You
+ * should  call it with the portable mutex locked. The call will unlock the mutex if
+ * and when it enter the blocking state. If the condition is notified, the mutex will
+ * be locked again before returning.
+ *
+ * @param cond          Pointer to a xcnd_type portable contition variable.
+ * @param mutex         Pointer to the portable mutex ensuring synchronized access to
+ *                      the condition. The mutex should be locked before passing it to
+ *                      this call. On normal return it will be locked also, but not in
+ *                      case of an error return.
+ * @param millis        timeout in milliseconds.
+ * @return              0 if successful or else -1 if the wait timed out or if
+ *                      there was an error (for example if the wait was interrupted,
+ *                      on platforms where it is possible to do so).
+ */
+#  define xcnd_timedwait(cond, mutex, millis)   ( SleepConditionVariableSRW(cond, mutex, millis, 0) ? 0 : -1 )
+
+/**
+ * Wakes up all threads currently waiting on the portable condition variable. This
+ * should be called with the mutex associated with the condition locked.
+ *
+ * @param             Pointer to a xcnd_type portable contition variable.
+ */
+#  define xcnd_broadcast                        WakeAllConditionVariable
+
+/**
+ * Destroys a portable condition variable, releasing its resources.
+ *
+ * @param             Pointer to a xcnd_type portable contition variable.
+ */
+#  define xcnd_destroy                          (void)
+
+#  define sched_yield                           SwitchToThread
+#  define strtok_r                              strtok_s    ///< MSC equivalent
+#else
+#  include <pthread.h>
+#  include <stdlib.h>   // for NULL
+
+typedef pthread_cond_t          xcnd_type;      ///< portable condition type
+
+/// portable condition initializer macro.
+#  define XCND_INITIALIZER                      PTHREAD_COND_INITIALIZER
+
+/**
+ * Initializes a portable condition variable/
+ *
+ * @param cond          Pointer to a xcnd_type portable contition variable.
+ */
+#  define xcnd_init(cond)                       pthread_cond_init(cond, NULL)
+
+/**
+ * Waits for a portable condition to be notified. You should call it with the
+ * portable mutex locked. The call will unlock the mutex if and when it enter the
+ * blocking state. If the condition is notified, the mutex will be locked again
+ * before returning.
+ *
+ * @param cond          Pointer to a xcnd_type portable contition variable.
+ * @param mutex         Pointer to the portable mutex ensuring synchronized access to
+ *                      the condition. The mutex should be locked before passing it to
+ *                      this call. On normal return it will be locked also, but not in
+ *                      case of an error return.
+ * @return              0 if successful or else -1 if there was an error
+ *                      (for example if the wait was interrupted, on platforms
+ *                      where it is possible to do so).
+ */
+#  define xcnd_wait(cond, mutex)                pthread_cond_wait(cond, mutex)
+
+/**
+ * Waits for a portable condition to be notified, or until a timeout is reached. You
+ * should  call it with the portable mutex locked. The call will unlock the mutex if
+ * and when it enter the blocking state. If the condition is notified, the mutex will
+ * be locked again before returning.
+ *
+ * @param cond          Pointer to a xcnd_type portable contition variable.
+ * @param mutex         Pointer to the portable mutex ensuring synchronized access to
+ *                      the condition. The mutex should be locked before passing it to
+ *                      this call. On normal return it will be locked also, but not in
+ *                      case of an error return.
+ * @param millis        timeout in milliseconds.
+ * @return              0 if successful or else -1 if the wait timed out or if
+ *                      there was an error (for example if the wait was interrupted,
+ *                      on platforms where it is possible to do so).
+ */
+#  define xcnd_timedwait(cond, mutex, millis) ({ \
+        struct timespec _end;  \
+        clock_gettime(CLOCK_REALTIME, &_end); \
+        _end.tv_nsec += 1000000L * (millis % 1000); \
+        _end.tv_sec += millis / 1000 + _end.tv_nsec / 1000000000L; \
+        _end.tv_nsec %= 1000000000L; \
+        pthread_cond_timedwait(cond, mutex, &_end); \
+})
+
+/**
+ * Wakes up all threads currently waiting on the portable condition variable. This
+ * should be called with the mutex associated with the condition locked.
+ *
+ * @param             Pointer to a xcnd_type portable contition variable.
+ */
+#  define xcnd_broadcast                        pthread_cond_broadcast
+
+/**
+ * Destroys a portable condition variable, releasing its resources.
+ *
+ * @param             Pointer to a xcnd_type portable contition variable.
+ */
+#  define xcnd_destroy                          pthread_cond_destroy
+#endif
+
+/// \endcond
+// -------------------------------------------------------------------------------------
+
+#ifdef _MSC_VER
+#include <windows.h>
+#include <limits.h>
+
+#define MAX_SEM_COUNT                   LONG_MAX      ///< Maximum init value for an xsem_type portable semaphore
+
+typedef HANDLE                          xsem_type;    ///< Portable semaphore type
+
+/**
+ * Initializes a portable semaphore.
+ *
+ * @param sem       Pointer to a xsem_type portable semaphore
+ * @param initval   Initial number of waiters allowed to proceed immediately.
+ */
+#  define xsem_init(sem, initval)       ( *sem = CreateSemaphore(NULL, initval, MAX_SEM_COUNT, NULL) )
+
+/**
+ * Destroys a portable semaphore, releasing its resources.
+ *
+ * @param sem       Pointer to a xsem_type portable semaphore
+ */
+#  define xsem_destroy(sem)             CloseHandle(sem)
+
+/**
+ * Posts on a portable semaphore. Each post call may wake up or enable a blocked or future wait
+ * call on the semaphore to proceed.
+ *
+ * @param sem       Pointer to a xsem_type portable semaphore
+ */
+#  define xsem_post(sem)                ReleaseSemaphore(sem, 1, NULL)
+
+/**
+ * Waits (indefinitely) for a portable semaphore to be posted.
+ *
+ * @param sem       Pointer to a xsem_type portable semaphore
+ * @return          0 if successful, or else -1 in case of failure.
+ */
+#  define xsem_wait(sem)                WaitForSingleObject(sem, INFINITE)
+
+/**
+ * Waits (indefinitely) for a portable sempahore to be posted.
+ *
+ * @param sem       Pointer to a xsem_type portable semaphore
+ * @param millis    timeout in milliseconds
+ * @return          0 if successful, or else -1 in case of failure or timeout.
+ */
+#  define xsem_timedwait(sem, millis)
+
+#else
+#include <semaphore.h>
+typedef sem_t                           xsem_type;     ///< portable semaphore type
+
+/**
+ * Initialized a portable semaphore.
+ *
+ * @param sem       Pointer to a xsem_type portable semaphore
+ * @param initval   Initial number of waiters allowed to proceed immediately.
+ */
+#  define xsem_init(sem, initval)      sem_init(sem, 0, initval)
+
+/**
+ * Destroy a portable semaphore, releasing its resources.
+ *
+ * @param sem       Pointer to a xsem_type portable semaphore
+ */
+#  define xsem_destroy(sem)            sem_destroy(sem)
+
+/**
+ * Posts on a portable semaphore. Each post call may wake up or enable a blocked or future
+ * wait call on the semaphore to proceed.
+ *
+ * @param sem       Pointer to a xsem_type portable semaphore
+ */
+#  define xsem_post(sem)               sem_post(sem)
+
+/**
+ * Waits (indefinitely) for a portable semaphore to be posted.
+ *
+ * @param sem       Pointer to a xsem_type portable semaphore
+ * @return          0 if successful, or else -1 in case of failure.
+ */
+#  define xsem_wait(sem)               sem_wait(sem)
+
+#  if _POSIX_C_SOURCE >= 200112L
+
+/**
+ * Waits (indefinitely) for a portable sempahore to be posted.
+ *
+ * @param sem       Pointer to a xsem_type portable semaphore
+ * @param millis    timeout in milliseconds
+ * @return          0 if successful, or else -1 in case of failure or timeout.
+ */
+#    define xsem_timedwait(sem, millis) ({ \
+        struct timespec _end;  \
+        clock_gettime(CLOCK_REALTIME, &_end); \
+        _end.tv_nsec += 1000000L * (millis % 1000); \
+        _end.tv_sec += millis / 1000 + _end.tv_nsec / 1000000000L; \
+        _end.tv_nsec %= 1000000000L; \
+        sem_timedwait(sem, &_end); \
+})
+#  endif /* _POSIX_C_SOURCE >= 200112L */
+
+#endif /* not _MSC_VER */
+
+
+
 /**
  * \brief Synchronization point that can be waited upon when queueing pipelined pulls.
  *
@@ -144,8 +400,8 @@
  */
 typedef struct {
   int status;                   ///< Synchronization status variable (usually X_INCOMPLETE or X_SUCCESS)
-  pthread_cond_t *isComplete;   ///< Condition variable that is used for the actual wait.
-  pthread_mutex_t *lock;        ///< Mutex lock
+  xcnd_type *isComplete;   ///< Condition variable that is used for the actual wait.
+  xmut_type *lock;        ///< Mutex lock
 } XSyncPoint;
 
 /**
@@ -336,10 +592,10 @@ int smaxShareStruct(const char *id, const XStructure *s);
 // Notifications ---------------------------------------------->
 int smaxSubscribe(const char *table, const char *key);
 int smaxUnsubscribe(const char *table, const char *key);
-int smaxWaitOnSubscribed(const char *table, const char *key, int timeout, sem_t *gating);
-int smaxWaitOnSubscribedGroup(const char *matchTable, char **changedKey, int timeout, sem_t *gating);
-int smaxWaitOnSubscribedVar(const char *matchKey, char **changedTable, int timeout, sem_t *gating);
-int smaxWaitOnAnySubscribed(char **changedTable, char **changedKey, int timeout, sem_t *gating);
+int smaxWaitOnSubscribed(const char *table, const char *key, int timeout, xsem_type *gating);
+int smaxWaitOnSubscribedGroup(const char *matchTable, char **changedKey, int timeout, xsem_type *gating);
+int smaxWaitOnSubscribedVar(const char *matchKey, char **changedTable, int timeout, xsem_type *gating);
+int smaxWaitOnAnySubscribed(char **changedTable, char **changedKey, int timeout, xsem_type *gating);
 int smaxReleaseWaits();
 int smaxAddSubscriber(const char *stem, RedisSubscriberCall f);
 int smaxRemoveSubscribers(RedisSubscriberCall f);
@@ -454,46 +710,6 @@ int smaxDeletePattern(const char *pattern);
 #endif
 
 
-// ------------------------------------------------------------------------------------
-// Below are definitions to use internally but dependent libraries may use them too...
-/// \cond PRIVATE
 
-#ifdef _MSC_VER
-#  include <windows.h>
-
-typedef CONDITION_VARIABLE      xcnd_type;
-
-#  define XCND_INITIALIZER                      CONDITION_VARIABLE_INIT
-
-#  define xcnd_init(cond)                       InitializeConditionVariable(cond)
-#  define xcnd_wait(cond, mutex)                SleepConditionVariableSRW(cond, mutex, INFINITE, 0);
-#  define xcnd_timedwait(cond, mutex, millis)   SleepConditionVariableSRW(cond, mutex, millis, 0);
-#  define xcnd_broadcast                        WakeAllConditionVariable
-#  define xcnd_destroy                          (void)
-
-#  define sched_yield                           SwitchToThread
-#  define strtok_r                              strtok_s    ///< MSC equivalent
-#else
-#  include <pthread.h>
-
-typedef pthread_cond_t          xcnd_type;
-
-#  define XCND_INITIALIZER                      PTHREAD_COND_INITIALIZER
-
-#  define xcnd_init(cond)                       pthread_cond_init(x, NULL)
-#  define xcnd_wait(cond, mutex)                pthread_cond_wait(cond, mutex)
-#  define xcnd_timedwait(cond, mutex, millis) { \
-        struct timespec ts;  \
-        clock_gettime(CLOCK_REALTIME, &ts); \
-        ts.tv_nsec += 1000000L * (millis % 1000); \
-        ts.tv_sec += millis / 1000 + ts.tv_nsec / 1000000000L; \
-        ts.tv_nsec %= 1000000000L; \
-        pthread_cond_timedwait(cond, mutex, &ts); \
-}
-#  define xcnd_broadcast                        pthread_cond_broadcast
-#  define xcnd_destroy                          pthread_cond_destroy
-#endif
-
-/// \endcond
 
 #endif /* SMAX_H_ */

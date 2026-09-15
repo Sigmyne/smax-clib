@@ -14,8 +14,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
+
+#ifndef _MSC_VER
+#  include <unistd.h>   // sleep
+#endif
 
 #include "smax.h"
 
@@ -222,7 +225,11 @@ static int testCallback() {
   // Now we can go on with other business, unperturbed
   if(DEBUG) printf("Hello! I've just sent a bunch of SMA-X requests. I'm going to go on with my business...\n");
 
+#ifdef _MSC_VER
+  Sleep(3000);
+#else
   sleep(3);
+#endif
 
   // our callback would exit. So if we got this far, then it means it
   // did not get called on, so exit with an error....

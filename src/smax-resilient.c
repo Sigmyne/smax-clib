@@ -23,7 +23,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
 #include <string.h>
 #include <errno.h>
 
@@ -36,9 +35,9 @@ typedef struct PushRequest {
 } PushRequest;
 
 static PushRequest *table[SMAX_LOOKUP_SIZE];
-static pthread_mutex_t tableLock = PTHREAD_MUTEX_INITIALIZER;
+static xmut_type tableLock = XMUT_INITIALIZER;
 
-static void SendStoredPushRequests();
+static void SendStoredPushRequests(void);
 static void UpdatePushRequest(const char *table, const XField *field);
 static void DestroyPushRequest(PushRequest *req);
 
@@ -60,7 +59,7 @@ static XBoolean exitAfterSync = TRUE;  ///< We will try send local updates to SM
  * @sa smaxSetResilientExit()
  */
 void smaxSetResilient(XBoolean value) {
-  pthread_mutex_lock(&tableLock);
+  xmut_lock(&tableLock);
 
   if(value && !resilient) {
     xvprintf("SMA-X: Activating resilient mode.\n");
@@ -73,7 +72,7 @@ void smaxSetResilient(XBoolean value) {
 
   resilient = value ? TRUE : FALSE;
 
-  pthread_mutex_unlock(&tableLock);
+  xmut_unlock(&tableLock);
 }
 
 /**
@@ -161,13 +160,13 @@ int smaxStorePush(const char *group, const XField *field) {
  * @sa smaxStorePush()
  * @sa smaxSetResilientExit()
  */
-static void SendStoredPushRequests() {
+static void SendStoredPushRequests(void) {
   int i;
 
-  pthread_mutex_lock(&tableLock);
+  xmut_lock(&tableLock);
 
   if(nPending <= 0) {
-    pthread_mutex_unlock(&tableLock);
+    xmut_unlock(&tableLock);
     return;
   }
 
@@ -182,7 +181,7 @@ static void SendStoredPushRequests() {
     int status = smaxWrite(req->group, req->field);
     if(status) {
       resilient = TRUE;
-      pthread_mutex_unlock(&tableLock);
+      xmut_unlock(&tableLock);
       fprintf(stderr, "SMA-X> WARNING! Not all accumulated shares were sent. Will try again...\n");
       return;
     }
@@ -201,7 +200,7 @@ static void SendStoredPushRequests() {
   nPending = 0;
   resilient = TRUE;
 
-  pthread_mutex_unlock(&tableLock);
+  xmut_unlock(&tableLock);
 }
 
 /**
@@ -212,7 +211,7 @@ static void UpdatePushRequest(const char *group, const XField *field) {
   PushRequest *req;
   size_t idx = smaxGetHashLookupIndex(group, 0, field->name, 0);
 
-  pthread_mutex_lock(&tableLock);
+  xmut_lock(&tableLock);
 
   for(req = table[idx]; req != NULL; req = req->next)
   if(!strcmp(req->group, group)) if(!strcmp(req->field->name, field->name)) break;
@@ -237,7 +236,7 @@ static void UpdatePushRequest(const char *group, const XField *field) {
   memcpy(req->field, field, sizeof(XField));
   req->field->value = xStringCopyOf(field->value);
 
-  pthread_mutex_unlock(&tableLock);
+  xmut_unlock(&tableLock);
 }
 
 static void DestroyPushRequest(PushRequest *req) {

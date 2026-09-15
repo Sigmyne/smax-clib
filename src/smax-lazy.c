@@ -14,9 +14,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
 #include <string.h>
-#include <unistd.h>
 #include <errno.h>
 #include <math.h>
 
@@ -34,9 +32,9 @@ typedef struct LazyMonitor {
   char *channel;            ///< The pub/sub channel, e.g. "smax:<group>:<key>"
   char *data;               ///< The serialized data, as stored in Redis, or a pointer to an XStructure
   XMeta *meta;              ///< (optional) metadata
-  XBoolean isCached;         ///< Whether the variable is continuously caching 'current' data.
-  XBoolean isCurrent;        ///< If the locally stored data is current.
-  XBoolean isPending;        ///< Whether already queued for an update.
+  XBoolean isCached;        ///< Whether the variable is continuously caching 'current' data.
+  XBoolean isCurrent;       ///< If the locally stored data is current.
+  XBoolean isPending;       ///< Whether already queued for an update.
   time_t updateTime;        ///< Time of last update.
   unsigned long updateCount;    ///< Number of times the variable was updated.
   unsigned long unpulledCount;  ///< Number of updates since last pull...
@@ -49,13 +47,13 @@ typedef struct LazyMonitor {
 static int nMonitors;                                           ///< Number of lazy variables monitored.
 
 static LazyMonitor *monitorTable[SMAX_LOOKUP_SIZE];             ///< hashed monitor tables
-static pthread_mutex_t monitorLock = PTHREAD_MUTEX_INITIALIZER; ///< Mutex for accessing monitor tables
-static pthread_mutex_t dataLock = PTHREAD_MUTEX_INITIALIZER;    ///< mutex for accessing monitor data/metadata
+static xmut_type monitorLock = XMUT_INITIALIZER; ///< Mutex for accessing monitor tables
+static xmut_type dataLock = XMUT_INITIALIZER;    ///< mutex for accessing monitor data/metadata
 
 static LazyMonitor *CreateMonitorAsync(const char *table, const char *key, XType type, XBoolean withMeta);
 static XBoolean DestroyMonitorAsync(LazyMonitor *m);
 static size_t GetChannelLookupIndex(const char *channel);
-static __inline__ int GetTableIndex(const LazyMonitor *m);
+static int GetTableIndex(const LazyMonitor *m);
 static LazyMonitor *GetMonitorAsync(const char *table, const char *key);
 static LazyMonitor *GetExistingMonitorAsync(const char *table, const char *key);
 static void ProcessLazyUpdates(const char *pattern, const char *channel, const char *msg, long length);
@@ -89,9 +87,9 @@ static void ReleaseAsync(LazyMonitor *m) {
 static int Release(LazyMonitor *m) {
   if(!m) return x_error(X_NULL, EINVAL, "Release", "NULL argument");
 
-  pthread_mutex_lock(&monitorLock);
+  xmut_lock(&monitorLock);
   ReleaseAsync(m);
-  pthread_mutex_unlock(&monitorLock);
+  xmut_unlock(&monitorLock);
   return X_SUCCESS;
 }
 
@@ -114,7 +112,7 @@ static void ApplyUpdateAsync(LazyMonitor *update, LazyMonitor *m) {
   xvprintf("SMA: Applying update for %s" X_SEP "%s\n", m->table, m->key);
 
   // Update the stored data 'atomically'
-  pthread_mutex_lock(&dataLock);
+  xmut_lock(&dataLock);
   oldData = m->data;
   oldMeta = m->meta;
   m->data = update->data;
@@ -122,7 +120,7 @@ static void ApplyUpdateAsync(LazyMonitor *update, LazyMonitor *m) {
   m->updateTime = time(NULL);
   m->isCurrent = TRUE;
   m->isPending = FALSE;
-  pthread_mutex_unlock(&dataLock);
+  xmut_unlock(&dataLock);
 
   // we'll destroy the old data / meta with the update!
   update->data = oldData;
@@ -141,9 +139,9 @@ static void ApplyUpdate(void *arg) {
 
   if(!update) return;
 
-  pthread_mutex_lock(&monitorLock);
+  xmut_lock(&monitorLock);
   m = GetExistingMonitorAsync(update->table, update->key);
-  pthread_mutex_unlock(&monitorLock);
+  xmut_unlock(&monitorLock);
 
   if(m) {
     ApplyUpdateAsync(update, m);
@@ -334,12 +332,12 @@ static LazyMonitor *GetCreateMonitor(const char *table, const char *key, XType t
 
   if(!lazytab) return x_trace_null(fn, NULL);
 
-  pthread_mutex_lock(&monitorLock);
+  xmut_lock(&monitorLock);
 
   m = GetExistingMonitorAsync(lazytab, key);
   if(!m) m = CreateMonitorAsync(lazytab, key, type, withMeta);
 
-  pthread_mutex_unlock(&monitorLock);
+  xmut_unlock(&monitorLock);
 
   if(!m) return x_trace_null(fn, NULL);
   if(withMeta && !m->meta) m->meta = smaxCreateMeta();
@@ -372,10 +370,10 @@ static int FetchDataAsync(LazyMonitor *m, XType type, int count, void *value, XM
     m->unpulledCount = 0LL;   // Reset the unread updates counter
 
     // Copy/parse the cached data into the requested destination.
-    pthread_mutex_lock(&dataLock);
+    xmut_lock(&dataLock);
     status = GetCachedAsync(m, type, count, value);
     if(meta && meta != m->meta) *meta = *m->meta;
-    pthread_mutex_unlock(&dataLock);
+    xmut_unlock(&dataLock);
   }
 
   prop_error(fn, status);
@@ -777,7 +775,7 @@ static void RemoveMonitorAsync(LazyMonitor *m) {
 int smaxLazyEnd(const char *table, const char *key) {
   LazyMonitor *m;
 
-  pthread_mutex_lock(&monitorLock);
+  xmut_lock(&monitorLock);
 
   m = GetMonitorAsync(table, key);
   if(m) {
@@ -785,7 +783,7 @@ int smaxLazyEnd(const char *table, const char *key) {
     ReleaseAsync(m);
   }
 
-  pthread_mutex_unlock(&monitorLock);
+  xmut_unlock(&monitorLock);
 
   return X_SUCCESS;
 }
@@ -828,7 +826,7 @@ static int FlushTableAsync(LazyMonitor *m) {
 int smaxLazyFlush() {
   int i, n = 0;
 
-  pthread_mutex_lock(&monitorLock);
+  xmut_lock(&monitorLock);
 
   for(i = SMAX_LOOKUP_SIZE; --i >= 0; ) {
     LazyMonitor *list;
@@ -840,7 +838,7 @@ int smaxLazyFlush() {
   nMonitors = 0;
   smaxRemoveSubscribers(ProcessLazyUpdates);
 
-  pthread_mutex_unlock(&monitorLock);
+  xmut_unlock(&monitorLock);
 
   return n;
 }
@@ -864,17 +862,17 @@ long smaxGetLazyUpdateCount(const char *table, const char *key) {
   if(!table) return -1;
   if(!key) return -1;
 
-  pthread_mutex_lock(&monitorLock);
+  xmut_lock(&monitorLock);
 
   m = GetMonitorAsync(table, key);
   if(!m) {
-    pthread_mutex_unlock(&monitorLock);
+    xmut_unlock(&monitorLock);
     return -1;
   }
   n = (long) m->updateCount;
   ReleaseAsync(m);
 
-  pthread_mutex_unlock(&monitorLock);
+  xmut_unlock(&monitorLock);
 
   return n;
 }
@@ -1020,11 +1018,11 @@ static size_t GetChannelLookupIndex(const char *channel) {
   return smaxGetHashLookupIndex(channel, lGroup, key, 0);
 }
 
-static __inline__ size_t GetLookupIndex(const char *table, const char *key) {
+static  size_t GetLookupIndex(const char *table, const char *key) {
   return key ? smaxGetHashLookupIndex(table, 0, key, 0) : GetChannelLookupIndex(table);
 }
 
-static __inline__ int GetTableIndex(const LazyMonitor *m) {
+static  int GetTableIndex(const LazyMonitor *m) {
   return GetLookupIndex(m->table, m->key);
 }
 
@@ -1116,7 +1114,7 @@ static void ProcessLazyUpdates(const char *pattern, const char *channel, const c
   // even if we must hold up others for a bit...
   // Nothing (apart from smaxLazyFlush()) blocks the mutex for prolonged periods,
   // so it's OK to wait just a little...
-  pthread_mutex_lock(&monitorLock);
+  xmut_lock(&monitorLock);
 
   // Loop to check for possibly monitored parents also...
   while(id) {
@@ -1150,7 +1148,7 @@ static void ProcessLazyUpdates(const char *pattern, const char *channel, const c
     if(xSplitID(id, NULL) != X_SUCCESS) break;
   }
 
-  pthread_mutex_unlock(&monitorLock);
+  xmut_unlock(&monitorLock);
 
   free(id);
 }

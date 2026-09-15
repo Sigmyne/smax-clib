@@ -10,13 +10,14 @@
  *      to smaxLazyPull(), and then only when an update notification is received for the lazy value.
  */
 
-#define _POSIX_C_SOURCE 199309L       ///< for nanosleep()
+#ifndef _MSC_VER
+#  define _POSIX_C_SOURCE 199309L       ///< for nanosleep()
+#  include <unistd.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "smax.h"
 
@@ -41,7 +42,7 @@ static void checkStatus(const char *op, int status) {
 // This thread will be running in the background, pounding on a variable
 // without causing unnecessary network traffic. It will exit normally
 // when it detects a change of the checked value.
-static void *WaitingThread(void *arg) {
+static xthread_rtn_type WaitingThread(xthread_arg_type arg) {
   XMeta meta = X_META_INIT;
   int initial;
 
@@ -70,11 +71,11 @@ static void *WaitingThread(void *arg) {
     }
   }
 
-  return NULL;
+  xthread_return();
 }
 
 int main() {
-  pthread_t tid;
+  xthread_type tid;
   int timeoutLoops = 100 * SMAX_TEST_TIMEOUT, i;
 
 
@@ -93,7 +94,11 @@ int main() {
 
     if(smaxPullInt(TABLE, NAME, -1) == 0) break;
 
+#ifdef _MSC_VER
+    Sleep(1000 * interval.tv_nsec + interval.tv_nsec / 1000000L);
+#else
     nanosleep(&interval, NULL);
+#endif
   }
 
   if(i < 0) {
@@ -104,13 +109,17 @@ int main() {
   checkStatus("subscribe", smaxSubscribe(TABLE, NAME));
 
   // Start the thread that will wait on a change...
-  if(pthread_create(&tid, NULL, WaitingThread, NULL)) {
+  if(xthread_create(&tid, WaitingThread, NULL)) {
     perror("create WaitingThread");
     exit(-1);
   }
 
   // Let the polling thread pound on the value before we change it...
+#ifdef _MSC_VER
+  Sleep(1000);
+#else
   sleep(1);
+#endif
 
   // We'll update the value here...
   // The waiting thread should set gotUpdate when it unblocks...
@@ -122,11 +131,16 @@ int main() {
 
     if(gotUpdate) {
       printf("wait: OK\n");
-      pthread_join(tid, NULL);
+      xthread_join(tid);
       exit(0);
     }
 
-    nanosleep(&interval, NULL); // Check every 10ms
+    // Check every 10ms
+#ifdef _MSC_VER
+    Sleep(1000 * interval.tv_sec + interval.tv_nsec / 1000000L);
+#else
+    nanosleep(&interval, NULL);
+#endif
   }
 
   // If we go this far, then the polling thread did not get the update

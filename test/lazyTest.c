@@ -10,12 +10,13 @@
  *      to smaxLazyPull(), and then only when an update notification is received for the lazy value.
  */
 
-#define _POSIX_C_SOURCE 199309L       ///< for nanosleep()
+#ifndef _MSC_VER
+#  define _POSIX_C_SOURCE 199309L       ///< for nanosleep()
+#  include <unistd.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
-#include <unistd.h>
 
 #include "smax.h"
 
@@ -37,7 +38,7 @@ static void checkStatus(const char *op, int status) {
 // This thread will be running in the background, pounding on a variable
 // without causing unnecessary network traffic. It will exit normally
 // when it detects a change of the checked value.
-static void *PollingThread(void *arg) {
+static xthread_rtn_type PollingThread(xthread_arg_type arg) {
   XMeta meta;
   int initial;
 
@@ -71,11 +72,11 @@ static void *PollingThread(void *arg) {
   // Stop tracking lazy updates for our variable when we do not need the data any more...
   smaxLazyEnd(TABLE, NAME);
 
-  return NULL;
+  xthread_return();
 }
 
 int main() {
-  pthread_t tid;
+  xthread_type tid;
   int timeoutLoops = 1000;
 
   xSetDebug(TRUE);
@@ -91,13 +92,17 @@ int main() {
   while(smaxPullInt(TABLE, NAME, -1) != 0) continue;
 
   // Start the thread that will pound on lazy pulls...
-  if(pthread_create(&tid, NULL, PollingThread, NULL)) {
+  if(xthread_create(&tid, PollingThread, NULL)) {
     perror("create PollingThread");
     exit(-1);
   }
 
   // Let the polling thread pound on the value before we change it...
+#ifdef _MSC_VER
+  Sleep(1000);
+#else
   sleep(1);
+#endif
 
   // We'll update the value here...
   checkStatus("update", smaxShareInt(TABLE, NAME, 1));
@@ -111,7 +116,11 @@ int main() {
       exit(0);
     }
 
+#ifdef _MSC_VER
+    Sleep(1000 * interval.tv_sec + interval.tv_nsec / 1000000L);
+#else
     nanosleep(&interval, NULL);
+#endif
   }
 
   // Once we are done with a set of lazy pulling, we can flush all lazy caches

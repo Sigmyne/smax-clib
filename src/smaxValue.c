@@ -136,7 +136,12 @@ int main(int argc, const char *argv[]) {
       struct timespec sleeptime;
       sleeptime.tv_sec = (int) interval;
       sleeptime.tv_nsec = 1000000000 * (interval - sleeptime.tv_sec);
+
+#ifdef _MSC_VER
+      Sleep(1000 * sleeptime.tv_sec + interval.tv_nsec / 1000000L);
+#else
       nanosleep(&sleeptime, NULL);
+#endif
     }
 
     printValue(id, key);
@@ -209,13 +214,17 @@ static int printValue(const char *group, const char *key) {
     }
     else if(showMeta) {
       char TS[X_TIMESTAMP_LENGTH], dims[X_MAX_STRING_DIMS], date[100];
-      const struct tm *ts;
+      struct tm tm = {};
 
       xPrintDims(dims, meta.storeDim, meta.storeSizes);
       smaxTimeToString(&meta.timestamp, TS);
 
-      ts = gmtime(&meta.timestamp.tv_sec);
-      strftime(date, 100, "%Y-%m-%d %H:%M:%S", ts);
+#ifdef _MSC_VER
+      gmtime_s(&tm, &meta.timestamp.tv_sec);
+#else
+      gmtime_r(&meta.timestamp.tv_sec, &tm);
+#endif
+      strftime(date, 100, "%Y-%m-%d %H:%M:%S", &tm);
 
       printf("\n");
       printf(MAG " #" BLU " Type:   " RST "%s\n", smaxStringType(meta.storeType));
