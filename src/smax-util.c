@@ -13,12 +13,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>     // sleep()
-#include <pthread.h>
 #include <math.h>
 #include <float.h>
 #include <errno.h>
 #include <ctype.h>
+
+#ifdef _MSC_VER
+#  include <process.h>      // _exit()
+#  include <windows.h>      // Sleep()
+#else
+#  include <unistd.h>       // _exit(), sleep()
+#endif
 
 #include "smax-private.h"
 
@@ -28,13 +33,13 @@
 
 
 // Local prototypes ----------------------------------->
-static void *SMAXReconnectThread(void *arg);
+static xthread_rtn_type SMAXReconnectThread(xthread_arg_type arg);
 
 // Local variables ------------------------------------>
 
 /// A lock for ensuring exclusive access for pipeline configuration changes...
 /// and the variables that it controls, e.g. via smaxLockConfig() / smaxUnlockConfig()
-static pthread_mutex_t configLock = PTHREAD_MUTEX_INITIALIZER;
+static xmut_type configLock = XMUT_INITIALIZER;
 
 static XBoolean isDisabled = FALSE;
 
@@ -42,23 +47,21 @@ static XBoolean isDisabled = FALSE;
 /**
  * Obtain an exclusive lock for accessing or changing SMA-X configuration.
  *
- * \return      The result of pthread_mutex_lock().
+ * \return      0
  */
 int smaxLockConfig() {
-  int status = pthread_mutex_lock(&configLock);
-  if(status) fprintf(stderr, "WARNING! SMA-X : smaxLockConfig() failed with code: %d.\n", status);
-  return status;
+  xmut_lock(&configLock);
+  return 0;
 }
 
 /**
  * Release the exclusive lock to SMA-X configuration, so that others may access/update it also.
  *
- * \return      The result of pthread_mutex_unlock().
+ * \return      0
  */
 int smaxUnlockConfig() {
-  int status = pthread_mutex_unlock(&configLock);
-  if(status) fprintf(stderr, "WARNING! SMA-X : smaxUnlockConfig() failed with code: %d.\n", status);
-  return status;
+  xmut_unlock(&configLock);
+  return 0;
 }
 /// \endcond
 
@@ -137,7 +140,7 @@ void smaxSetOrigin(XMeta *m, const char *origin) {
 // cppcheck-suppress constParameterPointer
 // cppcheck-suppress constParameter
 void smaxSocketErrorHandler(Redis *redis, enum redisx_channel channel, const char *op) {
-  pthread_t tid;
+  xthread_type tid;
 
   if(redis != smaxGetRedis()) {
     fprintf(stderr, "WARNING! SMA-X transmit error handling called with non-SMA-X Redis instance. Contact maintainer.\n");
@@ -164,10 +167,12 @@ void smaxSocketErrorHandler(Redis *redis, enum redisx_channel channel, const cha
 
   fprintf(stderr, "         (Further SMA-X messages will be suppressed...)\n");
 
-  if (pthread_create(&tid, NULL, SMAXReconnectThread, NULL) == -1) {
-    perror("ERROR! SMA-X : pthread_create SMAXReconnectThread. Exiting.");
+  if (xthread_create(&tid, SMAXReconnectThread, NULL) == -1) {
+    perror("ERROR! SMA-X : failed to create thread SMAXReconnectThread. Exiting.");
     exit(X_FAILURE);
   }
+
+  xthread_detach(tid);
 }
 
 /**
@@ -181,7 +186,7 @@ void smaxSocketErrorHandler(Redis *redis, enum redisx_channel channel, const cha
  * @sa smaxSetResilient()
  */
 int smaxScriptErrorAsync(const char *name, int status) {
-  pthread_t tid;
+  xthread_type tid;
   const char *desc;
 
   if(!smaxIsConnected() || isDisabled) {
@@ -204,10 +209,12 @@ int smaxScriptErrorAsync(const char *name, int status) {
   if(!isDisabled) {
     isDisabled = TRUE;
 
-    if (pthread_create(&tid, NULL, SMAXReconnectThread, NULL) == -1) {
-      perror("ERROR! SMA-X : pthread_create SMAXReconnectThread. Exiting.");
+    if (xthread_create(&tid, SMAXReconnectThread, NULL) == -1) {
+      perror("ERROR! SMA-X : failed to create thread SMAXReconnectThread. Exiting.");
       exit(X_FAILURE);
     }
+
+    xthread_detach(tid);
   }
 
   return status;
@@ -401,11 +408,8 @@ XBoolean smaxIsDisabled() {
   return isDisabled;
 }
 
-static void *SMAXReconnectThread(void *arg) {
+static xthread_rtn_type SMAXReconnectThread(xthread_arg_type arg) {
   (void) arg;
-
-  // Detach this thread (i.e. never to be joined...)
-  pthread_detach(pthread_self());
 
   fprintf(stderr, "INFO: SMA-X will attempt to reconnect...\n");
 
@@ -418,14 +422,18 @@ static void *SMAXReconnectThread(void *arg) {
   }
 
   // Wait for prior connection errors to clear up, before we exit 'reconnecting' state...
+#ifdef _MSC_VER
+  Sleep(1000 * SMAX_RECONNECT_RETRY_SECONDS);
+#else
   sleep(SMAX_RECONNECT_RETRY_SECONDS);
+#endif
 
   // Reset the reconnection status...
   smaxLockConfig();
   isDisabled = FALSE;
   smaxUnlockConfig();
 
-  return NULL;
+  xthread_return();
 }
 
 /// \endcond
@@ -441,7 +449,7 @@ static void *SMAXReconnectThread(void *arg) {
  *              an error code (&lt;0) if the `buf` argument is NULL.
  *
  */
-__inline__ int smaxTimeToString(const struct timespec *time, char *buf) {
+ int smaxTimeToString(const struct timespec *time, char *buf) {
   if(!buf) return x_error(X_NULL, EINVAL, "smaxTimeToString", "output buffer is NULL");
   return x_snprintf(buf, X_TIMESTAMP_LENGTH, "%lld.%06ld", (long long) time->tv_sec, (time->tv_nsec / 1000));
 }
@@ -460,7 +468,12 @@ int smaxTimestamp(char *buf) {
   struct timespec ts;
   int n;
 
-  clock_gettime(CLOCK_REALTIME, &ts);
+#  if (__STDC_VERSION__ >= 201112L && !defined(__ANDROID__)) || defined(_MSC_VER)
+  timespec_get(&ts, TIME_UTC);
+#  else
+  clock_gettime(CLOCK_REALTIME, &ta);
+#  endif
+
   n = smaxTimeToString(&ts, buf);
   prop_error("smaxTimestamp", n);
   return n;
@@ -944,7 +957,7 @@ static char *NextToken(char *str) {
   return str;
 }
 
-static __inline__ void CheckParseError(char **next, int *status) {
+static  void CheckParseError(char **next, int *status) {
   if(errno) {
     *next = NextToken(*next);
     *status = X_PARSE_ERROR;

@@ -14,7 +14,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <pthread.h>
 #include <errno.h>
 
 
@@ -44,15 +43,15 @@ typedef struct MessageProcessor {
 static char *senderID;
 
 static MessageProcessor *firstProc;
-static pthread_mutex_t listMutex = PTHREAD_MUTEX_INITIALIZER;
+static xmut_type listMutex = XMUT_INITIALIZER;
 static int nextID;
 
 
 static void ProcessMessage(const char *pattern, const char *channel, const char *msg, long length);
 
 
-static int SendMessage(const char *type, const char *text, va_list varg) {
-  static const char *fn = "SendMessage";
+static int SendMsg(const char *type, const char *text, va_list varg) {
+  static const char *fn = "SendMsg";
 
   Redis *r = smaxGetRedis();
 
@@ -76,25 +75,25 @@ static int SendMessage(const char *type, const char *text, va_list varg) {
 
   if(!r) return smaxError(fn, X_NO_INIT);
 
-  pthread_mutex_lock(&listMutex);
+  xmut_lock(&listMutex);
   id = senderID ? senderID : smaxGetProgramID();
 
   n = sizeof(MESSAGES_PREFIX) + strlen(id) + X_SEP_LENGTH + strlen(type);
   channel = malloc(n);
   if(!channel) {
-    pthread_mutex_unlock(&listMutex);
+    xmut_unlock(&listMutex);
     return x_error(X_NULL, errno, fn, "malloc() error (channel: %d bytes)", n);
   }
 
   x_snprintf(channel, n, MESSAGES_PREFIX "%s" X_SEP "%s", id, type);
-  pthread_mutex_unlock(&listMutex);
+  xmut_unlock(&listMutex);
 
 #ifdef X_NO_SNPRINTF
   // We don't seem to have snprintf() / vsnprintf() here, so use the older version without length check
   msg = (char *) stdmsg;
   n = vsprintf(msg, text, varg);
   if(n > sizeof(stdmsg)) {
-    fprintf(stderr, "ERROR! SendMessage: message too large for this platform. Memory corruption.");
+    fprintf(stderr, "ERROR! SendMsg: message too large for this platform. Memory corruption.");
     exit(X_FAILURE);
   }
 
@@ -143,12 +142,12 @@ static int SendMessage(const char *type, const char *text, va_list varg) {
  *                  defined message ID.
  */
 void smaxSetMessageSenderID(const char *id) {
-  pthread_mutex_lock(&listMutex);
+  xmut_lock(&listMutex);
 
   if(senderID) free(senderID);
   senderID = xStringCopyOf(id);
 
-  pthread_mutex_unlock(&listMutex);
+  xmut_unlock(&listMutex);
 }
 
 /**
@@ -165,7 +164,7 @@ int smaxSendStatus(const char *msg, ...) {
   int status;
 
   va_start(varg, msg);
-  status = SendMessage(SMAX_MSG_STATUS, msg, varg);
+  status = SendMsg(SMAX_MSG_STATUS, msg, varg);
   va_end(varg);
 
   prop_error("smaxSendStatus", status);
@@ -188,7 +187,7 @@ int smaxSendInfo(const char *msg, ...) {
   int status;
 
   va_start(varg, msg);
-  status = SendMessage(SMAX_MSG_INFO, msg, varg);
+  status = SendMsg(SMAX_MSG_INFO, msg, varg);
   va_end(varg);
 
   prop_error("smaxSendInfo", status);
@@ -206,7 +205,7 @@ int smaxSendDetail(const char *msg, ...) {
   int status;
 
   va_start(varg, msg);
-  status = SendMessage(SMAX_MSG_DETAIL, msg, varg);
+  status = SendMsg(SMAX_MSG_DETAIL, msg, varg);
   va_end(varg);
 
   prop_error("smaxSendDetail", status);
@@ -224,7 +223,7 @@ int smaxSendDebug(const char *msg, ...) {
   int status;
 
   va_start(varg, msg);
-  status = SendMessage(SMAX_MSG_DEBUG, msg, varg);
+  status = SendMsg(SMAX_MSG_DEBUG, msg, varg);
   va_end(varg);
 
   prop_error("smaxSendDebug", status);
@@ -248,7 +247,7 @@ int smaxSendWarning(const char *msg, ...) {
   int status;
 
   va_start(varg, msg);
-  status = SendMessage(SMAX_MSG_WARNING, msg, varg);
+  status = SendMsg(SMAX_MSG_WARNING, msg, varg);
   va_end(varg);
 
   prop_error("smaxSendWarning", status);
@@ -271,7 +270,7 @@ int smaxSendError(const char *msg, ...) {
   int status;
 
   va_start(varg, msg);
-  status = SendMessage(SMAX_MSG_ERROR, msg, varg);
+  status = SendMsg(SMAX_MSG_ERROR, msg, varg);
   va_end(varg);
 
   prop_error("smaxSendError", status);
@@ -316,7 +315,7 @@ int smaxSendProgress(double fraction, const char *msg, ...) {
   x_snprintf(progress, needed, "[%5.1f%%] %s", (100.0 * fraction), msg);
 
   va_start(varg, msg);
-  result = SendMessage(SMAX_MSG_PROGRESS, progress, varg);
+  result = SendMsg(SMAX_MSG_PROGRESS, progress, varg);
   va_end(varg);
 
   free(progress);
@@ -374,7 +373,7 @@ int smaxAddMessageProcessor(const char *host, const char *prog, const char *type
 
   x_snprintf(p->pattern, L, MESSAGES_PREFIX "%s" X_SEP "%s" X_SEP "%s", host, prog, type);
 
-  pthread_mutex_lock(&listMutex);
+  xmut_lock(&listMutex);
 
   if(firstProc) firstProc->prior = p;
   else result = redisxAddSubscriber(r, MESSAGES_PREFIX, ProcessMessage);
@@ -384,7 +383,7 @@ int smaxAddMessageProcessor(const char *host, const char *prog, const char *type
     firstProc = p;
   }
 
-  pthread_mutex_unlock(&listMutex);
+  xmut_unlock(&listMutex);
 
   // If so far so good, subscribe to notifications.
   if(result == X_SUCCESS) result = redisxSubscribe(r, p->pattern);
@@ -448,10 +447,10 @@ int smaxRemoveMessageProcessor(int id) {
 
   if(!r) return smaxError("smaxRemoveMessageProcessor", X_NO_INIT);
 
-  pthread_mutex_lock(&listMutex);
+  xmut_lock(&listMutex);
 
   if(!firstProc) {
-    pthread_mutex_unlock(&listMutex);
+    xmut_unlock(&listMutex);
     return X_SUCCESS;
   }
 
@@ -464,7 +463,7 @@ int smaxRemoveMessageProcessor(int id) {
 
   if(!firstProc) redisxRemoveSubscribers(r, ProcessMessage);
 
-  pthread_mutex_unlock(&listMutex);
+  xmut_unlock(&listMutex);
 
   if(!p) return X_NULL;
 
@@ -521,10 +520,10 @@ static void ProcessMessage(const char *pattern, const char *channel, const char 
   // The message body without the timestamp
   m.text = xStringCopyOf(msg);
 
-  pthread_mutex_lock(&listMutex);
+  xmut_lock(&listMutex);
 
   if(!firstProc) {
-    pthread_mutex_unlock(&listMutex);
+    xmut_unlock(&listMutex);
     return;
   }
 
@@ -541,7 +540,7 @@ static void ProcessMessage(const char *pattern, const char *channel, const char 
     p->call(&m);
   }
 
-  pthread_mutex_unlock(&listMutex);
+  xmut_unlock(&listMutex);
 
   // Release locally allocated resources...
   if(m.host) free(m.host);

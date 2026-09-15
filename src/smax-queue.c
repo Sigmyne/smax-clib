@@ -16,9 +16,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
 #include <errno.h>
-#include <unistd.h>
 #include <string.h>
 
 #include "smax-private.h"
@@ -38,18 +36,18 @@ typedef struct XQueue {
   int status;
 } XQueue;
 
-static pthread_mutex_t qLock = PTHREAD_MUTEX_INITIALIZER;
-static pthread_cond_t qComplete = PTHREAD_COND_INITIALIZER;
+static xmut_type qLock = XMUT_INITIALIZER;
+static xcnd_type qComplete = XCND_INITIALIZER;
 
 // Local prototypes -------------------------------------->
-static void InitQueueAsync();
+static void InitQueueAsync(void);
 static void QueueAsync(PullRequest *req);
-static void ResubmitQueueAsync();
+static void ResubmitQueueAsync(void);
 static int DrainQueueAsync(int maxRemaining, int timeoutMicros);
 static void ProcessPipeResponseAsync(RESP *reply);
 static void Sync();
 static void RemoveQueueHead();
-static void DiscardQueuedAsync();
+static void DiscardQueuedAsync(void);
 
 // The variables below should be accessed only after an exclusive lock on pipeline->channelLock
 // e.g. via lockChannel(REDISX_PIPELINE_CHANNEL);
@@ -73,13 +71,13 @@ XSyncPoint *smaxCreateSyncPoint() {
   XSyncPoint *s = (XSyncPoint *) calloc(1, sizeof(XSyncPoint));
   x_check_alloc(s);
 
-  s->lock = (pthread_mutex_t *) calloc(1, sizeof(pthread_mutex_t));
+  s->lock = (xmut_type *) calloc(1, sizeof(xmut_type));
   x_check_alloc(s->lock);
-  pthread_mutex_init(s->lock, NULL);
+  xmut_init(s->lock);
 
-  s->isComplete = (pthread_cond_t *) calloc(1, sizeof(pthread_cond_t));
+  s->isComplete = (xcnd_type *) calloc(1, sizeof(xcnd_type));
   x_check_alloc(s->isComplete);
-  pthread_cond_init(s->isComplete, NULL);
+  xcnd_init(s->isComplete);
 
   if(queued.first == NULL) {
     // If queue is empty then just set status accordingly...
@@ -95,9 +93,9 @@ XSyncPoint *smaxCreateSyncPoint() {
 
     s->status = X_INCOMPLETE;
 
-    pthread_mutex_lock(&qLock);
+    xmut_lock(&qLock);
     QueueAsync(req);
-    pthread_mutex_unlock(&qLock);
+    xmut_unlock(&qLock);
   }
 
   return s;
@@ -112,14 +110,14 @@ XSyncPoint *smaxCreateSyncPoint() {
 void smaxDestroySyncPoint(XSyncPoint *s) {
   if(s == NULL) return;
 
-  if(s->lock != NULL) pthread_mutex_lock(s->lock);
+  if(s->lock != NULL) xmut_lock(s->lock);
   if(s->isComplete != NULL) {
-    pthread_cond_destroy(s->isComplete);
+    xcnd_destroy(s->isComplete);
     free(s->isComplete);
   }
   if(s->lock != NULL) {
-    pthread_mutex_unlock(s->lock);
-    pthread_mutex_destroy(s->lock);
+    xmut_unlock(s->lock);
+    xmut_destroy(s->lock);
     free(s->lock);
   }
   free(s);
@@ -160,9 +158,9 @@ int smaxQueueCallback(void (*f)(void *), void *arg) {
     req->value = f;
     req->key = (char *) arg;
 
-    pthread_mutex_lock(&qLock);
+    xmut_lock(&qLock);
     QueueAsync(req);
-    pthread_mutex_unlock(&qLock);
+    xmut_unlock(&qLock);
   }
 
   return X_SUCCESS;
@@ -172,7 +170,7 @@ int smaxQueueCallback(void (*f)(void *), void *arg) {
  * Start pipelined read operations. Pipelined reads are much faster but change the behavior slightly.
  *
  */
-static void InitQueueAsync() {
+static void InitQueueAsync(void) {
   int status;
 
   if(isQueueInitialized) return;
@@ -205,7 +203,7 @@ int smaxSetMaxPendingPulls(int n) {
 
 
 
-static void ResubmitQueueAsync() {
+static void ResubmitQueueAsync(void) {
   PullRequest *p;
 
   for(p = queued.first; p != NULL; p = p->next) {
@@ -252,37 +250,26 @@ static void ResubmitQueueAsync() {
 int smaxSync(XSyncPoint *sync, int timeoutMillis) {
   static const char *fn = "smaxSync";
 
-  struct timespec end;
   int status = 0;
 
   if(sync == NULL) return x_error(X_NULL, EINVAL, fn, "synchronization point argument is NULL");
   if(sync->lock == NULL) return x_error(X_NULL, EINVAL, fn, "sync->lock is NULL");
   if(sync->isComplete == NULL) return x_error(X_NULL, EINVAL, fn, "sync->isComplete is NULL");
 
-  if(timeoutMillis > 0) {
-    clock_gettime(CLOCK_REALTIME, &end);
-    end.tv_sec += timeoutMillis / 1000;
-    end.tv_nsec += E6 * (timeoutMillis % 1000);
-    if(end.tv_nsec > E9) end.tv_nsec -= E9;
-  }
-
-  if(pthread_mutex_lock(sync->lock)) {
-    xvprintf("SMA-X> Sync lock error.\n");
-    return x_error(X_FAILURE, errno, fn, "mutex lock error");
-  }
+  xmut_lock(sync->lock);
 
   // Check if there is anything to actually wait for...
   if(sync->status != X_INCOMPLETE && queued.first == NULL) {
     xvprintf("SMA-X> Already synchronized.\n");
-    pthread_mutex_unlock(sync->lock);
+    xmut_unlock(sync->lock);
     return x_error(sync->status, EALREADY, fn, "already synched");
   }
 
   xvprintf("SMA-X> Waiting to reach synchronization...\n");
 
   while(!status && sync->status == X_INCOMPLETE) {
-    if(timeoutMillis > 0) status = pthread_cond_timedwait(sync->isComplete, sync->lock, &end);
-    else status = pthread_cond_wait(sync->isComplete, sync->lock);
+    if(timeoutMillis > 0) status = xcnd_timedwait(sync->isComplete, sync->lock, timeoutMillis);
+    else status = xcnd_wait(sync->isComplete, sync->lock);
 
     if(queued.first == NULL) sync->status = X_SUCCESS;  // If the queue is empty, then we are synchronized
   }
@@ -290,7 +277,7 @@ int smaxSync(XSyncPoint *sync, int timeoutMillis) {
   xvprintf("SMA-X> End wait for synchronization.\n");
 
   // Release the lock in case of success or timeout
-  if(!status || status == ETIMEDOUT) pthread_mutex_unlock(sync->lock);
+  if(!status || status == ETIMEDOUT) xmut_unlock(sync->lock);
 
   // If timeout with an incomplete sync, then return X_TIMEDOUT
   if(status) return x_error(status == ETIMEDOUT ? X_TIMEDOUT : X_FAILURE, status, fn, "%s", strerror(errno));
@@ -368,7 +355,11 @@ static int DrainQueueAsync(int maxRemaining, int timeoutMicros) {
     interval.tv_sec = sleepMicros / E6;
     interval.tv_nsec = (sleepMicros % E6) * 1000;
 
+#ifdef _MSC_VER
+    Sleep(1000 * interval.tv_sec + interval.tv_nsec / 1000000L);
+#else
     if(nanosleep(&interval, NULL) < 0) return x_error(X_FAILURE, errno, fn, "nanosleep() error");
+#endif
   }
   xvprintf("SMA-X> read queue drained, resuming pipelined reads.\n");
 
@@ -425,10 +416,10 @@ static void Sync() {
 
     if(req->type == X_SYNCPOINT) {
       XSyncPoint *s = (XSyncPoint *) req->value;
-      pthread_mutex_lock(s->lock);
+      xmut_lock(s->lock);
       s->status = X_SUCCESS;
-      pthread_cond_broadcast(s->isComplete);
-      pthread_mutex_unlock(s->lock);
+      xcnd_broadcast(s->isComplete);
+      xmut_unlock(s->lock);
       req->value = NULL;            // Dereference SyncPoint before destroying.
     }
 
@@ -448,7 +439,7 @@ static void Sync() {
  *  Discard all piped reads, setting values to zeroes.
  *
  */
-static void DiscardQueuedAsync() {
+static void DiscardQueuedAsync(void) {
   PullRequest *p = queued.first;
   int n = 0;
 
@@ -462,7 +453,7 @@ static void DiscardQueuedAsync() {
   queued.status = n > 0 ? X_INTERRUPTED : 0;
   nQueued = 0;
 
-  pthread_cond_broadcast(&qComplete);
+  xcnd_broadcast(&qComplete);
 }
 
 /**
@@ -525,7 +516,7 @@ int smaxQueue(const char *table, const char *key, XType type, int count, void *v
     }
   }
 
-  pthread_mutex_lock(&qLock);
+  xmut_lock(&qLock);
 
   last = queued.last;
   QueueAsync(req);
@@ -536,7 +527,7 @@ int smaxQueue(const char *table, const char *key, XType type, int count, void *v
   // If the pull request was not submitted to SMA-X, then undo the queuing...
   if(status) queued.last = last;
 
-  pthread_mutex_unlock(&qLock);
+  xmut_unlock(&qLock);
 
   if(status) {
     smaxDestroyPullRequest(req);
@@ -576,7 +567,7 @@ static void QueueAsync(PullRequest *req) {
 static void RemoveQueueHead() {
   PullRequest *req = NULL;
 
-  pthread_mutex_lock(&qLock);
+  xmut_lock(&qLock);
 
   if(queued.first != NULL) {
     req = queued.first;
@@ -585,12 +576,12 @@ static void RemoveQueueHead() {
     if(queued.first == NULL) {
       queued.last = NULL;
       nQueued = 0;
-      pthread_cond_broadcast(&qComplete);
+      xcnd_broadcast(&qComplete);
     }
     else nQueued--;
   }
 
-  pthread_mutex_unlock(&qLock);
+  xmut_unlock(&qLock);
 
   if(req != NULL) smaxDestroyPullRequest(req);
 }

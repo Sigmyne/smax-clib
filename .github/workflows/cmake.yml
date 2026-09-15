@@ -81,7 +81,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]  # add windows-latest
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
       - name: Check out smax-clib

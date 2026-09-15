@@ -10,8 +10,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <errno.h>
+
+#ifdef _MSC_VER
+#  define                     R_OK 4 // Test for read permission
+#else
+#  include                    <unistd.h>
+#endif
 
 #include "smax-private.h"
 

@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include <pthread.h>
 #include <errno.h>
 
 #include "smax-private.h"
@@ -22,15 +21,15 @@
 
 // A lock for ensuring exclusive access for the monitor list...
 // and the variables that it controls, e.g. via lockNotify()
-static pthread_mutex_t notifyLock = PTHREAD_MUTEX_INITIALIZER;
-static pthread_cond_t notifyBlock = PTHREAD_COND_INITIALIZER;
+static xmut_type notifyLock = XMUT_INITIALIZER;
+static xcnd_type notifyBlock = XCND_INITIALIZER;
 
 // The most recent key update notification info, to be used by smaxWait() exclusively...
 static char *notifyID;
 static int notifySize;
 
 static XLookupTable *lookup;
-static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static xmut_type mutex = XMUT_INITIALIZER;
 
 
 /// \cond PRIVATE
@@ -60,7 +59,7 @@ void ProcessUpdateNotificationAsync(const char *pattern, const char *channel, co
   else if(notifySize) *notifyID = '\0';
 
   // Send notification to all blocking threads...
-  pthread_cond_broadcast(&notifyBlock);
+  xcnd_broadcast(&notifyBlock);
 
   smaxUnlockNotify();
 }
@@ -76,11 +75,11 @@ void smaxInitNotify() {
 
 /// \endcond
 
-static void DiscardLookup() {
-  pthread_mutex_lock(&mutex);
+static void DiscardLookup(void) {
+  xmut_lock(&mutex);
   xDestroyLookupAndData(lookup);
   lookup = NULL;
-  pthread_mutex_unlock(&mutex);
+  xmut_unlock(&mutex);
 }
 
 /**
@@ -116,7 +115,7 @@ int smaxSubscribe(const char *table, const char *key) {
 
   p = smaxGetUpdateChannelPattern(table, key);
 
-  pthread_mutex_lock(&mutex);
+  xmut_lock(&mutex);
 
   // manage subscriber lists with call counter...
   //  - Redis subscribe only if new
@@ -139,7 +138,7 @@ int smaxSubscribe(const char *table, const char *key) {
     if(status == X_SUCCESS) xLookupPut(lookup, p, xCreateIntField(key, 1), NULL);
   }
 
-  pthread_mutex_unlock(&mutex);
+  xmut_unlock(&mutex);
 
   free(p);
   prop_error(fn, status);
@@ -175,7 +174,7 @@ int smaxUnsubscribe(const char *table, const char *key) {
   if(!r) return smaxError(fn, X_NO_INIT);
   p = smaxGetUpdateChannelPattern(table, key);
 
-  pthread_mutex_lock(&mutex);
+  xmut_lock(&mutex);
 
   if(lookup) {
     XField *f = xLookupField(lookup, p);
@@ -191,7 +190,7 @@ int smaxUnsubscribe(const char *table, const char *key) {
     }
   }
 
-  pthread_mutex_unlock(&mutex);
+  xmut_unlock(&mutex);
   free(p);
 
   prop_error(fn, status);
@@ -294,7 +293,7 @@ char *smaxGetUpdateChannelPattern(const char *table, const char *key) {
  * \param[out] changedKey       Pointer to the variable that points to the string buffer for the returned variable name or NULL.
  *                              The lease of the buffer is for the call only.
  * \param[in] timeout           (s) Timeout value. 0 or negative values result in an indefinite wait.
- * \param[in,out] gating        Optional semaphore to post after this wait call gains exclusive access to the notification
+ * \param[in,out] gating        Optional gate variable to post after this wait call gains exclusive access to the notification
  *                              mutex. Another thread may wait on that semaphore before it too tries to get exclusive access
  *                              to SMA-X notifications via some other library call, to ensure that the wait is entered (or
  *                              else fails) in a timely manner, without unwittingly being blocked by the other thread.
@@ -314,9 +313,8 @@ char *smaxGetUpdateChannelPattern(const char *table, const char *key) {
  * \sa smaxReleaseWaits()
  *
  */
-int smaxWaitOnAnySubscribed(char **changedTable, char **changedKey, int timeout, sem_t *gating) {
+int smaxWaitOnAnySubscribed(char **changedTable, char **changedKey, int timeout, xsem_type *gating) {
   static const char *fn = "smaxWaitOnAnySubscribed";
-  struct timespec endTime = {};
 
   if(changedTable == NULL) return x_error(X_GROUP_INVALID, EINVAL, fn, "'changedTable' parameter is NULL");
   if(changedKey == NULL) return x_error(X_NAME_INVALID, EINVAL, fn, "'changedKey' parameter is NULL");
@@ -330,28 +328,22 @@ int smaxWaitOnAnySubscribed(char **changedTable, char **changedKey, int timeout,
 
   smaxLockNotify();
 
-  // Time the wait only from the point we obtained exclusive access to begin...
-  if(timeout > 0) {
-    clock_gettime(CLOCK_REALTIME, &endTime);
-    endTime.tv_sec += timeout;
-  }
-
   // Allow other threads to proceed with exclusive access to notifications as soon as we enter waiting
   // (or fail to do so).
-  if(gating) sem_post(gating);
+  if(gating) xsem_post(gating);
 
   // Waits for a notification...
   while(*changedTable == NULL) {
     const char *sep;
 
-    int status = timeout > 0 ? pthread_cond_timedwait(&notifyBlock, &notifyLock, &endTime) : pthread_cond_wait(&notifyBlock, &notifyLock);
+    int status = timeout > 0 ? xcnd_timedwait(&notifyBlock, &notifyLock, 1000 * timeout) : xcnd_wait(&notifyBlock, &notifyLock);
     if(status) {
       // If the wait returns with an error, the mutex is unlocked.
       if(status == ETIMEDOUT) {
         smaxUnlockNotify();
         return x_error(X_TIMEDOUT, ETIMEDOUT, fn, "wait timed out");
       }
-      return x_error(X_FAILURE, status, fn, "pthread_cond_wait() error: %s", strerror(status));
+      return x_error(X_FAILURE, status, fn, "xcnd_wait() error: %s", strerror(status));
     }
 
     if(!smaxIsConnected()) {
@@ -414,7 +406,7 @@ int smaxWaitOnAnySubscribed(char **changedTable, char **changedKey, int timeout,
  * \param[in]  host       Host name on which to wait for updates, or NULL if any host.
  * \param[in]  key        Variable name to wait to be updated, or NULL if any variable.
  * \param[in]  timeout    (s) Timeout value. 0 or negative values result in an indefinite wait.
- * \param[in,out] gating  Optional semaphore to post after this wait call gains exclusive access to the notification
+ * \param[in,out] gating  Optional gate variable to post after this wait call gains exclusive access to the notification
  *                        mutex. Another thread may wait on that semaphore before it too tries to get exclusive access
  *                        to SMA-X notifications via some other library call, to ensure that the wait is entered (or
  *                        else fails) in a timely manner, without unwittingly being blocked by the other thread.
@@ -428,7 +420,7 @@ int smaxWaitOnAnySubscribed(char **changedTable, char **changedKey, int timeout,
  * \sa smaxWaitOnAnySubscribed()
  * @sa smaxReleaseWaits()
  */
-static int WaitOn(const char *table, const char *key, int timeout, sem_t *gating, ...) {
+static int WaitOn(const char *table, const char *key, int timeout, xsem_type *gating, ...) {
   static const char *fn = "WaitOn";
   char *gotTable = NULL, *gotKey = NULL;
   va_list args;
@@ -493,7 +485,7 @@ static int WaitOn(const char *table, const char *key, int timeout, sem_t *gating
  * \param table             Hash table name
  * \param key               Variable name to wait on.
  * \param timeout           (s) Timeout value. 0 or negative values result in an indefinite wait.
- * \param[in,out] gating    Optional semaphore to post after this wait call gains exclusive access to the notification
+ * \param[in,out] gating    Optional gate variable to post after this wait call gains exclusive access to the notification
  *                          mutex. Another thread may wait on that semaphore before it too tries to get exclusive access
  *                          to SMA-X notifications via some other library call, to ensure that the wait is entered (or
  *                          else fails) in a timely manner, without unwittingly being blocked by the other thread.
@@ -512,7 +504,7 @@ static int WaitOn(const char *table, const char *key, int timeout, sem_t *gating
  * @sa smaxWaitOnAnySubscribed()
  * @sa smaxReleaseWaits()
  */
-int smaxWaitOnSubscribed(const char *table, const char *key, int timeout, sem_t *gating) {
+int smaxWaitOnSubscribed(const char *table, const char *key, int timeout, xsem_type *gating) {
   static const char *fn = "smaxWaitOnSubscribed";
 
   if(table == NULL) return x_error(X_GROUP_INVALID, EINVAL, fn, "table is NULL");
@@ -533,7 +525,7 @@ int smaxWaitOnSubscribed(const char *table, const char *key, int timeout, sem_t 
  *                           or which is set to NULL. The lease of the buffer is for the call only. The caller
  *                           should copy its content if persistent storage is required.
  * \param[in] timeout        (s) Timeout value. 0 or negative values result in an indefinite wait.
- * \param[in,out] gating     Optional semaphore to post after this wait call gains exclusive access to the notification
+ * \param[in,out] gating     Optional gate variable to post after this wait call gains exclusive access to the notification
  *                           mutex. Another thread may wait on that semaphore before it too tries to get exclusive access
  *                           to SMA-X notifications via some other library call, to ensure that the wait is entered (or
  *                           else fails) in a timely manner, without unwittingly being blocked by the other thread.
@@ -550,7 +542,7 @@ int smaxWaitOnSubscribed(const char *table, const char *key, int timeout, sem_t 
  * @sa smaxWaitOnAnySubscribed()
  * @sa smaxReleaseWaits()
  */
-int smaxWaitOnSubscribedGroup(const char *matchTable, char **changedKey, int timeout, sem_t *gating) {
+int smaxWaitOnSubscribedGroup(const char *matchTable, char **changedKey, int timeout, xsem_type *gating) {
   static const char *fn = "smaxWaitOnSubscribedGroup";
 
   if(matchTable == NULL) return x_error(X_GROUP_INVALID, EINVAL, fn, "matchTable parameter is NULL");
@@ -569,7 +561,7 @@ int smaxWaitOnSubscribedGroup(const char *matchTable, char **changedKey, int tim
  *                           or which is set to NULL. The lease of the buffer is for the call only. The caller
  *                           should copy its content if persistent storage is required.
  * \param[in] timeout        (s) Timeout value. 0 or negative values result in an indefinite wait.
- * \param[in,out] gating     Optional semaphore to post after this wait call gains exclusive access to the notification
+ * \param[in,out] gating     Optional gate variable to post after this wait call gains exclusive access to the notification
  *                           mutex. Another thread may wait on that semaphore before it too tries to get exclusive access
  *                           to SMA-X notifications via some other library call, to ensure that the wait is entered (or
  *                           else fails) in a timely manner, without unwittingly being blocked by the other thread.
@@ -586,7 +578,7 @@ int smaxWaitOnSubscribedGroup(const char *matchTable, char **changedKey, int tim
  * @sa smaxWaitOnAnySubscribed()
  * @sa smaxReleaseWaits()
  */
-int smaxWaitOnSubscribedVar(const char *matchKey, char **changedTable, int timeout, sem_t *gating) {
+int smaxWaitOnSubscribedVar(const char *matchKey, char **changedTable, int timeout, xsem_type *gating) {
   static const char *fn = "smaxWaitOnSubscribedVar";
 
   if(matchKey == NULL) return x_error(X_NAME_INVALID, EINVAL, fn, "matchKey parameter is NULL");
@@ -624,7 +616,7 @@ int smaxReleaseWaits() {
 
   if(notifyID) {
     strcpy(notifyID, RELEASEID);
-    pthread_cond_broadcast(&notifyBlock);
+    xcnd_broadcast(&notifyBlock);
   }
 
   smaxUnlockNotify();
@@ -638,27 +630,25 @@ int smaxReleaseWaits() {
 /**
  * Get exclusive access for accessing or updating notifications.
  *
- * \return      The result of pthread_mutex_lock().
+ * \return      0
  *
  * \sa smaxUnlockNotify()
  */
 int smaxLockNotify() {
-  int status = pthread_mutex_lock(&notifyLock);
-  if(status) fprintf(stderr, "WARNING! SMA-X : smaxLockNotify() failed with code: %d.\n", status);
-  return status;
+  xmut_lock(&notifyLock);
+  return 0;
 }
 
 /**
  * Relinquish exclusive access notifications.
  *
- * \return      The result of pthread_mutex_unlock().
+ * \return      0
  *
  * \sa smaxLockNotify()
  */
 int smaxUnlockNotify() {
-  int status = pthread_mutex_unlock(&notifyLock);
-  if(status) fprintf(stderr, "WARNING! SMA-X : smaxUnlockNotify() failed with code: %d.\n", status);
-  return status;
+  xmut_unlock(&notifyLock);
+  return 0;
 }
 
 /**

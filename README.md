@@ -292,12 +292,33 @@ as `bash`, or `perl` (also `python` though we recommend to use the native
 ------------------------------------------------------------------------------
 
 <a name="smax-configuration"></a>
-## Initial configuration
+## host configuration
 
 Bu default, the library assumes that the Redis server name used for SMA-X is either stored in the environment variable
 `SMAX_HOST` or is `smax` (e.g. you may assign `smax` to an IP address in `/etc/hosts`), and that the Redis is on 
-the default port 6379/tcp. However, you can configure to use a specific host and/or an alternative Redis port number 
-also, e.g.:
+the default port 6379/tcp, or port number defined by `SMAX_PORT`.
+
+One way is to define the IP address of host `smax` on your machine(s), e.g. by adding an appropriate entry in 
+`/etc/hosts` (on POSIX systems).
+
+Alternatively, you could set the `SMAX_HOST` and/or `SMAX_PORT` environment variables to the host name or IP address, 
+and the desired Redis / Valkey port number, respectively. E.g.:
+
+```bash
+ export SMAX_HOST="my-smax.example.com"
+ export SMAX_PORT="7033"
+```
+
+or define the variable for your application only:
+
+```bash
+ SMAX_HOST="my-smax.example.com" SMAX_PORT="7033" my-app [...]
+```
+
+
+## Initial runtime configuration
+
+You can also configure to use a specific host and/or an alternative Redis port number in your application, e.g.:
 
 ```c
   smaxSetServer("my-smax.example.com", 7033);

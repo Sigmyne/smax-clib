@@ -29,7 +29,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <pthread.h>
 #include <math.h>
 #include <errno.h>
 
@@ -47,7 +46,8 @@ typedef struct {
   int timeout;          ///< [s] Timeout
   int status;           ///< Return status
   int error_code;       ///< Standard POSIX error code (see errno.h)
-  sem_t sem;            ///< Semaphore for when response is ready.
+  xsem_type sem;        ///< Semaphore for when response is ready.
+  char *value;
 } ControlVar;
 
 /**
@@ -61,18 +61,19 @@ typedef struct {
 
 
 static XLookupTable *controls;      ///< Lookup table of currently configured control functions.
-static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static xmut_type mutex = XMUT_INITIALIZER;
 
 /// \endcond
 
-static void *MonitorThread(void *arg) {
+static xthread_rtn_type MonitorThread(xthread_arg_type arg) {
   ControlVar *reply = (ControlVar *) arg;
   reply->status = smaxWaitOnSubscribed(reply->table, reply->key, reply->timeout, &reply->sem);
   if(reply->status != X_SUCCESS) {
     reply->error_code = errno;
-    return NULL;
+    xthread_return();
   }
-  return (void *) smaxPullRaw(reply->table, reply->key, NULL, &reply->status);
+  reply->value = smaxPullRaw(reply->table, reply->key, NULL, &reply->status);
+  xthread_return();
 }
 
 /**
@@ -99,8 +100,7 @@ char *smaxControl(const char *table, const char *key, const void *value, XType t
   static const char *fn = "smaxControl";
 
   ControlVar reply = {};
-  pthread_t tid;
-  char *response = NULL;
+  xthread_type tid;
   int status;
 
   if(!replyKey || !replyKey[0]) {
@@ -111,23 +111,23 @@ char *smaxControl(const char *table, const char *key, const void *value, XType t
   reply.table = replyTable ? replyTable : table;
   reply.key = replyKey;
   reply.timeout = timeout;
-  sem_init(&reply.sem, FALSE, 0);
+  xsem_init(&reply.sem, 0);
 
   // To catch responses reliably, start monitoring
   if(smaxSubscribe(reply.table, reply.key) != X_SUCCESS) return x_trace_null(fn, NULL);
 
   // Launch monitoring thread with timeout
-  if(pthread_create(&tid, NULL, MonitorThread, &reply) < 0) {
+  if(xthread_create(&tid, MonitorThread, &reply) < 0) {
     smaxUnsubscribe(reply.table, reply.key);
-    sem_destroy(&reply.sem);
+    xsem_destroy(&reply.sem);
     x_error(0, errno, fn, "could not create monitor thread");
     return NULL;
   }
 
   // Proceed only when the monitor is in waiting status...
-  if(sem_wait(&reply.sem) < 0) {
+  if(xsem_wait(&reply.sem) < 0) {
     smaxUnsubscribe(reply.table, reply.key);
-    sem_destroy(&reply.sem);
+    xsem_destroy(&reply.sem);
     x_error(0, errno, fn, "sem_wait() error: %s\n", strerror(errno));
     return NULL;
   }
@@ -140,24 +140,23 @@ char *smaxControl(const char *table, const char *key, const void *value, XType t
 
   // Check if the control command was sent successfully
   if(status != X_SUCCESS) {
-    pthread_cancel(tid);
     smaxUnsubscribe(reply.table, reply.key);
-    sem_destroy(&reply.sem);
+    xsem_destroy(&reply.sem);
     return x_trace_null(fn, NULL);
   }
 
   // Wait for the response
-  pthread_join(tid, (void **) &response);
+  xthread_join(tid);
 
   smaxUnsubscribe(reply.table, reply.key);
-  sem_destroy(&reply.sem);
+  xsem_destroy(&reply.sem);
 
   if(reply.status) {
     x_warn(fn, "Got no response: %s", smaxErrorDescription(reply.status));
     errno = reply.error_code;
   }
 
-  return response;
+  return reply.value;
 }
 
 /**
@@ -296,12 +295,9 @@ double smaxControlDouble(const char *table, const char *key, double value, const
 // -----------------------------------------------------------------------------------------------
 // For server side processing of control calls:
 
-static void *ControlThread(void *arg) {
+static xthread_rtn_type ControlThread(xthread_arg_type arg) {
   ControlSet *control = (ControlSet *) arg;
   char *key = NULL;
-
-  // We won't join this thread...
-  pthread_detach(pthread_self());
 
   // Call the control function
   xSplitID(control->id, &key);
@@ -311,7 +307,7 @@ static void *ControlThread(void *arg) {
   free(control->id);
   free(control);
 
-  return NULL;
+  xthread_return();
 }
 
 static void ProcessControls(const char *pattern, const char *channel, const char *msg, long length) {
@@ -327,7 +323,7 @@ static void ProcessControls(const char *pattern, const char *channel, const char
 
   id = &channel[sizeof(SMAX_UPDATES) - 1];
 
-  pthread_mutex_lock(&mutex);
+  xmut_lock(&mutex);
 
   f = xLookupField(controls, id);
   if(f) {
@@ -336,18 +332,20 @@ static void ProcessControls(const char *pattern, const char *channel, const char
     memcpy(control, f->value, sizeof(ControlSet));
   }
 
-  pthread_mutex_unlock(&mutex);
+  xmut_unlock(&mutex);
 
   if(f) {
-    pthread_t tid;
+    xthread_type tid;
 
     control->id = xStringCopyOf(id); // We use a persistent and independent copy for the async call.
 
     // Call the control function from a dedicated thread, so we may return here without delay.
-    if(pthread_create(&tid, NULL, ControlThread, control) < 0) {
+    if(xthread_create(&tid, ControlThread, control) < 0) {
       perror("ERROR! Failed to call control function");
       exit(errno);
     }
+
+    xthread_detach(tid);
   }
 }
 
@@ -399,7 +397,7 @@ int smaxSetControlFunction(const char *table, const char *key, SMAXControlFuncti
 
   x_snprintf(id, l, SMAX_UPDATES "%s" X_SEP "%s", table, key);
 
-  pthread_mutex_lock(&mutex);
+  xmut_lock(&mutex);
 
   // Remove and destroy any prior entry for the table, and unsubscribe updates for the control
   // variable if no new function replaces it.
@@ -431,7 +429,7 @@ int smaxSetControlFunction(const char *table, const char *key, SMAXControlFuncti
       status = smaxAddSubscriber(NULL, ProcessControls);
       if(status) {
         free(id);
-        pthread_mutex_unlock(&mutex);
+        xmut_unlock(&mutex);
         return x_trace(fn, NULL, status);
       }
     }
@@ -452,7 +450,7 @@ int smaxSetControlFunction(const char *table, const char *key, SMAXControlFuncti
     if(!prior) status = smaxSubscribe(table, key);
   }
 
-  pthread_mutex_unlock(&mutex);
+  xmut_unlock(&mutex);
 
   if(id) free(id);
 

@@ -9,13 +9,9 @@
  *      commands / variables.
  */
 
-#define _POSIX_C_SOURCE 199309L       ///< for nanosleep()
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
 #include <string.h>
-#include <unistd.h>
 #include <errno.h>
 
 #include "smax.h"
@@ -27,7 +23,6 @@
 #define TABLE           "_test_" X_SEP "control"
 #define NAME            "value"
 #define CONTROL_NAME    NAME "_control"
-
 
 
 static void checkStatus(const char *op, int status) {

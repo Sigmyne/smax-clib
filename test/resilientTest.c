@@ -10,7 +10,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+
+#ifndef _MSC_VER
+#  include <unistd.h>     // sleep()
+#endif
 
 #include "smax.h"
 
@@ -39,7 +42,12 @@ int main(int argc, const char *argv[]) {
     time_t t = time(NULL);
     int status = smaxShareInt(TABLE, NAME, t);
     fprintf(stderr, " . %ld: status = %d, connected %d, pipe = %d, res = %d\n", (long) t, status, smaxIsConnected(), smaxIsPipelined(), smaxIsResilient());
+
+#ifdef _MSC_VER
+    Sleep(1000);
+#else
     sleep(1);
+#endif
   }
 
   return 0; /* NOT REACHED */

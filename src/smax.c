@@ -22,11 +22,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <pthread.h>
-#include <unistd.h>
 #include <ctype.h>
 #include <errno.h>
-#include <sys/utsname.h>
+
+
+#ifdef _MSC_VER
+#  include <windows.h>      // Sleep()
+#else
+#  include <unistd.h>       // sleep()
+#  include <sys/utsname.h>
+#endif
 
 #include "smax-private.h"
 #include "procname.h"
@@ -71,7 +76,7 @@ static int ParseStructData(XStructure *s, RESP *names, RESP *data, XMeta *meta);
 
 static int SendStructDataAsync(RedisClient *cl, const char *id, const XStructure *s, XBoolean isTop);
 
-static void InitScriptsAsync();
+static void InitScriptsAsync(void);
 
 static XBoolean usePipeline = TRUE;
 static int tcpBufSize = REDISX_TCP_BUF_SIZE;
@@ -301,8 +306,16 @@ int smaxSetTcpBuf(int size) {
  */
 char *smaxGetHostName() {
   if(hostName == NULL) {
+    // Set the client name in Redis.
+#if defined(_MSC_VER)
+    char host[80]= {'\0'};
+    DWORD namelen = sizeof(host) - 1;
+    GetComputerNameA(host, &namelen);
+    hostName = xStringCopyOf(host);
+#else
     struct utsname u;
     int i;
+
     uname(&u);
 
     // Keep only the leading part only...
@@ -312,7 +325,9 @@ char *smaxGetHostName() {
     }
 
     hostName = xStringCopyOf(u.nodename);
+#endif
   }
+
   return hostName;
 }
 
@@ -339,7 +354,10 @@ void smaxSetHostName(const char *name) {
  *
  */
 char *smaxGetProgramID() {
-#if (__Lynx__ && __powerpc__)
+#ifdef _MSC_VER
+  char path[MAX_PATH];
+  char *procName  = "<unknown-program>"; // default process name
+#elif (__Lynx__ && __powerpc__)
   char procName[40] = DEFAULT_PROCESS_NAME;
 #else
   extern char *__progname;
@@ -350,8 +368,17 @@ char *smaxGetProgramID() {
 
   if(programID) return programID;
 
-#if (__Lynx__ && __powerpc__)
-  getProcessName(getpid(), procName, 40);
+#ifdef _MSC_VER
+  // Passing NULL retrieves the path of the current executable file
+  if (GetModuleFileNameA(NULL, path, MAX_PATH) > 0) {
+    // Find the last backslash to isolate the filename
+    char* procName = strrchr(path, '\\');
+
+    if (procName != NULL) procName++; // Move past the '\'
+    else procName = path; // Fallback if no backslash is found
+  }
+#elif (__Lynx__ && __powerpc__)
+  getProcessName(getpid(), procName, sizeof(procName));
 #else
   procName = __progname;
 #endif
@@ -568,7 +595,13 @@ int smaxReconnect() {
   xvprintf("SMA-X> reconnecting.\n");
 
   while(redisxReconnect(redis, usePipeline) != X_SUCCESS) {
-    if(SMAX_RECONNECT_RETRY_SECONDS > 0) sleep(SMAX_RECONNECT_RETRY_SECONDS);
+    if(SMAX_RECONNECT_RETRY_SECONDS > 0) {
+#ifdef _MSC_VER
+      Sleep(1000 * SMAX_RECONNECT_RETRY_SECONDS);
+#else
+      sleep(SMAX_RECONNECT_RETRY_SECONDS);
+#endif
+    }
     else sched_yield();
   }
 
@@ -1692,7 +1725,7 @@ static int InitScript(const char *name, char **pSHA1) {
 /**
  * Initializes the SHA1 script IDs for the essential LUA helpers.
  */
-static void InitScriptsAsync() {
+static void InitScriptsAsync(void) {
   static const char *names[] = { "HSetWithMeta", "HGetWithMeta", "HMSetWithMeta", "GetStruct", NULL };
   static char **pSHA[] = {  & HSET_WITH_META,  & HGET_WITH_META,  & HMSET_WITH_META, & GET_STRUCT, NULL };
 
@@ -1716,7 +1749,13 @@ static void InitScriptsAsync() {
       }
 
       if(first) fprintf(stderr, "WARNING! SMA-X: Waiting for LUA scripts to be loaded into Redis.\n");
-      if(SMAX_RECONNECT_RETRY_SECONDS > 0) sleep(SMAX_RECONNECT_RETRY_SECONDS);
+      if(SMAX_RECONNECT_RETRY_SECONDS > 0) {
+#ifdef _MSC_VER
+        Sleep(1000 * SMAX_RECONNECT_RETRY_SECONDS);
+#else
+        sleep(SMAX_RECONNECT_RETRY_SECONDS);
+#endif
+      }
     }
   }
 }
