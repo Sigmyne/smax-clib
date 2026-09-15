@@ -61,6 +61,7 @@ jobs:
       - name: Check out RedisX
         uses: actions/checkout@v7
         with:
+          repository: Sigmyne/xchange
           path: redisx
 
       - name: Check out smax-clib
@@ -93,7 +94,7 @@ jobs:
         run: |
           sed -i "s:\(TAGFILES\s*=\)$:\1\
                ../../xchange/doc/xchange.tag=../../xchange/doc/html \
-               ../../xchange/doc/redisx.tag=../../redisx/doc/html \
+               ../../redisx/doc/redisx.tag=../../redisx/doc/html \
                :g" smax-clib/doc/Doxyfile
 
       - name: Generate smax-clib apidocs

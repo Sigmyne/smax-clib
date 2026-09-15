@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased]
+## [1.1.0-rc1] - 2026-09-15
 
 Upcoming feature release, with major build and portability enhancements, possibly around 15 October 2026.
 
@@ -21,7 +21,8 @@ Upcoming feature release, with major build and portability enhancements, possibl
  
  - #26: Updated CI workflows.
  
- - #28: Portability beyond POSIX, mainly to Windows (and also perhaps Android). Requires RedisX >= 1.1.0.
+ - #28: Portability beyond POSIX, mainly to Windows (and also perhaps Android). Requires RedisX &gt;= 1.1.0 and xchange 
+   &gt;= 1.3.0.
  
  - Implicit or explicit `LIB` directory in `Makefile`s.
  
