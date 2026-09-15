@@ -9,11 +9,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-Upcoming feature release, possibly around 1 September 2026.
+Upcoming feature release, with major build and portability enhancements, possibly around 15 October 2026.
+
+### Added
+
+ - #26: Added CMake build support and CI workflow.
 
 ### Changed
 
  - #16: Use `XBoolean` instead of `boolean` type (requires xchange v1.3).
+ 
+ - #26: Updated CI workflows.
+ 
+ - #28: Portability beyond POSIX, mainly to Windows (and also perhaps Android). Requires RedisX >= 1.1.0.
+ 
+ - Implicit or explicit `LIB` directory in `Makefile`s.
+ 
+ - The latest GitHub Actions tools.
 
 
 ## [1.0.1] - 2026-06-23
