@@ -21,7 +21,7 @@ Upcoming feature release, with major build and portability enhancements, possibl
  
  - #26: Updated CI workflows.
  
- - #28: Portability beyond POSIX, mainly to Windows (and also perhaps Android).
+ - #28: Portability beyond POSIX, mainly to Windows (and also perhaps Android). Requires RedisX >= 1.1.0.
  
  - Implicit or explicit `LIB` directory in `Makefile`s.
  
