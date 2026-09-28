@@ -122,7 +122,7 @@ jobs:
         run: cp smax-clib/doc/README.md site/doc/README.md
 
       - name: Copy API documentation
-        run: cp -a smax-clib/doc site/apidoc
+        run: cp -a smax-clib/doc/html site/apidoc
 
       - name: Push to pages
         run: |
