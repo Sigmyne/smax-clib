@@ -7,5 +7,5 @@ var smax_tls_8c =
     [ "smaxSetTLSCiphers", "smax-tls_8c.html#ac45cc01724d9ac296a0fa013f6df8f22", null ],
     [ "smaxSetTLSCipherSuites", "smax-tls_8c.html#a46dee27f13791648e77acbc4d16a418a", null ],
     [ "smaxSetTLSServerName", "smax-tls_8c.html#a0a0b81f56cc0e441188e86f42d286599", null ],
-    [ "smaxSetTLSVerify", "smax-tls_8c.html#af88940251a55a6716412ab6e8e8209f4", null ]
+    [ "smaxSetTLSVerify", "smax-tls_8c.html#ac5b99d25023eb36d2120f30b24bab4ac", null ]
 ];

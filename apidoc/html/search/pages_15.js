@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['waiting_0',['Synchronization points and waiting',['../index.html#autotoc_md38',1,'']]],
-  ['waiting_20for_20updates_1',['Waiting for updates',['../index.html#autotoc_md44',1,'']]]
+  ['your_20application_20against_20smax_20clib_0',['Linking your application against &lt;span class=&quot;tt&quot;&gt;smax-clib&lt;/span&gt;',['../index.html#autotoc_md13',1,'']]]
 ];

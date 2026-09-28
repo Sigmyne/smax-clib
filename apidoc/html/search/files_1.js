@@ -1,16 +1,15 @@
 var searchData=
 [
-  ['smax_2dcontrol_2ec_0',['smax-control.c',['../smax-control_8c.html',1,'']]],
-  ['smax_2deasy_2ec_1',['smax-easy.c',['../smax-easy_8c.html',1,'']]],
-  ['smax_2dlazy_2ec_2',['smax-lazy.c',['../smax-lazy_8c.html',1,'']]],
-  ['smax_2dmessages_2ec_3',['smax-messages.c',['../smax-messages_8c.html',1,'']]],
-  ['smax_2dmeta_2ec_4',['smax-meta.c',['../smax-meta_8c.html',1,'']]],
-  ['smax_2dprivate_2eh_5',['smax-private.h',['../smax-private_8h.html',1,'']]],
-  ['smax_2dqueue_2ec_6',['smax-queue.c',['../smax-queue_8c.html',1,'']]],
-  ['smax_2dresilient_2ec_7',['smax-resilient.c',['../smax-resilient_8c.html',1,'']]],
-  ['smax_2dsub_2ec_8',['smax-sub.c',['../smax-sub_8c.html',1,'']]],
-  ['smax_2dtls_2ec_9',['smax-tls.c',['../smax-tls_8c.html',1,'']]],
-  ['smax_2dutil_2ec_10',['smax-util.c',['../smax-util_8c.html',1,'']]],
-  ['smax_2ec_11',['smax.c',['../smax_8c.html',1,'']]],
-  ['smax_2eh_12',['smax.h',['../smax_8h.html',1,'']]]
+  ['redisx_2dclient_2ec_0',['redisx-client.c',['../../../redisx/doc/html/redisx-client_8c.html',1,'']]],
+  ['redisx_2dcluster_2ec_1',['redisx-cluster.c',['../../../redisx/doc/html/redisx-cluster_8c.html',1,'']]],
+  ['redisx_2dhooks_2ec_2',['redisx-hooks.c',['../../../redisx/doc/html/redisx-hooks_8c.html',1,'']]],
+  ['redisx_2dnet_2ec_3',['redisx-net.c',['../../../redisx/doc/html/redisx-net_8c.html',1,'']]],
+  ['redisx_2dscript_2ec_4',['redisx-script.c',['../../../redisx/doc/html/redisx-script_8c.html',1,'']]],
+  ['redisx_2dsentinel_2ec_5',['redisx-sentinel.c',['../../../redisx/doc/html/redisx-sentinel_8c.html',1,'']]],
+  ['redisx_2dsub_2ec_6',['redisx-sub.c',['../../../redisx/doc/html/redisx-sub_8c.html',1,'']]],
+  ['redisx_2dtab_2ec_7',['redisx-tab.c',['../../../redisx/doc/html/redisx-tab_8c.html',1,'']]],
+  ['redisx_2dtls_2ec_8',['redisx-tls.c',['../../../redisx/doc/html/redisx-tls_8c.html',1,'']]],
+  ['redisx_2ec_9',['redisx.c',['../../../redisx/doc/html/redisx_8c.html',1,'']]],
+  ['redisx_2eh_10',['redisx.h',['../../../redisx/doc/html/redisx_8h.html',1,'']]],
+  ['resp_2ec_11',['resp.c',['../../../redisx/doc/html/resp_8c.html',1,'']]]
 ];

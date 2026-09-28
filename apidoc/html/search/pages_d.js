@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['of_20contents_0',['Table of Contents',['../index.html#autotoc_md7',1,'']]],
-  ['optional_20metadata_1',['Optional metadata',['../index.html#autotoc_md56',1,'']]]
+  ['quantities_0',['Scalar quantities',['../index.html#autotoc_md29',1,'']]],
+  ['queries_1',['queries',['../index.html#autotoc_md33',1,'Lazy pulling (high-frequency queries)'],['../index.html#autotoc_md35',1,'Pipelined pulling (high volume queries)']]]
 ];

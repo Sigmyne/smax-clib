@@ -1,5 +1,6 @@
 var dir_68267d1309a1af8e8297ef4c3efbcdba =
 [
+    [ "pass.c", "pass_8c.html", null ],
     [ "smax-control.c", "smax-control_8c.html", "smax-control_8c" ],
     [ "smax-easy.c", "smax-easy_8c.html", "smax-easy_8c" ],
     [ "smax-lazy.c", "smax-lazy_8c.html", "smax-lazy_8c" ],

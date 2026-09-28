@@ -1,6 +1,6 @@
 var structXSyncPoint =
 [
-    [ "isComplete", "structXSyncPoint.html#a0b9f91194934aba0d7936d18d4bc81cc", null ],
-    [ "lock", "structXSyncPoint.html#a33586b4184d23f2b8f4df153ec23af13", null ],
+    [ "isComplete", "structXSyncPoint.html#aca226f971e77677525df2a4b1f803886", null ],
+    [ "lock", "structXSyncPoint.html#a6cf0a01da13c3a450080c52f57e0e59f", null ],
     [ "status", "structXSyncPoint.html#a6e27f49150e9a14580fb313cc2777e00", null ]
 ];

@@ -22,7 +22,7 @@ var smax_util_8c =
     [ "smaxStringToValues", "smax-util_8c.html#a9e3c024a1db97e7adc8a40694c657fd1", null ],
     [ "smaxStringType", "smax-util_8c.html#a8d9d92ad8825d4adad4d6288a5681351", null ],
     [ "smaxTimestamp", "smax-util_8c.html#ae56da599747b207813a710efc07dd47d", null ],
-    [ "smaxTimeToString", "smax-util_8c.html#a1c29c7229e7006aea4fc3eb6d4b4ee0e", null ],
+    [ "smaxTimeToString", "smax-util_8c.html#a49ca81e757e023205085a23c3aa7e3da", null ],
     [ "smaxTypeForString", "smax-util_8c.html#af6a70e896526629e2130009882a1bff8", null ],
     [ "smaxUnpackStrings", "smax-util_8c.html#a5665cd4f5087ab7a07239c30bc561173", null ],
     [ "smaxValuesToString", "smax-util_8c.html#a4a80ebd309352379d3691f264282d96b", null ],

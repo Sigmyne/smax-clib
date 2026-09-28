@@ -1,9 +1,10 @@
 var searchData=
 [
-  ['reconfiguration_0',['Reconfiguration',['../index.html#autotoc_md22',1,'']]],
-  ['related_20links_1',['Related links',['../index.html#autotoc_md10',1,'']]],
-  ['release_20schedule_2',['Release schedule',['../index.html#autotoc_md67',1,'']]],
-  ['remote_20control_20calls_20and_20return_20values_3',['Complex remote control calls and return values',['../index.html#autotoc_md50',1,'']]],
-  ['remote_20program_20control_20via_20sma_20x_4',['Remote program control via SMA-X',['../index.html#autotoc_md47',1,'']]],
-  ['return_20values_5',['Complex remote control calls and return values',['../index.html#autotoc_md50',1,'']]]
+  ['table_20of_20contents_0',['Table of Contents',['../index.html#autotoc_md2',1,'']]],
+  ['the_20basics_1',['The basics',['../index.html#autotoc_md26',1,'']]],
+  ['the_20sma_20x_20c_20library_2',['Building the SMA-X C library',['../index.html#autotoc_md10',1,'']]],
+  ['tls_20configuration_3',['TLS configuration',['../index.html#autotoc_md19',1,'']]],
+  ['to_20disconnecting_20from_20sma_20x_4',['Connecting to / disconnecting from SMA-X',['../index.html#autotoc_md22',1,'']]],
+  ['tools_5',['Command-line tools',['../index.html#autotoc_md15',1,'']]],
+  ['types_20and_20sizes_6',['Flexible types and sizes',['../index.html#autotoc_md28',1,'']]]
 ];

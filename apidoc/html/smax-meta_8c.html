@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.17.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>smax-clib: src/smax-meta.c File Reference</title>
+<title>smax-clib: /github/workspace/smax-clib/src/smax-meta.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="codefolding.js"></script>
@@ -177,7 +177,7 @@ Functions</h2></td></tr>
 <tr class="memitem:aa27e3adeb67f2328a162c80bad433f02" id="r_aa27e3adeb67f2328a162c80bad433f02"><td class="memItemLeft">char *&#160;</td><td class="memItemRight"><a class="el" href="#aa27e3adeb67f2328a162c80bad433f02">smaxGetUnits</a> (const char *table, const char *key)</td></tr>
 <tr class="memitem:a63559d0095a109281b9efa13550cd7c2" id="r_a63559d0095a109281b9efa13550cd7c2"><td class="memItemLeft">char *&#160;</td><td class="memItemRight"><a class="el" href="#a63559d0095a109281b9efa13550cd7c2">smaxPullMeta</a> (const char *meta, const char *table, const char *key, int *len)</td></tr>
 <tr class="memitem:a6deedf594f19417bfa11b8f2cef360c4" id="r_a6deedf594f19417bfa11b8f2cef360c4"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a6deedf594f19417bfa11b8f2cef360c4">smaxPullTime</a> (const char *table, const char *key)</td></tr>
-<tr class="memitem:ab989b724600841b16125977bcb44ffcc" id="r_ab989b724600841b16125977bcb44ffcc"><td class="memItemLeft"><a class="elRef" href="../xchange/doc/html/xchange_8h.html#a1c7e02eda23566a7891310fd09307a70">XType</a>&#160;</td><td class="memItemRight"><a class="el" href="#ab989b724600841b16125977bcb44ffcc">smaxPullTypeDimension</a> (const char *table, const char *key, int *ndim, int *sizes)</td></tr>
+<tr class="memitem:ab989b724600841b16125977bcb44ffcc" id="r_ab989b724600841b16125977bcb44ffcc"><td class="memItemLeft"><a class="elRef" href="../../xchange/doc/html/xchange_8h.html#a1c7e02eda23566a7891310fd09307a70">XType</a>&#160;</td><td class="memItemRight"><a class="el" href="#ab989b724600841b16125977bcb44ffcc">smaxPullTypeDimension</a> (const char *table, const char *key, int *ndim, int *sizes)</td></tr>
 <tr class="memitem:aaf4c866eb1cb30dfd70e04604f1aa6cf" id="r_aaf4c866eb1cb30dfd70e04604f1aa6cf"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#aaf4c866eb1cb30dfd70e04604f1aa6cf">smaxPushMeta</a> (const char *meta, const char *table, const char *key, const char *value)</td></tr>
 <tr class="memitem:a5d59620a1646428f41b040d1a0a91554" id="r_a5d59620a1646428f41b040d1a0a91554"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a5d59620a1646428f41b040d1a0a91554">smaxSetCoordinateAxis</a> (const char *id, int n, const <a class="el" href="structXCoordinateAxis.html">XCoordinateAxis</a> *axis)</td></tr>
 <tr class="memitem:a04c3b8ea7ff6b8117d2dba9bf9edd52f" id="r_a04c3b8ea7ff6b8117d2dba9bf9edd52f"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a04c3b8ea7ff6b8117d2dba9bf9edd52f">smaxSetCoordinateSystem</a> (const char *table, const char *key, const <a class="el" href="structXCoordinateSystem.html">XCoordinateSystem</a> *coords)</td></tr>
@@ -463,7 +463,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" href="../xchange/doc/html/xchange_8h.html#a1c7e02eda23566a7891310fd09307a70">XType</a> smaxPullTypeDimension </td>
+          <td class="memname"><a class="elRef" href="../../xchange/doc/html/xchange_8h.html#a1c7e02eda23566a7891310fd09307a70">XType</a> smaxPullTypeDimension </td>
           <td>(</td>
           <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>table</em></span>, </td>
         </tr>
@@ -529,7 +529,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Adds/updates metadata associated with an SMA-X variable. The data will be pushed via the <a class="elRef" href="../redisx/doc/html/structRedis.html">Redis</a> pipeline channel.</p>
+<p>Adds/updates metadata associated with an SMA-X variable. The data will be pushed via the <a class="elRef" href="../../redisx/doc/html/structRedis.html">Redis</a> pipeline channel.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">meta</td><td>Root meta table name, usually something like "&lt;metaname&gt;". </td></tr>
@@ -539,8 +539,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>X_SUCCESS (0) if the metadata was successfully retrieved X_INCOMPLETE if the meatdata was successfully written but an update notification was not sent or else the return value of <a class="elRef" href="../redisx/doc/html/redisx_8h.html#a1465b1a965ddd685e16bccbf0b34f08b">redisxSetValue()</a></dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a63559d0095a109281b9efa13550cd7c2">smaxPullMeta()</a>, <a class="elRef" href="../redisx/doc/html/redisx_8h.html#a1465b1a965ddd685e16bccbf0b34f08b">redisxSetValue()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>X_SUCCESS (0) if the metadata was successfully retrieved X_INCOMPLETE if the meatdata was successfully written but an update notification was not sent or else the return value of <a class="elRef" href="../../redisx/doc/html/redisx_8h.html#af43466b9a55efcb6b4bfe2aa5ed37140">redisxSetValue()</a></dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a63559d0095a109281b9efa13550cd7c2">smaxPullMeta()</a>, <a class="elRef" href="../../redisx/doc/html/redisx_8h.html#af43466b9a55efcb6b4bfe2aa5ed37140">redisxSetValue()</a> </dd></dl>
 
 <p class="reference">References <a class="el" href="smax-util_8c.html#aefcb16af3690ffe9c77224af6b394869">smaxError()</a>, <a class="el" href="smax_8c.html#abc07a7599e0bac1be15bbcb6b63d4710">smaxGetProgramID()</a>, and <a class="el" href="smax_8c.html#a533fbe770158afe876a3dafa78ba2195">smaxGetRedis()</a>.</p>
 
@@ -578,10 +578,10 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>X_SUCCESS (0) if the coordinate axis was successfully set in the database. or else the return value of <a class="elRef" href="../redisx/doc/html/redisx_8h.html#aa8fd65a355394af08c86b4f0e943d3a6">redisxMultiSet()</a>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a5d59620a1646428f41b040d1a0a91554">smaxSetCoordinateAxis()</a>, <a class="elRef" href="../redisx/doc/html/redisx_8h.html#aa8fd65a355394af08c86b4f0e943d3a6">redisxMultiSet()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>X_SUCCESS (0) if the coordinate axis was successfully set in the database. or else the return value of <a class="elRef" href="../../redisx/doc/html/redisx_8h.html#abfcc67b8f2dd45489bc2617f29b42951">redisxMultiSet()</a>.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a5d59620a1646428f41b040d1a0a91554">smaxSetCoordinateAxis()</a>, <a class="elRef" href="../../redisx/doc/html/redisx_8h.html#abfcc67b8f2dd45489bc2617f29b42951">redisxMultiSet()</a> </dd></dl>
 
-<p class="reference">References <a class="elRef" href="../redisx/doc/html/structRedisEntry.html#a5892a9181e6a332f84d27aecd41dcd12">RedisEntry::key</a>, <a class="el" href="structXCoordinateAxis.html#a5ac083a645d964373f022d03df4849c8">XCoordinateAxis::name</a>, <a class="el" href="structXCoordinateAxis.html#ad191af99a874bc633c0834d247427ea8">XCoordinateAxis::refIndex</a>, <a class="el" href="structXCoordinateAxis.html#ad56f22fc3fbf9639a29ed9f174c67ec2">XCoordinateAxis::refValue</a>, <a class="el" href="smax_8c.html#a533fbe770158afe876a3dafa78ba2195">smaxGetRedis()</a>, <a class="el" href="structXCoordinateAxis.html#a4736138d712d9ee570d0652f08a4786a">XCoordinateAxis::step</a>, <a class="el" href="structXCoordinateAxis.html#a5a80171400807274a7fa9c95a104dc78">XCoordinateAxis::unit</a>, and <a class="elRef" href="../redisx/doc/html/structRedisEntry.html#a4e9aec275e566b978a3ccb4e043d8c61">RedisEntry::value</a>.</p>
+<p class="reference">References <a class="elRef" href="../../redisx/doc/html/structRedisEntry.html#a5892a9181e6a332f84d27aecd41dcd12">RedisEntry::key</a>, <a class="el" href="structXCoordinateAxis.html#a5ac083a645d964373f022d03df4849c8">XCoordinateAxis::name</a>, <a class="el" href="structXCoordinateAxis.html#ad191af99a874bc633c0834d247427ea8">XCoordinateAxis::refIndex</a>, <a class="el" href="structXCoordinateAxis.html#ad56f22fc3fbf9639a29ed9f174c67ec2">XCoordinateAxis::refValue</a>, <a class="el" href="smax_8c.html#a533fbe770158afe876a3dafa78ba2195">smaxGetRedis()</a>, <a class="el" href="structXCoordinateAxis.html#a4736138d712d9ee570d0652f08a4786a">XCoordinateAxis::step</a>, <a class="el" href="structXCoordinateAxis.html#a5a80171400807274a7fa9c95a104dc78">XCoordinateAxis::unit</a>, and <a class="elRef" href="../../redisx/doc/html/structRedisEntry.html#a4e9aec275e566b978a3ccb4e043d8c61">RedisEntry::value</a>.</p>
 
 </div>
 </div>
