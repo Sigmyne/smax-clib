@@ -471,7 +471,7 @@ int smaxTimestamp(char *buf) {
 #  if (__STDC_VERSION__ >= 201112L && !defined(__ANDROID__)) || defined(_MSC_VER)
   timespec_get(&ts, TIME_UTC);
 #  else
-  clock_gettime(CLOCK_REALTIME, &ta);
+  clock_gettime(CLOCK_REALTIME, &ts);
 #  endif
 
   n = smaxTimeToString(&ts, buf);
