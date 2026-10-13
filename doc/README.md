@@ -14,7 +14,7 @@ structured real-time database
 
 Author: Attila Kovacs
 
-Updated for version 1.0 and later releases.
+Updated for version 1.1 and later releases.
 
 ## Citation
 
@@ -95,6 +95,8 @@ Additionally, to configure your Redis (or Valkey / Dragonfly) servers for SMA-X,
 
  - [Build / install using GNU make](#smax-gnu-build)
  - [Build / install using CMake](#smax-cmake-build)
+ - [Install via `vcpkg`](#smax-vcpkg-port)
+ - [Homebrew package](#smax-homebrew)
 
 The __RedisX__ library can be built either as a shared (`libredisx.so[.1]`) or as a static (`libredisx.a`) library, 
 depending on what suits your needs best. You can also compile HTML documentation, examples and test programs, using
@@ -239,6 +241,60 @@ the `Runtime` component:
   $ cmake --install build --component Runtime --prefix /usr/local
 ```
 </details>
+
+<a name="smax-vcpkg-port"></a>
+### Install via `vcpkg`
+
+As of version 1.1, `smax-clib` will be available through the [vcpkg](https://vcpkg.io/en/) registry. The `vcpkg` port 
+supports a wide range of platforms, including Linux, Windows, MacOS, and Android -- for both `arm64` and `x64` 
+architectures (and in case of Windows also `x86`). It is effectively the same as the CMake build (above), only with 
+more simplicity, convenience, and dependency resolution.
+
+<details>
+
+The `vcpkg` port has optional add-on features, which may be installed along with the `core` library as needed. The 
+following features are available:
+
+ - `core` -- The core __smax-clib__ library without TLS support (this is installed by default if no components are specified).
+ - `tls` -- Add-on TLS (transport layer security) encryption support (EXPERIMENTAL)
+
+You can install just the core __smax-clib__ library (without TLS support) with `vcpkg` as:
+
+```bash
+  $ vcpkg install smax-clib
+```
+
+Or, with a selected set of features, such as:
+
+```bash
+  $ vcpkg install smax-clib[core,tls]
+```
+
+</details>
+
+<a name="smax-homebrew"></a>
+### Homebrew package
+
+As of version 1.1, there is also a [Homebrew](https://brew.sh/) package through the maintainer's own Tap.
+
+<details>
+
+To install `smax-clib` via Homebrew:
+
+```bash
+  $ brew tap attipaci/pub
+  $ brew install smax-clib
+```
+
+The above will build and install the __smax-clib__ runtime library, `smaxValue` and `smaxWrite` command-line tools, 
+and development files (headers and unversioned shared library). However, you may add further options to customize 
+your build:
+
+ - `--without-openssl` -- Build without TLS support. 
+ - `--with-doxygen` -- Install with local HTML documentation.
+
+</details>
+
 
 -----------------------------------------------------------------------------
 

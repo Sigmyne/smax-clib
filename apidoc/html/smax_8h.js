@@ -44,7 +44,7 @@ var smax_8h =
     [ "xsem_init", "smax_8h.html#a61c2f56f99baa81e1d42a7ac48ee0bc3", null ],
     [ "xsem_post", "smax_8h.html#a8d62f0bbd027abf76a2971cb6c339e48", null ],
     [ "xsem_wait", "smax_8h.html#ab7876496065cadb47dbfd5bf6997af86", null ],
-    [ "SMAXControlFunction", "smax_8h.html#a8224a78e5c3f1347e1321a83909b5c34", null ],
+    [ "SMAXControlFunction", "smax_8h.html#a86049c23c9a6ae5bcf96df75f63cdaed", null ],
     [ "xsem_type", "smax_8h.html#acf0d4bd7e8e1331f9136c1ad7704ca9c", null ],
     [ "smax2xField", "smax_8h.html#abfe751f22aa718133911ffdee848f64a", null ],
     [ "smax2xStruct", "smax_8h.html#a50fef3b0daf40f7de6f52b05abd2963c", null ],

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['x_0',['X',['../index.html#autotoc_md22',1,'Connecting to / disconnecting from SMA-X'],['../index.html#autotoc_md50',1,'Program status / error messages via SMA-X'],['../index.html#autotoc_md45',1,'Remote program control via SMA-X']]],
+  ['x_0',['X',['../index.html#autotoc_md24',1,'Connecting to / disconnecting from SMA-X'],['../index.html#autotoc_md52',1,'Program status / error messages via SMA-X'],['../index.html#autotoc_md47',1,'Remote program control via SMA-X']]],
   ['x_20c_20library_1',['Building the SMA-X C library',['../index.html#autotoc_md10',1,'']]],
   ['x2smaxfield_2',['x2smaxField',['../smax-util_8c.html#a76bd110891905fe4bdae6628547c50d1',1,'x2smaxField(XField *f):&#160;smax-util.c'],['../smax_8h.html#a76bd110891905fe4bdae6628547c50d1',1,'x2smaxField(XField *f):&#160;smax-util.c']]],
   ['x2smaxstruct_3',['x2smaxStruct',['../smax-util_8c.html#a65cc6cdad09f861b968e2d492abed977',1,'x2smaxStruct(XStructure *s):&#160;smax-util.c'],['../smax_8h.html#a65cc6cdad09f861b968e2d492abed977',1,'x2smaxStruct(XStructure *s):&#160;smax-util.c']]],

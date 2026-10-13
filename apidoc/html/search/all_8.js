@@ -1,12 +1,13 @@
 var searchData=
 [
-  ['handling_0',['handling',['../index.html#autotoc_md40',1,'Custom update handling'],['../index.html#autotoc_md59',1,'Error handling']]],
+  ['handling_0',['handling',['../index.html#autotoc_md42',1,'Custom update handling'],['../index.html#autotoc_md61',1,'Error handling']]],
   ['hget_5fwith_5fmeta_1',['HGET_WITH_META',['../smax_8c.html#ac5e36a13b5d67f497b15ab44b5a315af',1,'smax.c']]],
-  ['high_20frequency_20queries_2',['Lazy pulling (high-frequency queries)',['../index.html#autotoc_md33',1,'']]],
-  ['high_20volume_20queries_3',['Pipelined pulling (high volume queries)',['../index.html#autotoc_md35',1,'']]],
+  ['high_20frequency_20queries_2',['Lazy pulling (high-frequency queries)',['../index.html#autotoc_md35',1,'']]],
+  ['high_20volume_20queries_3',['Pipelined pulling (high volume queries)',['../index.html#autotoc_md37',1,'']]],
   ['hmset_5fwith_5fmeta_4',['HMSET_WITH_META',['../smax_8c.html#a561e3c013e65d6b0703bf1e574d7b821',1,'smax.c']]],
-  ['hooks_5',['Connection / disconnection hooks',['../index.html#autotoc_md23',1,'']]],
-  ['host_6',['host',['../../../redisx/doc/html/structRedisServer.html#a1c2046dcb30a629d6d9f45ff8f403f12',1,'RedisServer::host'],['../structXMessage.html#a1c2046dcb30a629d6d9f45ff8f403f12',1,'XMessage::host']]],
-  ['host_20configuration_7',['host configuration',['../index.html#autotoc_md17',1,'']]],
-  ['hset_5fwith_5fmeta_8',['HSET_WITH_META',['../smax_8c.html#a6d21bc913aebbf4a95c6c4f6f18da3b4',1,'smax.c']]]
+  ['homebrew_20package_5',['Homebrew package',['../index.html#autotoc_md13',1,'']]],
+  ['hooks_6',['Connection / disconnection hooks',['../index.html#autotoc_md25',1,'']]],
+  ['host_7',['host',['../../../redisx/doc/html/structRedisServer.html#a1c2046dcb30a629d6d9f45ff8f403f12',1,'RedisServer::host'],['../structXMessage.html#a1c2046dcb30a629d6d9f45ff8f403f12',1,'XMessage::host']]],
+  ['host_20configuration_8',['host configuration',['../index.html#autotoc_md19',1,'']]],
+  ['hset_5fwith_5fmeta_9',['HSET_WITH_META',['../smax_8c.html#a6d21bc913aebbf4a95c6c4f6f18da3b4',1,'smax.c']]]
 ];

@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"structXMeta.html#a16e4b9723516717d3493c46157701520":[1,0,3,4],
+"structXMeta.html#a2aace03835c4d951b3dee117b328ef87":[1,0,3,7],
 "structXMeta.html#a4f4017ce7a39a4da2ed1cf8c4dc7de3f":[1,0,3,1],
 "structXMeta.html#a6e27f49150e9a14580fb313cc2777e00":[1,0,3,2],
 "structXMeta.html#a766b48fdc93d03992939adfa91766703":[1,0,3,3],
