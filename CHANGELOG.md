@@ -7,9 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [1.1.0-rc2] - 2026-10-13
+## [1.1.0] - 2026-10-19
 
-Upcoming feature release, with major build and portability enhancements, possibly around 15 October 2026.
+Feature release, with build and portability enhancements.
 
 ### Added
 
