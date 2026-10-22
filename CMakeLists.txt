@@ -120,7 +120,7 @@ set_package_properties(xchange PROPERTIES
     TYPE REQUIRED
     PURPOSE "Provides online database access for SMA-X"
 )
-string(APPEND PC_LIBS_PRIVATE "-lxchange ")
+string(APPEND PC_LIBS_PRIVATE "-lredisx ")
 
 find_package(Threads REQUIRED)
 if(CMAKE_THREAD_LIBS_INIT)
